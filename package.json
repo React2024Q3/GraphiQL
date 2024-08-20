@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format:fix": "prettier --write .",
-    "prepare": "npx husky && husky",
-    "test": "npx vitest run --coverage"
+    "format:fix": "prettier --write ."
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
