@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "test": "npx vitest run --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
@@ -21,14 +22,23 @@
     "react-redux": "^9.1.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/redux-mock-store": "^1.0.6",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.0.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "jsdom": "^24.1.1",
     "prettier": "^3.3.3",
-    "typescript": "^5"
+    "redux-mock-store": "^1.5.4",
+    "typescript": "^5",
+    "vitest": "^2.0.5"
   }
 }
