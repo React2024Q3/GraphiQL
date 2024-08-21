@@ -1,0 +1,10 @@
+.rss {
+  display: flex;
+  gap: 13px;
+  margin: 0 0 2px;
+  padding: 2px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 0.9;
+  color: gold;
+}
