@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 
 import styles from './Header.module.css';
 import throttle from '@/utils/throttle';
+import { Button } from '@mui/material';
 
 export default function Header() {
   const headerRef = useRef<HTMLElement | null>(null);
@@ -46,20 +47,21 @@ export default function Header() {
 
   return (
     <header ref={headerRef} className={styles.header}>
-      <Logo />
+      <Link href="./">
+        <Logo />
+      </Link>
+
       <nav className={styles.nav}>
-        <Link href="welcome.html" className="nav__link">
+        <Link href="./" className={styles.nav__link}>
           Welcome Page
         </Link>
-        <div className="lang-toggle">
+        <div className={styles.lang}>
           <select id="lange-selector">
-            <option value="en">English</option>
-            <option value="ru">Русский</option>
+            <option value="en">Eng</option>
+            <option value="ru">Рус</option>
           </select>
         </div>
-        <button id="logout" className="logout-button">
-          Logout
-        </button>
+        <Button className={styles.logoutBtn}>Logout</Button>
       </nav>
     </header>
   );

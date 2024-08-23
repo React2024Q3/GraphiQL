@@ -2,30 +2,48 @@
   position: -webkit-sticky;
   position: sticky;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   top: 0;
   background-color: #333;
-  color: white;
+  color: #ddd;
   padding: 20px 10px;
   width: 100%;
   z-index: 100;
   transition: all 0.3s ease;
-  
 }
 
 .nav {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
 }
 
 .nav__link {
+  position: relative;
   color: white;
   text-decoration: none;
   font-size: 18px;
   margin-right: 20px;
 }
 
-.lang-toggle select {
+.nav__link::after{
+  content: '';
+  position: absolute;
+  background-color: currentColor;
+  height: 1px;
+  bottom: -3px;
+  left: 50%;
+  right: 50%;
+  transition: all .3s linear;
+}
+
+.nav__link:hover::after {
+  left: 0%;
+  right: 0%;
+}
+
+.lang select {
   background-color: #444;
   color: white;
   border: none;
@@ -33,18 +51,25 @@
   font-size: 16px;
 }
 
-.logout-btn {
+.logoutBtn {
   background-color: #ff4d4d;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 5px 10px;
   cursor: pointer;
   font-size: 16px;
   border-radius: 5px;
+  transition: all .3s linear;
+}
+
+.logoutBtn:hover {
+  background-color: white;
+  color: #ff4d4d;
 }
 
 .header.isScroll {
-  background-color: #fff;
+  background-color: #ddd;
+  color: #333;
   padding: 10px 10px;
 }
 
