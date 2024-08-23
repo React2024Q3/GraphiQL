@@ -1,13 +1,15 @@
 .header {
   position: -webkit-sticky;
   position: sticky;
+  display: flex;
   top: 0;
   background-color: #333;
   color: white;
   padding: 20px 10px;
   width: 100%;
-  z-index: 1000;
+  z-index: 100;
   transition: all 0.3s ease;
+  
 }
 
 .nav {
@@ -41,15 +43,15 @@
   border-radius: 5px;
 }
 
-.header.is-scroll {
-  background-color: #222;
+.header.isScroll {
+  background-color: #fff;
   padding: 10px 10px;
 }
 
-.header.is-scroll .nav {
+.header.isScroll .nav {
   font-size: 16px;
 }
 
-.header.is-scroll .logoutButton {
+.header.isScroll .logoutButton {
   padding: 5px 15px;
 }
