@@ -82,7 +82,7 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 body {
@@ -105,3 +105,22 @@ a {
     color-scheme: dark;
   }
 }
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* 
+.header.isScroll {
+  background-color: #fff;
+  padding: 10px 10px;
+}
+
+.header.isScroll .nav {
+  font-size: 16px;
+}
+
+.header.isScroll .logoutButton {
+  padding: 5px 15px;
+} */
