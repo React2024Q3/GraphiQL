@@ -64,7 +64,7 @@ function SignUp() {
     try {
       await registerWithEmailAndPassword(name, email, password);
       if (auth.currentUser) {
-        router.push('/restful');
+        return router.push('/restful');
       }
     } catch (error) {
       if (error instanceof Error && error.message.includes('auth/email-already-in-use')) {

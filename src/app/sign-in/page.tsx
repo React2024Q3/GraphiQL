@@ -44,7 +44,7 @@ function SignIn() {
     try {
       await logInWithEmailAndPassword(email, password);
       if (auth.currentUser) {
-        router.push('/restful');
+        return router.push('/restful');
       }
     } catch (error) {
       console.error('Sign-in error:', error);
