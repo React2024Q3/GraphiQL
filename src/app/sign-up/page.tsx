@@ -116,7 +116,7 @@ function SignUp() {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Email Address"
+                label="E-mail"
                 variant="outlined"
                 required
                 error={!!errors.email}
