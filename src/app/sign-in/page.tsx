@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import { Loader } from '@/components/Loader';
 import { Alert, TextField, Typography } from '@mui/material';
@@ -15,12 +13,43 @@ import {
   StyledMessageBox,
 } from '../../shared/styledComponents/styledForm';
 import Link from 'next/link';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { SignInFormData } from '@/types&interfaces/types';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { singInValidationSchema } from '@/shared/validation/signInValidationSchema';
+import { logInWithEmailAndPassword } from '@/firebase/utils';
 
 function SignIn() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [user, loading, error] = useAuthState(auth);
+  console.log('user', user);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    // getValues,
+    // watch,
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    resolver: yupResolver(singInValidationSchema),
+    // mode: 'onChange',
+  });
+
+  const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
+    console.log(email, password);
+    try {
+      await logInWithEmailAndPassword(email, password);
+      if (auth.currentUser) {
+        router.push('/restful');
+      }
+    } catch (error) {
+      console.error('Sign-in error:', error);
+    }
+  };
 
   if (user) {
     return router.push('/');
@@ -30,11 +59,6 @@ function SignIn() {
     return <Loader />;
   }
 
-  const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password);
-    router.push('/restful');
-  };
-
   return (
     <StyledContainer>
       <StyledBox>
@@ -42,34 +66,41 @@ function SignIn() {
           Sign In
         </Typography>
         {error && <Alert severity="error">{error.message}</Alert>}
-        <StyledForm component="form">
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="E-mail"
+        <StyledForm component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Controller
             name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="E-mail"
+                variant="outlined"
+                required
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                fullWidth
+                margin="normal"
+              />
+            )}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type="password"
+                variant="outlined"
+                required
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                fullWidth
+                margin="normal"
+              />
+            )}
           />
-          <StyledButton type="button" fullWidth variant="contained" onClick={handleSignIn}>
+          <StyledButton type="submit" fullWidth variant="contained" disabled={loading}>
             Sign In
           </StyledButton>
           <StyledMessageBox>
