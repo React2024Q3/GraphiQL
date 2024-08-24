@@ -1,4 +1,4 @@
-import { Box, Button, Container, styled } from '@mui/material';
+import { Box, Button, Container, styled, TextField, Typography } from '@mui/material';
 
 const StyledContainer = styled(Container)({
   maxWidth: 'sm',
@@ -29,4 +29,21 @@ const StyledButton = styled(Button)({
   alignSelf: 'center',
 });
 
-export { StyledContainer, StyledBox, StyledForm, StyledMessageBox, StyledButton };
+const StyledTextField = styled(TextField)({
+  marginTop: '0.625rem',
+  marginBottom: '0.25rem',
+});
+
+const StyledHeader = styled(Typography)({
+  marginBottom: '2rem',
+});
+
+export {
+  StyledContainer,
+  StyledBox,
+  StyledForm,
+  StyledMessageBox,
+  StyledButton,
+  StyledTextField,
+  StyledHeader,
+};
