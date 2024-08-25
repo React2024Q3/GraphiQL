@@ -45,7 +45,7 @@ function SignUp() {
 
   useEffect(() => {
     if (user) {
-      router.push('/');
+      router.replace('/');
     }
   }, [user, router]);
 
