@@ -2,9 +2,12 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  updateProfile,
+  User,
+  // updateProfile,
 } from 'firebase/auth';
-import { auth } from './config';
+import { auth, db } from './config';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { Dispatch, SetStateAction } from 'react';
 
 const logInWithEmailAndPassword: (email: string, password: string) => void = async (
   email,
@@ -20,13 +23,43 @@ const registerWithEmailAndPassword: (
 ) => void = async (name, email, password) => {
   const res = await createUserWithEmailAndPassword(auth, email, password);
   const user = res.user;
-  await updateProfile(user, {
-    displayName: name,
+  await addDoc(collection(db, 'users'), {
+    uid: user.uid,
+    name,
+    // authProvider: 'local',
+    email,
   });
+
+  // await updateProfile(user, {
+  //   displayName: name,
+  // });
+  // await user.reload();
+  // console.log('user from utils', user, user.displayName);
+  // createUserWithEmailAndPassword(auth, email, password).then(function (result) {
+  //   return updateProfile(result.user, {
+  //     displayName: name,
+  //   });
+  // });
 };
 
 const logout = () => {
   signOut(auth);
 };
 
-export { logInWithEmailAndPassword, registerWithEmailAndPassword, logout };
+const fetchUserName = async (
+  user: User | null | undefined,
+  setName: Dispatch<SetStateAction<string>>
+) => {
+  const userId = user?.uid;
+  if (userId) {
+    const q = query(collection(db, 'users'), where('uid', '==', userId));
+    const doc = await getDocs(q);
+    if (!doc.empty) {
+      const data = doc.docs[0].data();
+      console.log('data', data);
+      setName(data.name);
+    }
+  }
+};
+
+export { logInWithEmailAndPassword, registerWithEmailAndPassword, logout, fetchUserName };
