@@ -27,21 +27,17 @@ function SignIn() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [firebaseError, setFirebaseError] = useState('');
-  console.log('user', user);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-    // getValues,
-    // watch,
   } = useForm<SignInFormData>({
     defaultValues: {
       email: '',
       password: '',
     },
     resolver: yupResolver(singInValidationSchema),
-    // mode: 'onChange',
   });
 
   useEffect(() => {
@@ -51,7 +47,6 @@ function SignIn() {
   }, [user, router]);
 
   const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
-    console.log(email, password);
     try {
       await logInWithEmailAndPassword(email, password);
     } catch (error) {

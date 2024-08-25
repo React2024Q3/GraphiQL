@@ -27,7 +27,6 @@ function SignUp() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [firebaseError, setFirebaseError] = useState('');
-  console.log('user', user);
 
   const {
     control,

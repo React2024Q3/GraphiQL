@@ -3,7 +3,6 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   User,
-  // updateProfile,
 } from 'firebase/auth';
 import { auth, db } from './config';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
@@ -26,20 +25,8 @@ const registerWithEmailAndPassword: (
   await addDoc(collection(db, 'users'), {
     uid: user.uid,
     name,
-    // authProvider: 'local',
     email,
   });
-
-  // await updateProfile(user, {
-  //   displayName: name,
-  // });
-  // await user.reload();
-  // console.log('user from utils', user, user.displayName);
-  // createUserWithEmailAndPassword(auth, email, password).then(function (result) {
-  //   return updateProfile(result.user, {
-  //     displayName: name,
-  //   });
-  // });
 };
 
 const logout = () => {

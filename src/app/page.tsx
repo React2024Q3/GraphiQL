@@ -9,28 +9,6 @@ import { Notification } from '@/components/Notification';
 import { Loader } from '@/components/Loader';
 
 export default function Home() {
-  // const [user, loading, error] = useAuthState(auth);
-  // const [displayName, setDisplayName] = useState('');
-
-  // useEffect(() => {
-  //   // const reloadUser = async () => {
-  //   //   if (user && !user.displayName) {
-  //   //     await user.reload();
-  //   //   }
-  //   // };
-  //   // reloadUser();
-
-  //   if (user && user.displayName) {
-  //     setDisplayName(user.displayName);
-  //   }
-  // }, [user]);
-  // setTimeout(() => {
-  //   if (user && user.displayName) {
-  //     setDisplayName(user.displayName);
-  //   }
-  // }, 300);
-  // console.log('user', user, user?.displayName, user?.email);
-
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
@@ -51,7 +29,6 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {/* <h2>Welcome{user && user.displayName && ` Back, ${name}`}!</h2> */}
       <h2>Welcome{user && name && ` Back, ${name}`}!</h2>
       {error && <Notification isOpen={!!error} message={error.message} severity="error" />}
       {fetchUserNameError && (

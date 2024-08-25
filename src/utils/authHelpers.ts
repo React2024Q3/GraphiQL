@@ -1,22 +1,5 @@
-// import { SignUpFormData } from '@/types&interfaces/types';
-// import { UseFormGetValues } from 'react-hook-form';
-
 import { Dispatch, SetStateAction } from 'react';
 import { UseFormSetError } from 'react-hook-form';
-
-// const isFieldEmpty: (
-//   field: keyof SignUpFormData,
-//   getValues: UseFormGetValues<SignUpFormData>
-// ) => boolean = (field, getValues) => {
-//   return !getValues(field);
-// };
-
-// export const areAllFieldsFilledIn: (
-//   fieldNames: (keyof SignUpFormData)[],
-//   getValues: UseFormGetValues<SignUpFormData>
-// ) => boolean = (fieldNames, getValues) => {
-//   return fieldNames.every((field) => !isFieldEmpty(field, getValues));
-// };
 
 export const getHelperText = (error: string | undefined) => {
   return error ? error : ' ';
