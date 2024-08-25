@@ -9,32 +9,31 @@ import { Loader } from '@/components/Loader';
 import {
   StyledBox,
   StyledButton,
-  StyledContainer,
   StyledForm,
+  StyledHeader,
   StyledMessageBox,
 } from '@/shared/styledComponents/styledForm';
-import { Alert, TextField, Typography } from '@mui/material';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Container, Typography } from '@mui/material';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { singUpValidationSchema } from '@/shared/validation/signUpValidationSchema';
+import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
+import { Notification } from '@/components/Notification';
+import { handleAuthError } from '@/utils/authHelpers';
+import { useEffect, useState } from 'react';
+import { FormField } from '@/components/FormField';
 import { SignUpFormData } from '@/types&interfaces/types';
-// import { areAllFieldsFilledIn } from '@/shared/utils/formHelpers';
-// import { SIGN_UP_FORM_FIELDS } from '@/shared/constants/formConstants';
 
 function SignUp() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
+  const [firebaseError, setFirebaseError] = useState('');
   console.log('user', user);
-
-  // const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     setError,
-    // getValues,
-    // watch,
   } = useForm<SignUpFormData>({
     defaultValues: {
       name: '',
@@ -43,124 +42,58 @@ function SignUp() {
       confirmPassword: '',
     },
     resolver: yupResolver(singUpValidationSchema),
-    // mode: 'onChange',
   });
 
-  // const watchedFields = watch(SIGN_UP_FORM_FIELDS);
-
-  const isButtonDisabled = loading; /* || Object.keys(errors).length > 0 */
-
-  // useEffect(() => {
-  //   console.log('errors', Object.keys(errors));
-  //   console.log('isButtonDisabled', isButtonDisabled);
-  //   setIsButtonDisabled(
-  //     loading ||
-  //       /* !areAllFieldsFilledIn(SIGN_UP_FORM_FIELDS, getValues) || */
-  //       Object.keys(errors).length > 0
-  //   );
-  // }, [errors, loading, isButtonDisabled /* , getValues, watchedFields */]);
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
       await registerWithEmailAndPassword(name, email, password);
-      if (auth.currentUser) {
-        return router.push('/restful');
-      }
     } catch (error) {
-      if (error instanceof Error && error.message.includes('auth/email-already-in-use')) {
-        setError('email', {
-          type: 'manual',
-          message: 'This email is already in use.',
-        });
-      } else {
-        console.error('Sign-up error:', error);
-      }
+      handleAuthError(error, setFirebaseError, setError);
     }
   };
-
-  if (user) {
-    return router.push('/');
-  }
 
   if (loading) {
     return <Loader />;
   }
 
   return (
-    <StyledContainer>
+    <Container>
       <StyledBox>
-        <Typography component="h1" variant="h5">
-          Sign Up
-        </Typography>
-        {error && <Alert severity="error">{error.message}</Alert>}
+        <StyledHeader variant="h5">Sign Up</StyledHeader>
+        {error && <Notification isOpen={!!error} message={error.message} severity="error" />}
         <StyledForm component="form" onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Name"
-                variant="outlined"
-                required
-                error={!!errors.name}
-                helperText={errors.name?.message}
-                fullWidth
-                margin="normal"
-              />
-            )}
-          />
-          <Controller
+          <FormField<SignUpFormData> name="name" control={control} label="Name" errors={errors} />
+          <FormField<SignUpFormData>
             name="email"
             control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="E-mail"
-                variant="outlined"
-                required
-                error={!!errors.email}
-                helperText={errors.email?.message}
-                fullWidth
-                margin="normal"
-              />
-            )}
+            label="E-mail"
+            type={'email'}
+            errors={errors}
           />
-          <Controller
+          <FormField<SignUpFormData>
             name="password"
             control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Password"
-                type="password"
-                variant="outlined"
-                required
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                fullWidth
-                margin="normal"
-              />
-            )}
+            label="Password"
+            type={'password'}
+            errors={errors}
           />
-          <Controller
+          <FormField<SignUpFormData>
             name="confirmPassword"
             control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Confirm Password"
-                type="password"
-                variant="outlined"
-                required
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword?.message}
-                fullWidth
-                margin="normal"
-              />
-            )}
+            label="Confirm Password"
+            type={'password'}
+            errors={errors}
           />
-          <StyledButton type="submit" fullWidth variant="contained" disabled={isButtonDisabled}>
+          <Typography color="error" variant="body2">
+            {firebaseError || '\u00A0'}
+          </Typography>
+          <StyledButton type="submit" fullWidth variant="contained" disabled={loading}>
             Sign Up
           </StyledButton>
           <StyledMessageBox>
@@ -169,7 +102,7 @@ function SignUp() {
           </StyledMessageBox>
         </StyledForm>
       </StyledBox>
-    </StyledContainer>
+    </Container>
   );
 }
 
