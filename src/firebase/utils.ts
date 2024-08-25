@@ -43,7 +43,6 @@ const fetchUserName = async (
     const doc = await getDocs(q);
     if (!doc.empty) {
       const data = doc.docs[0].data();
-      console.log('data', data);
       setName(data.name);
     }
   }
