@@ -6,10 +6,15 @@ import { useEffect, useRef } from 'react';
 import styles from './Header.module.css';
 import throttle from '@/utils/throttle';
 import { Button } from '@mui/material';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase/config';
+import { logout } from '@/firebase/utils';
 
 export default function Header() {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -61,7 +66,11 @@ export default function Header() {
             <option value="ru">Рус</option>
           </select>
         </div>
-        <Button className={styles.logoutBtn}>Logout</Button>
+        <Link href={user ? '#' : '/sign-in'}>
+          <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
+            {user ? 'Logout' : 'Sign in'}
+          </Button>
+        </Link>
       </nav>
     </header>
   );
