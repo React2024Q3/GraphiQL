@@ -1,7 +1,9 @@
-import { Snackbar, SnackbarCloseReason } from '@mui/material';
 import { FC, useState } from 'react';
-import { NotificationProps } from './types';
+
+import { Snackbar, SnackbarCloseReason } from '@mui/material';
+
 import { StyledAlert } from './styled';
+import { NotificationProps } from './types';
 
 export const Notification: FC<NotificationProps> = ({ isOpen, message, severity }) => {
   const [open, setOpen] = useState(isOpen);
@@ -16,7 +18,7 @@ export const Notification: FC<NotificationProps> = ({ isOpen, message, severity 
 
   return (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-      <StyledAlert onClose={handleClose} severity={severity} variant="filled">
+      <StyledAlert onClose={handleClose} severity={severity} variant='filled'>
         {message}
       </StyledAlert>
     </Snackbar>

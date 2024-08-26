@@ -3,10 +3,12 @@ import { User } from 'firebase/auth';
 export const getWelcomeString = (
   user: User | null | undefined,
   name: string,
-  previousRoute: string
+  previousRoute: string,
+  greetingPartWelcome: string,
+  greetingPartBack: string
 ): string => {
   if (user && name) {
-    return `Welcome${previousRoute === 'sign-in' ? ' Back' : ''}, ${name}!`;
+    return `${greetingPartWelcome}${previousRoute === 'sign-in' ? ` ${greetingPartBack}` : ''}, ${name}!`;
   }
-  return `Welcome!`;
+  return greetingPartWelcome;
 };

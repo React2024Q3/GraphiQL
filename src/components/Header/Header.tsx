@@ -1,16 +1,19 @@
 'use client';
-import Link from 'next/link';
-import Logo from '../Logo';
+
 import { useEffect, useRef } from 'react';
 
-import styles from './Header.module.css';
+import LanguageSelect from '@/components/LanguageSelect';
+import { auth } from '@/firebase/config';
+import { logout } from '@/firebase/utils';
+import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/firebase/config';
-import { logout } from '@/firebase/utils';
 
-export default function Header() {
+import Logo from '../Logo';
+import styles from './Header.module.css';
+
+export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -52,20 +55,15 @@ export default function Header() {
 
   return (
     <header ref={headerRef} className={styles.header}>
-      <Link href="./">
+      <Link href='./'>
         <Logo />
       </Link>
 
       <nav className={styles.nav}>
-        <Link href="./" className={styles.nav__link}>
+        <Link href='./' className={styles.nav__link}>
           Welcome Page
         </Link>
-        <div className={styles.lang}>
-          <select id="lange-selector">
-            <option value="en">Eng</option>
-            <option value="ru">Рус</option>
-          </select>
-        </div>
+        <LanguageSelect locale={locale} />
         <Link href={user ? '#' : '/sign-in'}>
           <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
             {user ? 'Logout' : 'Sign in'}
