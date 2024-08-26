@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { FormField } from '@/components/FormField';
@@ -41,12 +41,6 @@ function SignIn() {
     resolver: yupResolver(singInValidationSchema),
   });
 
-  useEffect(() => {
-    if (user) {
-      router.replace('/');
-    }
-  }, [user, router]);
-
   const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
     try {
       await logInWithEmailAndPassword(email, password);
@@ -54,6 +48,10 @@ function SignIn() {
       handleAuthError(error, setFirebaseError);
     }
   };
+
+  if (user) {
+    return router.replace('/?from=sign-in');
+  }
 
   if (loading) {
     return <Loader />;

@@ -1,3 +1,4 @@
+import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
 import { locales } from '@/navigation';
 import type { Metadata } from 'next';
@@ -33,7 +34,8 @@ export default function RootLayout({
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body className={inter.className}>
           <Header locale={locale} />
-          {children}
+          <main className='main'>{children}</main>
+          <Footer />
         </body>
       </NextIntlClientProvider>
     </html>

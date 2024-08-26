@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { FormField } from '@/components/FormField';
@@ -44,12 +44,6 @@ function SignUp() {
     resolver: yupResolver(singUpValidationSchema),
   });
 
-  useEffect(() => {
-    if (user) {
-      router.replace('/');
-    }
-  }, [user, router]);
-
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
       await registerWithEmailAndPassword(name, email, password);
@@ -57,6 +51,10 @@ function SignUp() {
       handleAuthError(error, setFirebaseError, setError);
     }
   };
+
+  if (user) {
+    return router.replace('/');
+  }
 
   if (loading) {
     return <Loader />;

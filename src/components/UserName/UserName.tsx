@@ -7,13 +7,19 @@ import { Notification } from '@/components/Notification';
 import { auth } from '@/firebase/config';
 import { fetchUserName } from '@/firebase/utils';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { getWelcomeString } from './helpers';
 
 export const UserName: FC = () => {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
   const t = useTranslations('Home');
+
+  const searchParams = useSearchParams();
+  const previousRoute = searchParams.get('from') || '';
 
   useEffect(() => {
     try {
@@ -31,7 +37,15 @@ export const UserName: FC = () => {
 
   return (
     <>
-      <h2>{t('WelcomeMessage', { name: name ? name : 'Guest' })}</h2>
+      <h2>
+        {getWelcomeString(
+          user,
+          name,
+          previousRoute,
+          t('GreetingPartWelcome'),
+          t('GreetingPartBack')
+        )}
+      </h2>
       {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
       {fetchUserNameError && (
         <Notification
