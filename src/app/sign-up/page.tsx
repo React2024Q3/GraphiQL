@@ -19,7 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
 import { Notification } from '@/components/Notification';
 import { handleAuthError } from '@/utils/authHelpers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormField } from '@/components/FormField';
 import { SignUpFormData } from '@/types&interfaces/types';
 
@@ -43,12 +43,6 @@ function SignUp() {
     resolver: yupResolver(singUpValidationSchema),
   });
 
-  useEffect(() => {
-    if (user) {
-      router.replace('/');
-    }
-  }, [user, router]);
-
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
       await registerWithEmailAndPassword(name, email, password);
@@ -56,6 +50,10 @@ function SignUp() {
       handleAuthError(error, setFirebaseError, setError);
     }
   };
+
+  if (user) {
+    return router.replace('/');
+  }
 
   if (loading) {
     return <Loader />;
