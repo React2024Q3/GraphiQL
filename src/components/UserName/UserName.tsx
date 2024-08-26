@@ -6,11 +6,13 @@ import { auth } from '@/firebase/config';
 import { fetchUserName } from '@/firebase/utils';
 import { Notification } from '@/components/Notification';
 import { Loader } from '@/components/Loader';
+import { useTranslations } from 'next-intl';
 
 export const UserName: FC = () => {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
+  const t = useTranslations('Home');
 
   useEffect(() => {
     try {
@@ -28,7 +30,7 @@ export const UserName: FC = () => {
 
   return (
     <>
-      <h2>Welcome{user && name && ` Back, ${name}`}!</h2>
+      <h2>{t('WelcomeMessage', { name: name ? name : 'Guest' })}</h2>
       {error && <Notification isOpen={!!error} message={error.message} severity="error" />}
       {fetchUserNameError && (
         <Notification

@@ -3,8 +3,8 @@
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '../../../navigation';
+import { Link } from '../../../navigation';
 import { Loader } from '@/components/Loader';
 import {
   StyledBox,

@@ -9,8 +9,9 @@ import { Button } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { logout } from '@/firebase/utils';
+import LanguageSelect from '../LanguageSelect';
 
-export default function Header() {
+export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -60,12 +61,7 @@ export default function Header() {
         <Link href="./" className={styles.nav__link}>
           Welcome Page
         </Link>
-        <div className={styles.lang}>
-          <select id="lange-selector">
-            <option value="en">Eng</option>
-            <option value="ru">Рус</option>
-          </select>
-        </div>
+        <LanguageSelect locale={locale} />
         <Link href={user ? '#' : '/sign-in'}>
           <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
             {user ? 'Logout' : 'Sign in'}
