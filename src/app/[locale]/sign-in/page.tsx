@@ -1,10 +1,15 @@
 'use client';
 
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRouter } from '@/navigation';
-import { auth } from '@/firebase/config';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
-import { Container, Typography } from '@mui/material';
+import { Notification } from '@/components/Notification';
+import { auth } from '@/firebase/config';
+import { logInWithEmailAndPassword } from '@/firebase/utils';
+import { useRouter } from '@/navigation';
+import { Link } from '@/navigation';
 import {
   StyledBox,
   StyledButton,
@@ -12,16 +17,12 @@ import {
   StyledHeader,
   StyledMessageBox,
 } from '@/shared/styledComponents/styledForm';
-import { Link } from '@/navigation';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { SignInFormData } from '@/types&interfaces/types';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { singInValidationSchema } from '@/utils/validation/signInValidationSchema';
-import { logInWithEmailAndPassword } from '@/firebase/utils';
-import { useEffect, useState } from 'react';
-import { Notification } from '@/components/Notification';
 import { handleAuthError } from '@/utils/authHelpers';
-import { FormField } from '@/components/FormField';
+import { singInValidationSchema } from '@/utils/validation/signInValidationSchema';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Container, Typography } from '@mui/material';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function SignIn() {
   const router = useRouter();
@@ -61,31 +62,31 @@ function SignIn() {
   return (
     <Container>
       <StyledBox>
-        <StyledHeader variant="h5">Sign In</StyledHeader>
-        {error && <Notification isOpen={!!error} message={error.message} severity="error" />}
-        <StyledForm component="form" onSubmit={handleSubmit(onSubmit)}>
+        <StyledHeader variant='h5'>Sign In</StyledHeader>
+        {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+        <StyledForm component='form' onSubmit={handleSubmit(onSubmit)}>
           <FormField<SignInFormData>
-            name="email"
+            name='email'
             control={control}
-            label="E-mail"
+            label='E-mail'
             type={'email'}
             errors={errors}
           />
           <FormField<SignInFormData>
-            name="password"
+            name='password'
             control={control}
-            label="Password"
+            label='Password'
             type={'password'}
             errors={errors}
           />
-          <Typography color="error" variant="body2">
+          <Typography color='error' variant='body2'>
             {firebaseError || '\u00A0'}
           </Typography>
-          <StyledButton type="submit" fullWidth variant="contained" disabled={loading}>
+          <StyledButton type='submit' fullWidth variant='contained' disabled={loading}>
             Sign In
           </StyledButton>
           <StyledMessageBox>
-            Don't have an account?&nbsp;<Link href="/sign-up">Sign up</Link>
+            Don't have an account?&nbsp;<Link href='/sign-up'>Sign up</Link>
             &nbsp;now.
           </StyledMessageBox>
         </StyledForm>

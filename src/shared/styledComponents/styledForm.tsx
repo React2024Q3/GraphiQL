@@ -1,4 +1,4 @@
-import { Box, Button, styled, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography, styled } from '@mui/material';
 
 const StyledBox = styled(Box)({
   marginTop: '4rem',

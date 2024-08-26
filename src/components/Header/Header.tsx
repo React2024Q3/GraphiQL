@@ -1,15 +1,17 @@
 'use client';
-import { Link } from '@/navigation';
-import Logo from '../Logo';
+
 import { useEffect, useRef } from 'react';
 
-import styles from './Header.module.css';
+import LanguageSelect from '@/components/LanguageSelect';
+import { auth } from '@/firebase/config';
+import { logout } from '@/firebase/utils';
+import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/firebase/config';
-import { logout } from '@/firebase/utils';
-import LanguageSelect from '@/components/LanguageSelect';
+
+import Logo from '../Logo';
+import styles from './Header.module.css';
 
 export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
@@ -53,12 +55,12 @@ export default function Header({ locale }: { locale: string }) {
 
   return (
     <header ref={headerRef} className={styles.header}>
-      <Link href="./">
+      <Link href='./'>
         <Logo />
       </Link>
 
       <nav className={styles.nav}>
-        <Link href="./" className={styles.nav__link}>
+        <Link href='./' className={styles.nav__link}>
           Welcome Page
         </Link>
         <LanguageSelect locale={locale} />

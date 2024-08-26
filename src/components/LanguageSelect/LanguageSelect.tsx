@@ -1,8 +1,9 @@
 'use client';
-import styles from './LanguageSelect.module.css';
 
-import { useRouter, usePathname } from '../../navigation';
 import { ChangeEvent } from 'react';
+
+import { usePathname, useRouter } from '../../navigation';
+import styles from './LanguageSelect.module.css';
 
 export default function LanguageChanger({ locale }: { locale: string }) {
   const router = useRouter();
@@ -15,8 +16,8 @@ export default function LanguageChanger({ locale }: { locale: string }) {
   return (
     <div className={styles.lang}>
       <select value={locale} onChange={handleChange}>
-        <option value="en">Eng</option>
-        <option value="ru">Рус</option>
+        <option value='en'>Eng</option>
+        <option value='ru'>Рус</option>
       </select>
     </div>
   );

@@ -1,12 +1,14 @@
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  User,
-} from 'firebase/auth';
-import { auth, db } from './config';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { Dispatch, SetStateAction } from 'react';
+
+import {
+  User,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+
+import { auth, db } from './config';
 
 const logInWithEmailAndPassword: (email: string, password: string) => void = async (
   email,
