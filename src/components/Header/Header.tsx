@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import Logo from '../Logo';
 import { useEffect, useRef } from 'react';
 
@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { logout } from '@/firebase/utils';
-import LanguageSelect from '../LanguageSelect';
+import LanguageSelect from '@/components/LanguageSelect';
 
 export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);

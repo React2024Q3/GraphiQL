@@ -2,9 +2,6 @@
   "Home": {
     "WelcomeMessage": "Welcome back {name}"
   },
-  "Sign-in": {
-  },
-  "Sign-up": {
-
-  }
+  "Sign-in": {},
+  "Sign-up": {}
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRouter } from '../../../navigation';
+import { useRouter } from '@/navigation';
 import { auth } from '@/firebase/config';
 import { Loader } from '@/components/Loader';
 import { Container, Typography } from '@mui/material';
@@ -12,7 +12,7 @@ import {
   StyledHeader,
   StyledMessageBox,
 } from '@/shared/styledComponents/styledForm';
-import { Link } from '../../../navigation';
+import { Link } from '@/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { SignInFormData } from '@/types&interfaces/types';
 import { yupResolver } from '@hookform/resolvers/yup';

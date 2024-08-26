@@ -1,4 +1,4 @@
-import { Link } from '../../navigation';
+import { Link } from '@/navigation';
 
 export default function NotFound() {
   return (

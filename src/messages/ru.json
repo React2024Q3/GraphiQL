@@ -2,10 +2,6 @@
   "Home": {
     "WelcomeMessage": "Мы рады приветствовать тебя вновь, {name}"
   },
-  "Sign-in": {
-
-  },
-  "Sign-up": {
-
-  }
+  "Sign-in": {},
+  "Sign-up": {}
 }

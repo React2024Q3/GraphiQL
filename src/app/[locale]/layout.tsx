@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import { locales } from '../../navigation';
+import { locales } from '@/navigation';
 import { notFound } from 'next/navigation';
 
 import './globals.css';
