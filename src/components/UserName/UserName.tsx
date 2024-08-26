@@ -6,11 +6,16 @@ import { auth } from '@/firebase/config';
 import { fetchUserName } from '@/firebase/utils';
 import { Notification } from '@/components/Notification';
 import { Loader } from '@/components/Loader';
+import { useSearchParams } from 'next/navigation';
+import { getWelcomeString } from './helpers';
 
 export const UserName: FC = () => {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
+
+  const searchParams = useSearchParams();
+  const previousRoute = searchParams.get('from') || '';
 
   useEffect(() => {
     try {
@@ -28,7 +33,7 @@ export const UserName: FC = () => {
 
   return (
     <>
-      <h2>Welcome{user && name && ` Back, ${name}`}!</h2>
+      <h2>{getWelcomeString(user, name, previousRoute)}</h2>
       {error && <Notification isOpen={!!error} message={error.message} severity="error" />}
       {fetchUserNameError && (
         <Notification
