@@ -1,0 +1,37 @@
+.list{
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin-top: 3rem;
+}
+
+.link{
+  text-decoration: none;
+  text-wrap: nowrap;
+  color: inherit;
+  font-size: 1.5 rem;
+}
+
+.item{
+  position: relative;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  margin-right: 20px;
+}
+
+.item::after{
+  content: '';
+  position: absolute;
+  background-color: currentColor;
+  height: 1px;
+  bottom: -3px;
+  left: 50%;
+  right: 50%;
+  transition: all 0.3s linear;
+}
+
+.item:hover::after{
+  left: 0%;
+  right: 0%;
+}

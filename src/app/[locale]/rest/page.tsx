@@ -1,4 +1,4 @@
-import RestForm from '@/components/RestForm/RestForm';
+import RestForm from '@/components/RestForm';
 
 export default function RestPage() {
   return (
