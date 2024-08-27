@@ -78,6 +78,8 @@
 
 html,
 body {
+  display: flex;
+  flex-direction: column;
   max-width: 100vw;
   /* overflow-x: hidden; */
 }
@@ -98,6 +100,10 @@ body {
 ul {
   list-style: none;
   padding: 0;
+}
+
+.main {
+  flex-grow: 1;
 }
 
 /* 

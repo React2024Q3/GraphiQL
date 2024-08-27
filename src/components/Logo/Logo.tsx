@@ -1,19 +1,19 @@
-import RSS from './RSS';
 import styles from './Logo.module.css';
+import RSS from './RSS';
 
 export default function Logo() {
   return (
     <div className={styles.logo}>
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20px"
-        height="20px"
-        viewBox="0 0 32 32"
-        fill="none"
+        xmlns='http://www.w3.org/2000/svg'
+        width='20px'
+        height='20px'
+        viewBox='0 0 32 32'
+        fill='none'
       >
         <path
-          d="M18.6789 15.9759C18.6789 14.5415 17.4796 13.3785 16 13.3785C14.5206 13.3785 13.3211 14.5415 13.3211 15.9759C13.3211 17.4105 14.5206 18.5734 16 18.5734C17.4796 18.5734 18.6789 17.4105 18.6789 15.9759Z"
-          fill="#53C1DE"
+          d='M18.6789 15.9759C18.6789 14.5415 17.4796 13.3785 16 13.3785C14.5206 13.3785 13.3211 14.5415 13.3211 15.9759C13.3211 17.4105 14.5206 18.5734 16 18.5734C17.4796 18.5734 18.6789 17.4105 18.6789 15.9759Z'
+          fill='#53C1DE'
         ></path>
         <path
           fillRule="evenodd"
@@ -26,23 +26,23 @@ export default function Logo() {
       <RSS />
 
       <svg
-        xmlns="http://www.w3.org/2000/svg"
+        xmlns='http://www.w3.org/2000/svg'
         style={{ fill: '#ff20ad' }}
-        viewBox="0 0 100 100"
-        width="20px"
-        height="20px"
+        viewBox='0 0 100 100'
+        width='20px'
+        height='20px'
       >
         <path
           fillRule="evenodd"
           d="m50 6.903 37.323 21.549v43.096L50 93.097 12.677 71.548V28.451zM16.865 30.87v31.656L44.28 15.041zM50 13.51 18.398 68.246h63.205zm27.415 58.924h-54.83L50 88.261zm5.72-9.908L55.72 15.041 83.136 30.87z"
           clipRule="evenodd"
         ></path>
-        <circle cx="50" cy="9.321" r="8.82"></circle>
-        <circle cx="85.229" cy="29.66" r="8.82"></circle>
-        <circle cx="85.229" cy="70.34" r="8.82"></circle>
-        <circle cx="50" cy="90.679" r="8.82"></circle>
-        <circle cx="14.766" cy="70.34" r="8.82"></circle>
-        <circle cx="14.766" cy="29.66" r="8.82"></circle>
+        <circle cx='50' cy='9.321' r='8.82'></circle>
+        <circle cx='85.229' cy='29.66' r='8.82'></circle>
+        <circle cx='85.229' cy='70.34' r='8.82'></circle>
+        <circle cx='50' cy='90.679' r='8.82'></circle>
+        <circle cx='14.766' cy='70.34' r='8.82'></circle>
+        <circle cx='14.766' cy='29.66' r='8.82'></circle>
       </svg>
     </div>
   );
