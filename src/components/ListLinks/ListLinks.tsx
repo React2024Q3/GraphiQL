@@ -26,12 +26,12 @@ export default function ListLinks({ isUser }: { isUser: boolean }) {
       ) : (
         <>
           <li className={styles.item}>
-            <Link className={styles.link} href='sign-up'>
+            <Link className={styles.link} href='sign-in'>
               Sign In
             </Link>
           </li>
           <li className={styles.item}>
-            <Link className={styles.link} href='/sign-in'>
+            <Link className={styles.link} href='/sign-up'>
               Sign Up
             </Link>
           </li>
