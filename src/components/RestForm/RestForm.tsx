@@ -1,10 +1,14 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import ResponseDisplay from '../ResponseDisplay';
-// import fetchRequestRest from '@/service/restApi';
+import { FormEvent, useState } from 'react';
 
-// type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+import { auth } from '@/firebase/config';
+import { useRouter } from '@/navigation';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { Loader } from '../Loader';
+import { Notification } from '../Notification';
+import ResponseDisplay from '../ResponseDisplay';
 
 export default function RestForm() {
   const [method, setMethod] = useState<string>('GET');
@@ -13,11 +17,21 @@ export default function RestForm() {
   const [response, setResponse] = useState<unknown>(null);
   const [headers, setHeaders] = useState<string>('');
 
+  const router = useRouter();
+  const [user, loading, error] = useAuthState(auth);
+
+  if (loading) {
+    return <Loader />;
+  }
+  if (!user) {
+    router.replace('/');
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const encodedUrl = btoa(url);
-    const encodedBody = body ? btoa(body) : '';
+    const encodedUrl = encodeURIComponent(btoa(url));
+    const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
 
     try {
       const apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
@@ -37,16 +51,17 @@ export default function RestForm() {
 
   return (
     <div>
+      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
       <form onSubmit={handleSubmit}>
         <div>
           <label>
-            Метод:
+            Method:
             <select value={method} onChange={(e) => setMethod(e.target.value)}>
-              <option value="GET">GET</option>
-              <option value="POST">POST</option>
-              <option value="PUT">PUT</option>
-              <option value="DELETE">DELETE</option>
-              <option value="PATCH">PATCH</option>
+              <option value='GET'>GET</option>
+              <option value='POST'>POST</option>
+              <option value='PUT'>PUT</option>
+              <option value='DELETE'>DELETE</option>
+              <option value='PATCH'>PATCH</option>
             </select>
           </label>
         </div>
@@ -54,7 +69,7 @@ export default function RestForm() {
         <div>
           <label>
             URL:
-            <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} required />
+            <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} required />
           </label>
         </div>
 
@@ -67,7 +82,7 @@ export default function RestForm() {
           </div>
         )}
 
-        <button type="submit">Send request</button>
+        <button type='submit'>Send request</button>
       </form>
 
       <ResponseDisplay headers={headers} response={JSON.stringify(response, null, 2)} />

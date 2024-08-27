@@ -8,8 +8,7 @@ import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
 import { auth } from '@/firebase/config';
 import { logInWithEmailAndPassword } from '@/firebase/utils';
-import { useRouter } from '@/navigation';
-import { Link } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 import {
   StyledBox,
   StyledButton,

@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const decodeBase64 = (input: string): string => {
-  return Buffer.from(input, 'base64').toString('utf-8');
-};
-
 export async function GET(
   req: NextRequest,
   { params }: { params: { method: string; encodedUrl: string } }
@@ -42,10 +38,12 @@ export async function PATCH(
 async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string }) {
   const { method, encodedUrl } = params;
 
-  const url = decodeBase64(encodedUrl);
+  const url = atob(decodeURIComponent(encodedUrl));
+  console.log(url);
+  console.log(req.nextUrl.searchParams.get('body'));
 
   const encodedBody = req.nextUrl.searchParams.get('body');
-  const body = encodedBody ? JSON.parse(decodeBase64(encodedBody)) : undefined;
+  const body = encodedBody ? JSON.parse(atob(decodeURIComponent(encodedBody))) : undefined;
 
   const headers: HeadersInit = {};
   req.headers.forEach((value, key) => {
