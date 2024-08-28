@@ -5,4 +5,26 @@
   width: max-content;
   border: 1px solid gold;
   border-radius: 50%;
+  background-color: #333;
+}
+
+.logo:hover .react{
+  animation: rotate 5s linear infinite;
+}
+
+.logo:hover .graph{
+  animation: rotate 5s linear infinite reverse;
+}
+
+@keyframes rotate {
+  0%{
+    transform: rotate(0);
+  }
+
+  50%{
+    transform: rotate(180deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
 }

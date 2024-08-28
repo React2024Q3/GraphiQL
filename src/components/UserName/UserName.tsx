@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+import ListLinks from '../ListLinks';
 import { getWelcomeString } from './helpers';
 
 export const UserName: FC = () => {
@@ -46,6 +47,7 @@ export const UserName: FC = () => {
           t('GreetingPartBack')
         )}
       </h2>
+      <ListLinks isUser={!!user} />
       {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
       {fetchUserNameError && (
         <Notification
