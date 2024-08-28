@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
 import {
@@ -21,11 +21,10 @@ import { handleAuthError } from '@/utils/authHelpers';
 import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Container, Typography } from '@mui/material';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 function SignUp() {
   const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
+  const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
 
   useEffect(() => {
