@@ -5,6 +5,7 @@ export default function Logo() {
   return (
     <div className={styles.logo}>
       <svg
+        className={styles.react}
         xmlns='http://www.w3.org/2000/svg'
         width='20px'
         height='20px'
@@ -26,6 +27,7 @@ export default function Logo() {
       <RSS />
 
       <svg
+        className={styles.graph}
         xmlns='http://www.w3.org/2000/svg'
         style={{ fill: '#ff20ad' }}
         viewBox='0 0 100 100'
