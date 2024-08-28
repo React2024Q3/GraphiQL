@@ -14,5 +14,5 @@ export const useAuthRedirect = () => {
     }
   }, [user, router, loading]);
 
-  return { user, loading, error };
+  return { loading, error };
 };
