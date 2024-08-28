@@ -33,7 +33,7 @@ export default function RootLayout({
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body className={inter.className}>
-          <Header locale={locale} />
+          <Header />
           <main className='main'>{children}</main>
           <Footer />
         </body>
