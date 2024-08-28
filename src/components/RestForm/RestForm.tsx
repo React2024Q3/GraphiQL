@@ -1,9 +1,9 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { auth } from '@/firebase/config';
-import { redirect } from '@/navigation';
+import { useRouter } from '@/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { Loader } from '../Loader';
@@ -17,10 +17,14 @@ function RestForm() {
   const [response, setResponse] = useState<unknown>(null);
   const [headers, setHeaders] = useState<string>('');
   const [user, loading, error] = useAuthState(auth);
+  const router = useRouter();
 
-  if (!user) {
-    redirect('/');
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/');
+    }
+  }, [user, router, loading]);
+
   if (loading) {
     return <Loader />;
   }
