@@ -69,7 +69,7 @@ export default function Header({ locale }: { locale: string }) {
 
         <Link href={user ? '#' : '/sign-in'}>
           <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
-            {user ? 'Logout' : 'Sign in'}
+            {user ? 'Sign Out' : 'Sign In'}
           </Button>
         </Link>
       </nav>

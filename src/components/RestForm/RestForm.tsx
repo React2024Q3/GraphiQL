@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { auth } from '@/firebase/config';
 import { useRouter } from '@/navigation';
@@ -20,11 +20,14 @@ export default function RestForm() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
 
+  useEffect(() => {
+    if (!user) {
+      return router.replace('/');
+    }
+  }, [user, router]);
+
   if (loading) {
     return <Loader />;
-  }
-  if (!user) {
-    router.replace('/');
   }
 
   const handleSubmit = async (e: FormEvent) => {

@@ -1,6 +1,6 @@
 import { Link } from '@/navigation';
 
-import styles from './listLinks.module.css';
+import styles from './ListLinks.module.css';
 
 export default function ListLinks({ isUser }: { isUser: boolean }) {
   return (
