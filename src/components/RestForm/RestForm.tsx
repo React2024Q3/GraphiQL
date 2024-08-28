@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 import { auth } from '@/firebase/config';
 import { useRouter } from '@/navigation';
@@ -10,7 +10,7 @@ import { Loader } from '../Loader';
 import { Notification } from '../Notification';
 import ResponseDisplay from '../ResponseDisplay';
 
-export default function RestForm() {
+function RestForm() {
   const [method, setMethod] = useState<string>('GET');
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
@@ -20,14 +20,11 @@ export default function RestForm() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
 
-  useEffect(() => {
-    if (!user) {
-      return router.replace('/');
-    }
-  }, [user, router]);
-
   if (loading) {
     return <Loader />;
+  }
+  if (!user) {
+    router.replace('/');
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -92,3 +89,5 @@ export default function RestForm() {
     </div>
   );
 }
+
+export default RestForm;
