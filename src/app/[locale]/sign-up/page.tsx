@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { FormField } from '@/components/FormField';
@@ -8,8 +8,7 @@ import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
 import { auth } from '@/firebase/config';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
-import { useRouter } from '@/navigation';
-import { Link } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 import {
   StyledBox,
   StyledButton,
@@ -29,6 +28,12 @@ function SignUp() {
   const [user, loading, error] = useAuthState(auth);
   const [firebaseError, setFirebaseError] = useState('');
 
+  useEffect(() => {
+    if (user) {
+      router.replace('/');
+    }
+  }, [user, router]);
+
   const {
     control,
     handleSubmit,
@@ -46,15 +51,11 @@ function SignUp() {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
-      await registerWithEmailAndPassword(name, email, password);
+      registerWithEmailAndPassword(name, email, password);
     } catch (error) {
       handleAuthError(error, setFirebaseError, setError);
     }
   };
-
-  if (user) {
-    return router.replace('/');
-  }
 
   if (loading) {
     return <Loader />;
