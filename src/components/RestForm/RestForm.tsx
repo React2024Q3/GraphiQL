@@ -3,7 +3,7 @@
 import { FormEvent, useState } from 'react';
 
 import { auth } from '@/firebase/config';
-import { useRouter } from '@/navigation';
+import { redirect } from '@/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { Loader } from '../Loader';
@@ -16,15 +16,13 @@ function RestForm() {
   const [body, setBody] = useState<string>('');
   const [response, setResponse] = useState<unknown>(null);
   const [headers, setHeaders] = useState<string>('');
-
-  const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
 
+  if (!user) {
+    redirect('/');
+  }
   if (loading) {
     return <Loader />;
-  }
-  if (!user) {
-    router.replace('/');
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -76,7 +74,7 @@ function RestForm() {
         {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
           <div>
             <label>
-              Тело запроса (JSON):
+              Request body (JSON):
               <textarea value={body} onChange={(e) => setBody(e.target.value)} />
             </label>
           </div>

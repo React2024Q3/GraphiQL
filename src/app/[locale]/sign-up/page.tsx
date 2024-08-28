@@ -8,8 +8,7 @@ import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
 import { auth } from '@/firebase/config';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
-import { useRouter } from '@/navigation';
-import { Link } from '@/navigation';
+import { Link, redirect } from '@/navigation';
 import {
   StyledBox,
   StyledButton,
@@ -25,7 +24,6 @@ import { Container, Typography } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 function SignUp() {
-  const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [firebaseError, setFirebaseError] = useState('');
 
@@ -46,14 +44,14 @@ function SignUp() {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
-      await registerWithEmailAndPassword(name, email, password);
+      registerWithEmailAndPassword(name, email, password);
     } catch (error) {
       handleAuthError(error, setFirebaseError, setError);
     }
   };
 
   if (user) {
-    return router.replace('/');
+    redirect('/');
   }
 
   if (loading) {

@@ -8,7 +8,7 @@ import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
 import { auth } from '@/firebase/config';
 import { logInWithEmailAndPassword } from '@/firebase/utils';
-import { Link, useRouter } from '@/navigation';
+import { Link, redirect } from '@/navigation';
 import {
   StyledBox,
   StyledButton,
@@ -24,7 +24,6 @@ import { Container, Typography } from '@mui/material';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 function SignIn() {
-  const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [firebaseError, setFirebaseError] = useState('');
 
@@ -42,14 +41,14 @@ function SignIn() {
 
   const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
     try {
-      await logInWithEmailAndPassword(email, password);
+      logInWithEmailAndPassword(email, password);
     } catch (error) {
       handleAuthError(error, setFirebaseError);
     }
   };
 
   if (user) {
-    return router.replace('/?from=sign-in');
+    redirect('/?from=sign-in');
   }
 
   if (loading) {
