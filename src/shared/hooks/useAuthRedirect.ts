@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 export const useAuthRedirect = () => {
   const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
+  const { user, loading, error } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
