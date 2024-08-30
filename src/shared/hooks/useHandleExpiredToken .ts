@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { auth } from '@/firebase/config';
 import { logout } from '@/firebase/utils';
 import { onIdTokenChanged } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const useHandleExpiredToken = () => {
   const router = useRouter();
