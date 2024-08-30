@@ -3,12 +3,11 @@
 import { useEffect, useRef } from 'react';
 
 import LanguageSelect from '@/components/LanguageSelect';
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button } from '@mui/material';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 import Logo from '../Logo';
 import styles from './Header.module.css';
@@ -17,7 +16,7 @@ export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const [user] = useAuthState(auth);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = throttle(() => {
