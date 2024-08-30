@@ -31,8 +31,8 @@ const registerWithEmailAndPassword: (
   });
 };
 
-const logout = () => {
-  signOut(auth);
+const logout = async () => {
+  await signOut(auth);
 };
 
 const fetchUserName = async (
