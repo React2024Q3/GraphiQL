@@ -38,12 +38,10 @@ export async function PATCH(
 async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string }) {
   const { method, encodedUrl } = params;
 
-  const url = atob(decodeURIComponent(encodedUrl));
+  const url = atob(decodeURIComponent(encodedUrl[0]));
   console.log(url);
-  console.log(req.nextUrl.searchParams.get('body'));
 
-  const encodedBody = req.nextUrl.searchParams.get('body');
-  const body = encodedBody ? JSON.parse(atob(decodeURIComponent(encodedBody))) : undefined;
+  const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
   const headers: HeadersInit = {};
   req.headers.forEach((value, key) => {

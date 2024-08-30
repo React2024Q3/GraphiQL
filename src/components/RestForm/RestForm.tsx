@@ -30,7 +30,7 @@ function RestForm() {
 
     try {
       const apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
-        encodedBody ? `?body=${encodedBody}` : ''
+        encodedBody ? `/${encodedBody}` : ''
       }`;
       console.log('apiUrl: ' + apiUrl);
 

@@ -69,6 +69,6 @@ ul {
 }
 
 
-label.Mui-focused{
-  top: 0 !important;
+label.Mui-focused.MuiFormLabel-root, label.MuiFormLabel-filled.MuiFormLabel-root{
+  top: 0;
 }
