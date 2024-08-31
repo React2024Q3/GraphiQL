@@ -60,13 +60,16 @@ export default function Header({ locale }: { locale: string }) {
       </Link>
 
       <nav className={styles.nav}>
-        <Link href='./' className={styles.nav__link}>
-          Welcome Page
-        </Link>
         <LanguageSelect locale={locale} />
+        {!user && (
+          <Link href='/sign-up'>
+            <Button className={styles.logoutBtn}>Sign Up</Button>
+          </Link>
+        )}
+
         <Link href={user ? '#' : '/sign-in'}>
           <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
-            {user ? 'Logout' : 'Sign in'}
+            {user ? 'Sign Out' : 'Sign In'}
           </Button>
         </Link>
       </nav>

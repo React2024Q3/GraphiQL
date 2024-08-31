@@ -1,15 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logInWithEmailAndPassword } from '@/firebase/utils';
-import { useRouter } from '@/navigation';
-import { Link } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 import {
   StyledBox,
   StyledButton,
@@ -22,12 +21,17 @@ import { handleAuthError } from '@/utils/authHelpers';
 import { singInValidationSchema } from '@/utils/validation/signInValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Container, Typography } from '@mui/material';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 function SignIn() {
   const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
+  const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/');
+    }
+  }, [user, router]);
 
   const {
     control,
@@ -43,15 +47,11 @@ function SignIn() {
 
   const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
     try {
-      await logInWithEmailAndPassword(email, password);
+      logInWithEmailAndPassword(email, password);
     } catch (error) {
       handleAuthError(error, setFirebaseError);
     }
   };
-
-  if (user) {
-    return router.replace('/?from=sign-in');
-  }
 
   if (loading) {
     return <Loader />;
