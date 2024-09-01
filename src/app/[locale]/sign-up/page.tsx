@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ErrorNotification } from '@/components/ErrorNotification';
 import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
-import { Notification } from '@/components/Notification';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
@@ -60,7 +60,7 @@ function SignUp() {
       <Typography className={styles.auth__title} variant='h4'>
         Sign Up
       </Typography>
-      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      <ErrorNotification error={error} />
       <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
         <FormField<SignUpFormData> name='name' control={control} label='Name' errors={errors} />
         <FormField<SignUpFormData>

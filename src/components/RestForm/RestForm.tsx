@@ -4,8 +4,8 @@ import { FormEvent, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 
+import { ErrorNotification } from '../ErrorNotification';
 import { Loader } from '../Loader';
-import { Notification } from '../Notification';
 import ResponseDisplay from '../ResponseDisplay';
 
 function RestForm() {
@@ -44,7 +44,7 @@ function RestForm() {
 
   return (
     <div>
-      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      <ErrorNotification error={error} />
       <form onSubmit={handleSubmit}>
         <div>
           <label>

@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 
 import { RequestType } from '@/app/[locale]/history/types';
+import { ErrorNotification } from '@/components/ErrorNotification';
 import { CommonLinks } from '@/components/ListLinks/CommonLinks';
 import linksStyles from '@/components/ListLinks/ListLinks.module.css';
 import { Loader } from '@/components/Loader';
-import { Notification } from '@/components/Notification';
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { getLinkFromRequest } from '@/utils/historyHelpers';
 import { Container, Typography } from '@mui/material';
@@ -48,7 +48,7 @@ export default function History() {
           </Link>
         ))
       )}
-      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      <ErrorNotification error={error} />
     </Container>
   );
 }
