@@ -7,8 +7,9 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
-import { Button, Skeleton } from '@mui/material';
+import { Button } from '@mui/material';
 
+import { LoadingSkeleton } from '../LoadingSkeleton';
 import Logo from '../Logo';
 import styles from './Header.module.css';
 
@@ -60,7 +61,7 @@ export default function Header({ locale }: { locale: string }) {
 
       <nav className={styles.nav}>
         {loading ? (
-          <Skeleton className={styles.header__skeleton} variant='rounded' />
+          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
         ) : (
           <Link href={!user ? '/sign-up' : '/'}>
             <Button variant='contained'>{!user ? 'Sign Up' : 'Main'}</Button>
@@ -68,7 +69,7 @@ export default function Header({ locale }: { locale: string }) {
         )}
 
         {loading ? (
-          <Skeleton className={styles.header__skeleton} variant='rounded' />
+          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
         ) : (
           <Link href={user ? '#' : '/sign-in'}>
             <Button variant='contained' onClick={user ? logout : undefined}>
