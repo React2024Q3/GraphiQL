@@ -3,8 +3,10 @@
 import { FormEvent, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
-import { Button, FormControl, MenuItem, Select, TextField } from '@mui/material';
+import { KeyValuePair } from '@/types&interfaces/types';
+import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs, TextField } from '@mui/material';
 
+import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import { Notification } from '../Notification';
 import ResponseDisplay from '../ResponseDisplay';
@@ -16,18 +18,37 @@ function RestForm() {
   const [body, setBody] = useState<string>('');
   const [response, setResponse] = useState<unknown>(null);
   const [headers, setHeaders] = useState<string>('');
+  const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([]);
+  const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
+  const [tabIndex, setTabIndex] = useState<number>(0);
   const { loading, error } = useAuthRedirect();
 
   if (loading) {
     return <Loader />;
   }
 
+  const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
+    setKeyValuePairsHeader(newPairs);
+  };
+
+  const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
+    setKeyValuePairsVar(newPairs);
+  };
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const currentKeyValuesHeader = keyValuePairsHeader.filter((el) => !el.editable);
+    const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
+    console.log(currentKeyValuesHeader);
+    console.log(currentKeyValuesVar);
 
     const encodedUrl = encodeURIComponent(btoa(url));
     const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
-
+    setKeyValuePairsHeader([]);
     try {
       const apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
         encodedBody ? `/${encodedBody}` : ''
@@ -85,6 +106,7 @@ function RestForm() {
             Send
           </Button>
         </div>
+
         {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
           <div>
             <label>
@@ -93,6 +115,23 @@ function RestForm() {
             </label>
           </div>
         )}
+
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+          <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
+            <Tab label='Headers' />
+            <Tab label='Variables' />
+          </Tabs>
+        </Box>
+        <Box className={styles.keyValFormWrapWindow}>
+          <div
+            className={styles.keyValFormWrap}
+            style={{ transform: `translateX(${-tabIndex * 50}%)` }}
+          >
+            <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} />
+
+            <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} />
+          </div>
+        </Box>
       </form>
 
       <ResponseDisplay headers={headers} response={JSON.stringify(response, null, 2)} />

@@ -33,9 +33,21 @@
 }
 
 .urlInput input{
-  padding: .5rem;
+  padding: .55rem;
 }
 
 .urlInput label{
   top: -8px;
+}
+
+.keyValFormWrap{
+  width: 200%;
+  display: flex;
+  transition: all .4s linear;
+}
+
+.keyValFormWrapWindow{
+  width: 100%;
+  overflow: hidden;
+  
 }
