@@ -61,6 +61,5 @@ a:hover {
 
 .main {
   flex-grow: 1;
-  position: relative;
-  height: 200vh;
+  padding: 2rem 1rem;
 }
