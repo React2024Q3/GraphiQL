@@ -18,9 +18,9 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& input:-webkit-autofill': {
-            '-webkit-box-shadow': '0 0 0 100px transparent inset',
-            '-webkit-text-fill-color': '#000',
-            'caret-color': '#000',
+            WebkitBoxShadow: '0 0 0 100px transparent inset',
+            WebkitTextFillColor: '#000',
+            caretColor: '#000',
           },
         },
       },
