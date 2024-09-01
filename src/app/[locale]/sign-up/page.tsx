@@ -9,18 +9,12 @@ import { Notification } from '@/components/Notification';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
-import {
-  StyledBox,
-  StyledButton,
-  StyledForm,
-  StyledHeader,
-  StyledMessageBox,
-} from '@/shared/styledComponents/styledForm';
+import styles from '@/shared/styles/auth.module.css';
 import { SignUpFormData } from '@/types&interfaces/types';
 import { handleAuthError } from '@/utils/authHelpers';
 import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 
 function SignUp() {
   const router = useRouter();
@@ -50,8 +44,9 @@ function SignUp() {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
-      registerWithEmailAndPassword(name, email, password);
+      await registerWithEmailAndPassword(name, email, password);
     } catch (error) {
+      console.log(error);
       handleAuthError(error, setFirebaseError, setError);
     }
   };
@@ -61,45 +56,51 @@ function SignUp() {
   }
 
   return (
-    <Container>
-      <StyledBox>
-        <StyledHeader variant='h5'>Sign Up</StyledHeader>
-        {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
-        <StyledForm component='form' onSubmit={handleSubmit(onSubmit)}>
-          <FormField<SignUpFormData> name='name' control={control} label='Name' errors={errors} />
-          <FormField<SignUpFormData>
-            name='email'
-            control={control}
-            label='E-mail'
-            type={'email'}
-            errors={errors}
-          />
-          <FormField<SignUpFormData>
-            name='password'
-            control={control}
-            label='Password'
-            type={'password'}
-            errors={errors}
-          />
-          <FormField<SignUpFormData>
-            name='confirmPassword'
-            control={control}
-            label='Confirm Password'
-            type={'password'}
-            errors={errors}
-          />
-          <Typography color='error' variant='body2'>
-            {firebaseError || '\u00A0'}
-          </Typography>
-          <StyledButton type='submit' fullWidth variant='contained' disabled={loading}>
-            Sign Up
-          </StyledButton>
-          <StyledMessageBox>
-            Already have an account?&nbsp;<Link href='/sign-in'>Sign in</Link>
-            &nbsp;now.
-          </StyledMessageBox>
-        </StyledForm>
-      </StyledBox>
+    <Container className={styles.auth__container}>
+      <Typography className={styles.auth__title} variant='h4'>
+        Sign Up
+      </Typography>
+      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
+        <FormField<SignUpFormData> name='name' control={control} label='Name' errors={errors} />
+        <FormField<SignUpFormData>
+          name='email'
+          control={control}
+          label='E-mail'
+          type={'email'}
+          errors={errors}
+        />
+        <FormField<SignUpFormData>
+          name='password'
+          control={control}
+          label='Password'
+          type={'password'}
+          errors={errors}
+        />
+        <FormField<SignUpFormData>
+          name='confirmPassword'
+          control={control}
+          label='Confirm Password'
+          type={'password'}
+          errors={errors}
+        />
+        <Typography color='error' variant='body2'>
+          {firebaseError || '\u00A0'}
+        </Typography>
+        <Button
+          className={styles.auth__button}
+          type='submit'
+          fullWidth
+          variant='contained'
+          disabled={loading}
+        >
+          Sign Up
+        </Button>
+        <Box className={styles.auth__message}>
+          Already have an account?&nbsp;<Link href='/sign-in'>Sign in</Link>
+          &nbsp;now.
+        </Box>
+      </form>
     </Container>
   );
 }

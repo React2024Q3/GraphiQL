@@ -9,18 +9,12 @@ import { Notification } from '@/components/Notification';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logInWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
-import {
-  StyledBox,
-  StyledButton,
-  StyledForm,
-  StyledHeader,
-  StyledMessageBox,
-} from '@/shared/styledComponents/styledForm';
+import styles from '@/shared/styles/auth.module.css';
 import { SignInFormData } from '@/types&interfaces/types';
 import { handleAuthError } from '@/utils/authHelpers';
 import { singInValidationSchema } from '@/utils/validation/signInValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 
 function SignIn() {
   const router = useRouter();
@@ -47,7 +41,7 @@ function SignIn() {
 
   const onSubmit: SubmitHandler<SignInFormData> = async ({ email, password }) => {
     try {
-      logInWithEmailAndPassword(email, password);
+      await logInWithEmailAndPassword(email, password);
     } catch (error) {
       handleAuthError(error, setFirebaseError);
     }
@@ -58,37 +52,43 @@ function SignIn() {
   }
 
   return (
-    <Container>
-      <StyledBox>
-        <StyledHeader variant='h5'>Sign In</StyledHeader>
-        {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
-        <StyledForm component='form' onSubmit={handleSubmit(onSubmit)}>
-          <FormField<SignInFormData>
-            name='email'
-            control={control}
-            label='E-mail'
-            type={'email'}
-            errors={errors}
-          />
-          <FormField<SignInFormData>
-            name='password'
-            control={control}
-            label='Password'
-            type={'password'}
-            errors={errors}
-          />
-          <Typography color='error' variant='body2'>
-            {firebaseError || '\u00A0'}
-          </Typography>
-          <StyledButton type='submit' fullWidth variant='contained' disabled={loading}>
-            Sign In
-          </StyledButton>
-          <StyledMessageBox>
-            Don't have an account?&nbsp;<Link href='/sign-up'>Sign up</Link>
-            &nbsp;now.
-          </StyledMessageBox>
-        </StyledForm>
-      </StyledBox>
+    <Container className={styles.auth__container}>
+      <Typography className={styles.auth__title} variant='h4'>
+        Sign In
+      </Typography>
+      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
+        <FormField<SignInFormData>
+          name='email'
+          control={control}
+          label='E-mail'
+          type={'email'}
+          errors={errors}
+        />
+        <FormField<SignInFormData>
+          name='password'
+          control={control}
+          label='Password'
+          type={'password'}
+          errors={errors}
+        />
+        <Typography color='error' variant='body2'>
+          {firebaseError || '\u00A0'}
+        </Typography>
+        <Button
+          className={styles.auth__button}
+          type='submit'
+          fullWidth
+          variant='contained'
+          disabled={loading}
+        >
+          Sign In
+        </Button>
+        <Box className={styles.auth__message}>
+          Don't have an account?&nbsp;<Link href='/sign-up'>Sign up</Link>
+          &nbsp;now.
+        </Box>
+      </form>
     </Container>
   );
 }
