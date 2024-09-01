@@ -2,14 +2,16 @@
 
 import { FC, useEffect, useState } from 'react';
 
-import { Loader } from '@/components/Loader';
-import { Notification } from '@/components/Notification';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { fetchUserName } from '@/firebase/utils';
+import { Box, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
+import { ErrorNotification } from '../ErrorNotification';
 import ListLinks from '../ListLinks';
+import { LoadingSkeleton } from '../LoadingSkeleton';
+import styles from './UserName.module.css';
 import { getWelcomeString } from './helpers';
 
 export const UserName: FC = () => {
@@ -31,30 +33,26 @@ export const UserName: FC = () => {
     }
   }, [user, loading]);
 
-  if (loading) {
-    return <Loader />;
-  }
-
   return (
-    <>
-      <h2>
-        {getWelcomeString(
-          user,
-          name,
-          previousRoute,
-          t('GreetingPartWelcome'),
-          t('GreetingPartBack')
-        )}
-      </h2>
-      <ListLinks isUser={!!user} />
-      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
-      {fetchUserNameError && (
-        <Notification
-          isOpen={!!fetchUserNameError}
-          message={fetchUserNameError.message}
-          severity='error'
-        />
+    <Box className={styles.container}>
+      {loading ? (
+        <LoadingSkeleton width='50%' />
+      ) : (
+        <Typography variant='h4'>
+          {getWelcomeString(
+            user,
+            name,
+            previousRoute,
+            t('GreetingPartWelcome'),
+            t('GreetingPartBack')
+          )}
+        </Typography>
       )}
-    </>
+
+      {loading ? <LoadingSkeleton width='60%' /> : <ListLinks isUser={!!user} />}
+
+      <ErrorNotification error={error} />
+      <ErrorNotification error={fetchUserNameError} />
+    </Box>
   );
 };
