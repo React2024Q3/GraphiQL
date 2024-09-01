@@ -48,11 +48,14 @@ function RestForm() {
 
     const encodedUrl = encodeURIComponent(btoa(url));
     const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
-    setKeyValuePairsHeader([]);
+    // setKeyValuePairsHeader([]);
     try {
-      const apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
+      let apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
         encodedBody ? `/${encodedBody}` : ''
       }`;
+
+      if (currentKeyValuesHeader.length)
+        apiUrl += '?' + currentKeyValuesHeader.map(({ key, value }) => key + '=' + value).join('&');
       console.log('apiUrl: ' + apiUrl);
 
       const res = await fetch(apiUrl);
@@ -123,14 +126,14 @@ function RestForm() {
           </Tabs>
         </Box>
         <Box className={styles.keyValFormWrapWindow}>
-          <div
+          <Box
             className={styles.keyValFormWrap}
             style={{ transform: `translateX(${-tabIndex * 50}%)` }}
           >
             <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} />
 
             <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} />
-          </div>
+          </Box>
         </Box>
       </form>
 

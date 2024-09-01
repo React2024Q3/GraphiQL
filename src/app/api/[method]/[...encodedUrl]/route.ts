@@ -39,15 +39,19 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
   const { method, encodedUrl } = params;
 
   const url = atob(decodeURIComponent(encodedUrl[0]));
-  console.log(url);
 
   const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
+  const queryString = req.url.split('?')[1];
   const headers: HeadersInit = {};
-  req.headers.forEach((value, key) => {
-    if (key !== 'host' && key !== 'connection') {
-      headers[key] = value;
-    }
+  let arrayOfPairs: Array<[string, string]> = [];
+  if (queryString) {
+    const searchParams = new URLSearchParams(queryString);
+    arrayOfPairs = Array.from(searchParams.entries());
+  }
+
+  arrayOfPairs.forEach((pair) => {
+    headers[pair[0]] = pair[1];
   });
 
   try {
