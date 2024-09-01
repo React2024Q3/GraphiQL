@@ -3,20 +3,20 @@
 import { useEffect, useState } from 'react';
 
 import { RequestType } from '@/app/[locale]/history/types';
+import { CommonLinks } from '@/components/ListLinks/CommonLinks';
+import linksStyles from '@/components/ListLinks/ListLinks.module.css';
 import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
-import { auth } from '@/firebase/config';
+import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { getLinkFromRequest } from '@/utils/historyHelpers';
 import { Container, Typography } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuthState } from 'react-firebase-hooks/auth';
+
+import styles from './history.module.css';
 
 export default function History() {
-  const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
+  const { loading, error } = useAuthRedirect();
   const [history, setHistory] = useState<RequestType[]>([]);
-  // const history: RequestType[] = JSON.parse(localStorage.getItem('request_history') || '[]');
   history.sort((a, b) => b.timestamp - a.timestamp);
 
   useEffect(() => {
@@ -24,30 +24,30 @@ export default function History() {
     setHistory(storedHistory);
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      router.replace('/');
-    }
-  }, [router, user]);
-
   if (loading) {
     return <Loader />;
   }
 
-  if (!history.length) {
-    return <p>You haven't executed any requests yet.</p>;
-  }
-
   return (
-    <Container>
-      <Typography variant='h4' component='h4'>
+    <Container className={styles.history__container}>
+      <Typography className={styles.history__title} variant='h4' component='h4'>
         History Requests
       </Typography>
-      {history.map((request) => (
-        <Link href={getLinkFromRequest(request)} key={request.timestamp}>
-          {`${request.method} ${request.url}`}
-        </Link>
-      ))}
+      {!history.length ? (
+        <>
+          <Typography variant='subtitle1'>You haven't executed any requests</Typography>
+          <Typography variant='subtitle1'>It's empty here. Try:</Typography>
+          <ul className={linksStyles.list}>
+            <CommonLinks />
+          </ul>
+        </>
+      ) : (
+        history.map((request) => (
+          <Link href={getLinkFromRequest(request)} key={request.timestamp}>
+            {`${request.method} ${request.endpointUrl}`}
+          </Link>
+        ))
+      )}
       {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
     </Container>
   );
