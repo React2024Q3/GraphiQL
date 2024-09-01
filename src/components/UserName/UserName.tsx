@@ -4,17 +4,16 @@ import { FC, useEffect, useState } from 'react';
 
 import { Loader } from '@/components/Loader';
 import { Notification } from '@/components/Notification';
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { fetchUserName } from '@/firebase/utils';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 import ListLinks from '../ListLinks';
 import { getWelcomeString } from './helpers';
 
 export const UserName: FC = () => {
-  const [user, loading, error] = useAuthState(auth);
+  const { user, loading, error } = useAuth();
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
   const t = useTranslations('Home');
