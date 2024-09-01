@@ -2,6 +2,8 @@ import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import { locales } from '@/navigation';
+import { responsiveFontSizesTheme } from '@/theme';
+import { ThemeProvider } from '@mui/material';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Inter } from 'next/font/google';
@@ -33,13 +35,15 @@ export default function RootLayout({
   return (
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <body className={inter.className}>
-          <AuthProvider>
-            <Header locale={locale} />
-            <main className='main'>{children}</main>
-            <Footer />
-          </AuthProvider>
-        </body>
+        <ThemeProvider theme={responsiveFontSizesTheme}>
+          <body className={inter.className}>
+            <AuthProvider>
+              <Header locale={locale} />
+              <main className='main'>{children}</main>
+              <Footer />
+            </AuthProvider>
+          </body>
+        </ThemeProvider>
       </NextIntlClientProvider>
     </html>
   );
