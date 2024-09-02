@@ -38,19 +38,22 @@ export async function PATCH(
 async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string }) {
   const { method, encodedUrl } = params;
 
-  const url = atob(decodeURIComponent(encodedUrl));
-  console.log(url);
-  console.log(req.nextUrl.searchParams.get('body'));
+  const url = atob(decodeURIComponent(encodedUrl[0]));
 
-  const encodedBody = req.nextUrl.searchParams.get('body');
-  const body = encodedBody ? JSON.parse(atob(decodeURIComponent(encodedBody))) : undefined;
+  const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
+  const queryString = req.url.split('?')[1];
   const headers: HeadersInit = {};
-  req.headers.forEach((value, key) => {
-    if (key !== 'host' && key !== 'connection') {
-      headers[key] = value;
-    }
+  let arrayOfPairs: Array<[string, string]> = [];
+  if (queryString) {
+    const searchParams = new URLSearchParams(decodeURIComponent(queryString));
+    arrayOfPairs = Array.from(searchParams.entries());
+  }
+
+  arrayOfPairs.forEach((pair) => {
+    headers[pair[0].toString()] = pair[1].toString();
   });
+  console.log(headers);
 
   try {
     const response = await fetch(url, {

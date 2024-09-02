@@ -1,3 +1,3 @@
 export type ErrorNotificationProps = {
-  error: Error | undefined | null;
+  error: Error | string | undefined | null;
 };
