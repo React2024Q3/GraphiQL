@@ -51,10 +51,9 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
   }
 
   arrayOfPairs.forEach((pair) => {
-    headers[pair[0]] = pair[1];
+    headers[pair[0].toString()] = pair[1].toString();
   });
-  console.log();
-  
+  console.log(headers);
 
   try {
     const response = await fetch(url, {

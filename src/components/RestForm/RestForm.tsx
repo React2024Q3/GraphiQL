@@ -11,12 +11,15 @@ import { Loader } from '../Loader';
 import { Notification } from '../Notification';
 import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
-
+interface ApiResponse {
+  data?: unknown;
+  error?: string;
+}
 function RestForm() {
   const [method, setMethod] = useState<string>('GET');
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
-  const [response, setResponse] = useState<unknown>(null);
+  const [response, setResponse] = useState<ApiResponse | null>(null);
   const [headers, setHeaders] = useState<string>('');
   const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([]);
   const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
@@ -61,12 +64,14 @@ function RestForm() {
       console.log('apiUrl: ' + apiUrl);
 
       const res = await fetch(apiUrl);
+      console.log(res.status);
+      if(res.status===500) throw new Error('Server error')
 
       const data = await res.json();
       setResponse(data.data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
-      console.error('Request error.', error);
+      console.error('Request error:', error);
       setResponse({ error: 'Request error.' });
     }
   };
@@ -74,6 +79,7 @@ function RestForm() {
   return (
     <>
       {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
+      {response?.error && <Notification isOpen={!!response?.error} message={response?.error} severity='error' />}
       <form onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
