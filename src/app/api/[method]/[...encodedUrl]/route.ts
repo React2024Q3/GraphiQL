@@ -46,13 +46,15 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
   const headers: HeadersInit = {};
   let arrayOfPairs: Array<[string, string]> = [];
   if (queryString) {
-    const searchParams = new URLSearchParams(queryString);
+    const searchParams = new URLSearchParams(decodeURIComponent(queryString));
     arrayOfPairs = Array.from(searchParams.entries());
   }
 
   arrayOfPairs.forEach((pair) => {
     headers[pair[0]] = pair[1];
   });
+  console.log();
+  
 
   try {
     const response = await fetch(url, {

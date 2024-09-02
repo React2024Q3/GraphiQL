@@ -50,12 +50,14 @@ function RestForm() {
     const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
     // setKeyValuePairsHeader([]);
     try {
-      let apiUrl = `http://localhost:3000/api/${method}/${encodedUrl}${
+      let apiUrl = `api/${method}/${encodedUrl}${
         encodedBody ? `/${encodedBody}` : ''
       }`;
 
-      if (currentKeyValuesHeader.length)
-        apiUrl += '?' + currentKeyValuesHeader.map(({ key, value }) => key + '=' + value).join('&');
+      if (currentKeyValuesHeader.length){
+        const stringHeader = currentKeyValuesHeader.map(({ key, value }) => key + '=' + value).join('&');
+        apiUrl += '?' + encodeURIComponent(stringHeader);
+      }
       console.log('apiUrl: ' + apiUrl);
 
       const res = await fetch(apiUrl);
