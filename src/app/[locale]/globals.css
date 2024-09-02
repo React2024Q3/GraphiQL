@@ -65,18 +65,10 @@ ul {
 
 .main {
   flex-grow: 1;
+  padding: 0 1rem;
 }
 
-/* 
-.header.isScroll {
-  background-color: #fff;
-  padding: 10px 10px;
-}
 
-.header.isScroll .nav {
-  font-size: 16px;
+label.Mui-focused.MuiFormLabel-root, label.MuiFormLabel-filled.MuiFormLabel-root{
+  top: 0;
 }
-
-.header.isScroll .logoutButton {
-  padding: 5px 15px;
-} */

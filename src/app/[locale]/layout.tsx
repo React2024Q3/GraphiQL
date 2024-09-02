@@ -1,5 +1,6 @@
 import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
+import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import { locales } from '@/navigation';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
@@ -33,9 +34,11 @@ export default function RootLayout({
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body className={inter.className}>
-          <Header />
-          <main className='main'>{children}</main>
-          <Footer />
+          <AuthProvider>
+            <Header locale={locale} />
+            <main className='main'>{children}</main>
+            <Footer />
+          </AuthProvider>
         </body>
       </NextIntlClientProvider>
     </html>
