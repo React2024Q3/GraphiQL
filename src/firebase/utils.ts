@@ -22,13 +22,22 @@ const registerWithEmailAndPassword: (
   email: string,
   password: string
 ) => void = async (name, email, password) => {
-  const res = await createUserWithEmailAndPassword(auth, email, password);
-  const user = res.user;
-  await addDoc(collection(db, 'users'), {
-    uid: user.uid,
-    name,
-    email,
-  });
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    await addDoc(collection(db, 'users'), {
+      uid: user.uid,
+      name,
+      email,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error);
+      throw error;
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
 };
 
 const logout = () => {

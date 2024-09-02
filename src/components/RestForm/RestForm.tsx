@@ -6,11 +6,12 @@ import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs, TextField } from '@mui/material';
 
+import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
-import { Notification } from '../Notification';
 import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
+
 interface ApiResponse {
   data?: unknown;
   error?: string;
@@ -53,19 +54,19 @@ function RestForm() {
     const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
     // setKeyValuePairsHeader([]);
     try {
-      let apiUrl = `api/${method}/${encodedUrl}${
-        encodedBody ? `/${encodedBody}` : ''
-      }`;
+      let apiUrl = `api/${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
 
-      if (currentKeyValuesHeader.length){
-        const stringHeader = currentKeyValuesHeader.map(({ key, value }) => key + '=' + value).join('&');
+      if (currentKeyValuesHeader.length) {
+        const stringHeader = currentKeyValuesHeader
+          .map(({ key, value }) => key + '=' + value)
+          .join('&');
         apiUrl += '?' + encodeURIComponent(stringHeader);
       }
       console.log('apiUrl: ' + apiUrl);
 
       const res = await fetch(apiUrl);
       console.log(res.status);
-      if(res.status===500) throw new Error('Server error')
+      if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
       setResponse(data.data);
@@ -78,8 +79,8 @@ function RestForm() {
 
   return (
     <>
-      {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
-      {response?.error && <Notification isOpen={!!response?.error} message={response?.error} severity='error' />}
+      <ErrorNotification error={error} />
+      <ErrorNotification error={response?.error} />
       <form onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>

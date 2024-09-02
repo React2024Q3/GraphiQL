@@ -1,27 +1,26 @@
-.list{
+.list {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
   list-style: none;
-  margin-top: 3rem;
 }
 
-.link{
+.link {
   text-decoration: none;
   text-wrap: nowrap;
   color: inherit;
   font-size: 1.5 rem;
 }
 
-.item{
+.item {
   position: relative;
   text-decoration: none;
   font-size: 18px;
   margin-right: 20px;
 }
 
-.item::after{
+.item::after {
   content: '';
   position: absolute;
   background-color: currentColor;
@@ -32,7 +31,7 @@
   transition: all 0.3s linear;
 }
 
-.item:hover::after{
+.item:hover::after {
   left: 0%;
   right: 0%;
 }

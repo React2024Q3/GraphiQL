@@ -1,7 +1,8 @@
 import { Controller, FieldValues, Path } from 'react-hook-form';
 
-import { StyledTextField } from '@/shared/styledComponents/styledForm';
+import styles from '@/shared/styles/auth.module.css';
 import { getHelperText } from '@/utils/authHelpers';
+import { TextField } from '@mui/material';
 
 import { FormFieldProps } from './types';
 
@@ -18,7 +19,8 @@ export function FormField<T extends FieldValues>({
       name={name as Path<T>}
       control={control}
       render={({ field }) => (
-        <StyledTextField
+        <TextField
+          className={styles.auth__textfield}
           {...field}
           label={label}
           type={type}

@@ -1,5 +1,6 @@
 import { Link } from '@/navigation';
 
+import { CommonLinks } from './CommonLinks';
 import styles from './ListLinks.module.css';
 
 export default function ListLinks({ isUser }: { isUser: boolean }) {
@@ -7,16 +8,7 @@ export default function ListLinks({ isUser }: { isUser: boolean }) {
     <ul className={styles.list}>
       {isUser ? (
         <>
-          <li className={styles.item}>
-            <Link className={styles.link} href='/rest'>
-              REST Client
-            </Link>
-          </li>
-          <li className={styles.item}>
-            <Link className={styles.link} href='/graphiql'>
-              GraphiQL Client
-            </Link>
-          </li>
+          <CommonLinks />
           <li className={styles.item}>
             <Link className={styles.link} href='/history'>
               History

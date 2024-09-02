@@ -3,13 +3,13 @@
 import { useEffect, useRef } from 'react';
 
 import LanguageSelect from '@/components/LanguageSelect';
-import { auth } from '@/firebase/config';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button } from '@mui/material';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
+import { LoadingSkeleton } from '../LoadingSkeleton';
 import Logo from '../Logo';
 import styles from './Header.module.css';
 
@@ -17,7 +17,7 @@ export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const [user] = useAuthState(auth);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -60,18 +60,25 @@ export default function Header({ locale }: { locale: string }) {
       </Link>
 
       <nav className={styles.nav}>
-        <LanguageSelect locale={locale} />
-        {!user && (
-          <Link href='/sign-up'>
-            <Button className={styles.logoutBtn}>Sign Up</Button>
+        {loading ? (
+          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
+        ) : (
+          <Link href={!user ? '/sign-up' : '/'}>
+            <Button variant='contained'>{!user ? 'Sign Up' : 'Main'}</Button>
           </Link>
         )}
 
-        <Link href={user ? '#' : '/sign-in'}>
-          <Button className={styles.logoutBtn} onClick={user ? logout : undefined}>
-            {user ? 'Sign Out' : 'Sign In'}
-          </Button>
-        </Link>
+        {loading ? (
+          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
+        ) : (
+          <Link href={user ? '#' : '/sign-in'}>
+            <Button variant='contained' onClick={user ? logout : undefined}>
+              {user ? 'Sign Out' : 'Sign In'}
+            </Button>
+          </Link>
+        )}
+
+        <LanguageSelect locale={locale} />
       </nav>
     </header>
   );
