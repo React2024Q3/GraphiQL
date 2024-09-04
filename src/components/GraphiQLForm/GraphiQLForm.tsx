@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import {
   composeGraphQLPostRequestBody,
@@ -12,43 +13,13 @@ import queryTODO from '@/data/graphQL/queryTODO.json';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import ResponseDisplay from '../ResponseDisplay';
+//import { graphql } from 'cm6-graphql';
+//import { EditorView, basicSetup } from 'codemirror';
+import { GraphQLEditor } from './GraphQLEditor';
 
 export default function GraphiQLForm() {
-  //const [url, setUrl] = useState<string>('https://rickandmortyapi.com/graphql');
   const [url, setUrl] = useState<string>('');
-
-  // const defaultQuery = JSON.stringify({
-  //   query: `
-  //   query Characters($page: Int, $filter: FilterCharacter) {
-  //     characters(page: $page, filter: $filter) {
-  //         results {
-  //             id
-  //             name
-  //             status
-  //         }
-  //     }`,
-  //   variables: `{
-  //       page: 1,
-  //       filter: {
-  //         name: Alex
-  //       }
-  //     }`,
-  // });
-
-  // const defaultQuery = JSON.stringify({
-  //   query: `query {
-  //     todos {
-  //         data {
-  //             id
-  //             title
-  //             completed
-  //             user { name }
-  //         }
-  //     }
-  //   }`,
-  // });
-
-  //const defaultQuery = `{"query":"query AllCharacters {\n    characters {\n        results {\n            id\n            name\n            status\n            episode {\n                name\n            }\n        }\n    }\n}","variables":{}}`;
+  // const fetcher = useRef<Fetcher | null>(null);
 
   const [query, setQuery] = useState<string>('');
   const [queryVariables, setQueryVariables] = useState<string>('{}');
@@ -87,6 +58,12 @@ export default function GraphiQLForm() {
       setRequestHeaders(parseRequestHeadersString(selectedExampleQuery['headers'] as string));
     }
   };
+
+  // useEffect(() => {
+  //   fetcher.current = createGraphiQLFetcher({
+  //     url: url,
+  //   });
+  // }, [url]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -133,12 +110,14 @@ export default function GraphiQLForm() {
             <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} required />
           </label>
         </div>
+        <GraphQLEditor url={url} initialQuery={query}></GraphQLEditor>
         <div>
           <label>
             Query:
             <input type='text' value={query} onChange={(e) => setQuery(e.target.value)} required />
           </label>
         </div>
+
         <button type='submit'>Send request</button>
       </form>
       <ResponseDisplay headers={responseHeaders} response={JSON.stringify(responseData, null, 2)} />
