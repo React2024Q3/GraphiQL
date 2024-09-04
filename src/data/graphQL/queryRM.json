@@ -1,0 +1,5 @@
+{
+  "url": "https://rickandmortyapi.com/graphql",
+  "query": "query Characters($page: Int, $filter: FilterCharacter) {\n    characters(page: $page, filter: $filter) {\n        results {\n            id\n            name\n            status\n        }\n    }\n}",
+  "queryVariables" : { "page": 1, "filter": { "name": "Alex" } }
+}
