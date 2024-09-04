@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { LoadingSkeleton } from '../LoadingSkeleton';
 import Logo from '../Logo';
@@ -55,8 +55,11 @@ export default function Header({ locale }: { locale: string }) {
 
   return (
     <header ref={headerRef} className={styles.header}>
-      <Link href='./'>
+      <Link className={styles.header__logo} href='./'>
         <Logo />
+        <Typography className={styles.header__logo_title} variant='h6' color='primary.light'>
+          REST/GraphiQL Client
+        </Typography>
       </Link>
 
       <nav className={styles.nav}>
