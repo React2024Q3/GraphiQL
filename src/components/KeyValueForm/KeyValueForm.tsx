@@ -58,7 +58,7 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
       <h3>{title}</h3>
       <Grid container spacing={2} mt={1}>
         {pairs.map((pair, index) => (
-          <Grid container item spacing={2} key={index} alignItems='top' width={'97%'}>
+          <Grid container item spacing={2} key={index} alignItems='top' style={{maxWidth: 'calc( 100% - 70px )'}}>
             <Grid item xs={5}>
               <TextField
                 label='Key'
