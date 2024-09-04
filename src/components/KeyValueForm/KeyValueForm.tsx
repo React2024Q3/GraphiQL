@@ -58,7 +58,7 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
       <h3>{title}</h3>
       <Grid container spacing={2} mt={1}>
         {pairs.map((pair, index) => (
-          <Grid container item spacing={2} key={index} alignItems='center'>
+          <Grid container item spacing={2} key={index} alignItems='top' width={'97%'}>
             <Grid item xs={5}>
               <TextField
                 label='Key'
@@ -83,17 +83,17 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
             </Grid>
             <Grid item xs={2}>
               {pair.editable ? (
-                <Button variant='outlined' color='primary' onClick={handleAddPair}>
+                <Button variant='outlined' color='primary' onClick={handleAddPair} sx={{ height: '56px' }}>
                   Add
                 </Button>
               ) : (
-                <Button variant='outlined' color='error' onClick={() => handleRemovePair(index)}>
+                <Button variant='outlined' color='error' onClick={() => handleRemovePair(index)} sx={{ height: '56px' }}>
                   Del
                 </Button>
               )}
             </Grid>
             {error && pair.editable && (
-              <Grid item xs={11} sx={{ pt: '0 !important'}}>
+              <Grid item xs={12} sx={{ pt: '0 !important'}}>
                 <span style={{ color: 'red', fontSize: '0.8rem'}}>{error}</span>
               </Grid>
             )}
