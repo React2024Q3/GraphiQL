@@ -1,18 +1,17 @@
 import { Link } from '@/navigation';
-
-import styles from '../ListLinks.module.css';
+import { Button } from '@mui/material';
 
 export function CommonLinks() {
   return (
     <>
-      <li className={styles.item}>
-        <Link className={styles.link} href='/rest'>
-          RESTful Client
+      <li>
+        <Link href='/rest'>
+          <Button variant='contained'>REST Client</Button>
         </Link>
       </li>
-      <li className={styles.item}>
-        <Link className={styles.link} href='/graphiql'>
-          GraphiQL Client
+      <li>
+        <Link href='/graphiql'>
+          <Button variant='contained'>GraphiQL Client</Button>
         </Link>
       </li>
     </>
