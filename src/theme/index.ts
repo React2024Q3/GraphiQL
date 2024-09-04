@@ -8,9 +8,9 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          minWidth: '8rem',
-          minHeight: '2.5rem',
-          fontSize: '1rem',
+          //   minWidth: '8rem',
+          //   minHeight: '2.5rem',
+          //   fontSize: '1rem',
         },
       },
     },

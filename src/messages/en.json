@@ -1,7 +1,6 @@
 {
   "Home": {
-    "GreetingPartWelcome": "Welcome",
-    "GreetingPartBack": "Back"
+    "GreetingPartWelcome": "Welcome to our app"
   },
   "Sign-in": {},
   "Sign-up": {}
