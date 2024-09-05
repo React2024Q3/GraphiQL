@@ -42,7 +42,7 @@
 }
 
 .developers {
-  background-color: var(--mui-palette-primary-400);
+  background-color: var(--mui-palette-primary-light);
 }
 
 /* .course {
@@ -57,9 +57,9 @@
   flex-grow: 1;
 }
 
-.developers__photo {
-  max-width: 100%;
-  height: auto;
+.main__image {
+  width: '100%';
+  height: 'auto';
 }
 
 .button__skeletons {
