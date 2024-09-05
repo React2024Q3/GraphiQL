@@ -38,7 +38,7 @@ export const WelcomeSection: FC = () => {
           {loading ? (
             <>
               <Loader />
-              <LoadingSkeleton width='50%' />
+              <LoadingSkeleton width='20rem' typographyVariant='h3' />
             </>
           ) : (
             <Typography variant='h3' fontWeight={700}>
@@ -46,15 +46,22 @@ export const WelcomeSection: FC = () => {
             </Typography>
           )}
 
-          {loading ? <LoadingSkeleton width='60%' /> : <ListLinks isUser={!!user} />}
+          {loading ? (
+            <Box className={styles.button__skeletons}>
+              <LoadingSkeleton className={styles.button__skeleton} variant='rounded' width='6rem' />
+              <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
+            </Box>
+          ) : (
+            <ListLinks isUser={!!user} />
+          )}
         </Box>
 
         <Image
           className={styles.developers__photo}
           src='/main.png'
           alt='main page picture'
-          width={626}
-          height={440}
+          width={546}
+          height={414}
         />
 
         <ErrorNotification error={error} />
