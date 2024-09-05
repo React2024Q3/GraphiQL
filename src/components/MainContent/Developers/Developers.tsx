@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { DEVELOPERS } from '@/shared/constants/developersInfo';
 import {
-  Box, //   Button,
+  Box,
   Card,
   CardActions,
   CardContent,
@@ -11,24 +11,31 @@ import {
   Link,
   Typography,
 } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 import styles from '../MainContent.module.css';
 
 export const Developers: FC = () => {
+  const t = useTranslations('Home.developers');
+  const developers = DEVELOPERS.map((developer, index) => ({
+    ...developer,
+    name: t(`names.${index === 0 ? 'oleksii' : index === 1 ? 'diana' : 'aliaksandr'}`),
+    role: `${t(`role.${index === 0 ? 'team-lead' : 'frontend-developer'}`)}${index === 0 ? `, ${t('role.frontend-developer')}` : ''}`,
+  }));
+
   return (
     <Box className={styles.developers}>
       <Container className={styles.container}>
         <Typography variant='h5' className={styles.title}>
-          Developers
+          {t('title')}
         </Typography>
         <Box className={styles.developers__cards}>
-          {DEVELOPERS.map(({ name, role, image, github, linkedIn }) => (
+          {developers.map(({ name, role, image, github, linkedIn }) => (
             <Card
               sx={{
                 display: 'flex',
                 maxWidth: '370px',
-                backgroundColor: 'var(--mui-palette-grey-100)',
               }}
               key={github}
             >
@@ -53,16 +60,6 @@ export const Developers: FC = () => {
                   <Link href={linkedIn}>
                     <Image src='/linkedIn-icon.svg' alt='linkedIn-logo' width={20} height={20} />
                   </Link>
-                  {/* <Link href={github}>
-                  <Button size='small' color='primary' className='button'>
-                    Github
-                  </Button>
-                </Link>
-                <Link href={linkedIn}>
-                  <Button size='small' color='primary' className='button'>
-                    LinkedIn
-                  </Button>
-                </Link> */}
                 </CardActions>
               </Box>
               <CardMedia component='img' image={image} alt='photo' sx={{ width: 151 }} />

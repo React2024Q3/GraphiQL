@@ -42,7 +42,7 @@ export const WelcomeSection: FC = () => {
             </>
           ) : (
             <Typography variant='h3' fontWeight={700}>
-              {getWelcomeString(user, name, t('GreetingPartWelcome'))}
+              {getWelcomeString(user, name, t('welcome'))}
             </Typography>
           )}
 
@@ -56,13 +56,17 @@ export const WelcomeSection: FC = () => {
           )}
         </Box>
 
-        <Image
-          className={styles.developers__photo}
-          src='/main.png'
-          alt='main page picture'
-          width={546}
-          height={414}
-        />
+        <Box sx={{ position: 'relative', width: '546px', height: '414px' }}>
+          <Image
+            src='/main.png'
+            alt='main page picture'
+            sizes='546px'
+            fill
+            style={{
+              objectFit: 'contain',
+            }}
+          />
+        </Box>
 
         <ErrorNotification error={error} />
         <ErrorNotification error={fetchUserNameError} />

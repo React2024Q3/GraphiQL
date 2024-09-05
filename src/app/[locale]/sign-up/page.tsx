@@ -15,11 +15,13 @@ import { handleAuthError } from '@/utils/authHelpers';
 import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 function SignUp() {
   const router = useRouter();
   const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
+  const t = useTranslations();
 
   useEffect(() => {
     if (user) {
@@ -58,29 +60,34 @@ function SignUp() {
   return (
     <Container className={styles.auth__container}>
       <Typography className={styles.auth__title} variant='h4'>
-        Sign Up
+        {t('buttons.sign-up')}
       </Typography>
       <ErrorNotification error={error} />
       <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
-        <FormField<SignUpFormData> name='name' control={control} label='Name' errors={errors} />
+        <FormField<SignUpFormData>
+          name='name'
+          control={control}
+          label={t('auth.name')}
+          errors={errors}
+        />
         <FormField<SignUpFormData>
           name='email'
           control={control}
-          label='E-mail'
+          label={t('auth.email')}
           type={'email'}
           errors={errors}
         />
         <FormField<SignUpFormData>
           name='password'
           control={control}
-          label='Password'
+          label={t('auth.password')}
           type={'password'}
           errors={errors}
         />
         <FormField<SignUpFormData>
           name='confirmPassword'
           control={control}
-          label='Confirm Password'
+          label={t('auth.confirm-password')}
           type={'password'}
           errors={errors}
         />
@@ -94,11 +101,11 @@ function SignUp() {
           variant='contained'
           disabled={loading}
         >
-          Sign Up
+          {t('buttons.sign-up')}
         </Button>
         <Box className={styles.auth__message}>
-          Already have an account?&nbsp;<Link href='/sign-in'>Sign in</Link>
-          &nbsp;now.
+          {t('auth.message-1-sign-up')}&nbsp;<Link href='/sign-in'>{t('buttons.sign-in')}</Link>
+          &nbsp;{t('auth.message-2')}
         </Box>
       </form>
     </Container>

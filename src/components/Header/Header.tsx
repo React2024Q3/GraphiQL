@@ -8,6 +8,7 @@ import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button, Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 import { LoadingSkeleton } from '../LoadingSkeleton';
 import Logo from '../Logo';
@@ -16,8 +17,8 @@ import styles from './Header.module.css';
 export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
-
   const { user, loading } = useAuth();
+  const t = useTranslations('buttons');
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -67,7 +68,7 @@ export default function Header({ locale }: { locale: string }) {
           <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
         ) : (
           <Link href={!user ? '/sign-up' : '/'}>
-            <Button variant='contained'>{!user ? 'Sign Up' : 'Main'}</Button>
+            <Button variant='contained'>{!user ? t('sign-up') : t('main')}</Button>
           </Link>
         )}
 
@@ -76,7 +77,7 @@ export default function Header({ locale }: { locale: string }) {
         ) : (
           <Link href={user ? '#' : '/sign-in'}>
             <Button variant='contained' onClick={user ? logout : undefined}>
-              {user ? 'Sign Out' : 'Sign In'}
+              {user ? t('sign-out') : t('sign-in')}
             </Button>
           </Link>
         )}
