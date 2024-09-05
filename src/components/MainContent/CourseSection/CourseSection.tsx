@@ -13,7 +13,7 @@ export const CourseSection: FC = () => {
           {COURSE_TITLE}
         </Typography>
         {COURSE_INFO.split('\n').map((line, index) => (
-          <Typography variant='body1' key={index}>
+          <Typography className={styles.text} variant='body1' key={index}>
             {line.trim()}
             <br />
           </Typography>

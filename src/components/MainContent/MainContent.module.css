@@ -21,6 +21,10 @@
   font-weight: 700;
 }
 
+.text {
+  text-align: justify;
+}
+
 .welcome,
 .project,
 .developers,
@@ -56,4 +60,15 @@
 .developers__photo {
   max-width: 100%;
   height: auto;
+}
+
+.button__skeletons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.button__skeleton {
+  min-width: 5.6rem;
+  min-height: 2.2rem;
 }
