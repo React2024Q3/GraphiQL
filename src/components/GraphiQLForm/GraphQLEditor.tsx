@@ -1,40 +1,79 @@
-import { useEffect, useState } from 'react';
+'use client';
 
-import CodeMirror from '@uiw/react-codemirror';
-//import { graphql } from 'cm6-graphql';
-import {
-  graphql,
-  GraphQLSchema,
-  IntrospectionSchema,
-  buildClientSchema,
-  getIntrospectionQuery,
-} from 'graphql';
+import { useMemo, useState } from 'react';
+import { useEffect } from 'react';
 
-async function fetchSchema(url: string) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: getIntrospectionQuery(),
-    }),
-  });
+// Include default styles
+import { DocExplorer, GraphiQLProvider, QueryEditor, VariableEditor } from '@graphiql/react';
+import '@graphiql/react/dist/style.css';
+import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
+import { Box } from '@mui/material';
 
-  const result = await response.json();
-  return buildClientSchema(result.data);
-}
+import styles from './graphQLEditor.module.css';
 
-export const GraphQLEditor = ({ url, initialQuery }: { url: string; initialQuery: string }) => {
-  const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
-  useEffect(() => {
-    async function loadEditor() {
-      setSchema(await fetchSchema(url));
-    }
+export const GraphQLEditor = ({ url, initialQuery, initialQueryVariables }: { url: string; initialQuery: string; initialQueryVariables: string }) => {
+  // const anotherFetcher = createGraphiQLFetcher({
+  //   url: 'https://my.graphql.api/graphql',
+  // });
 
-    loadEditor();
-  }, [url]);
-  return <CodeMirror value={initialQuery} height='200px' /*extensions={graphql(schema)}*/ />;
+  // const f = createGraphiQLFetcher({
+  //   url: 'https://rickandmortyapi.com/graphql',
+  // });
+
+  // const f =  createGraphiQLFetcher({
+  //   url: 'https://rickandmortyapi.com/graphql',
+  // })
+  //console.log(f);
+  const memoFetcher = useMemo(
+    () =>
+      createGraphiQLFetcher({
+        url: url,
+      }),
+    [url]
+  );
+
+  // const [fetcher, setFetcher] = useState<Fetcher | null>(null);
+  // useEffect(() => {
+  //   console.log(url);
+  //   if (url) {
+  //     const createFetcher = createGraphiQLFetcher({
+  //       url: url,
+  //     })
+  //     console.log(createFetcher);
+  //     setFetcher(createFetcher);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (url) {
+  //     const createFetcher = createGraphiQLFetcher({
+  //       url: url,
+  //     })
+  //     console.log(createFetcher);
+  //     setFetcher(createFetcher);
+  //   }
+  // }, [url]); //url
+
+  return (
+    //  fetcher ? (
+    <GraphiQLProvider fetcher={memoFetcher} query={initialQuery} variables={initialQueryVariables}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}> */}
+      <div className='graphiql-container'>
+        <div className={styles['query-and-vars-box']}>
+          <div className={styles['query-editor']}>
+            <QueryEditor></QueryEditor>
+          </div>
+          <div className={styles['variables-editor']}>
+            <VariableEditor></VariableEditor>
+          </div>
+        </div>
+        <DocExplorer></DocExplorer>
+      </div>
+    </GraphiQLProvider>
+    //  ) : (
+    //    <div>Loading</div>
+    //  ));
+  );
 };
 
 // const view = new EditorView({
