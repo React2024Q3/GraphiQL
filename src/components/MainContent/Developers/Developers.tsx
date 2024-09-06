@@ -55,10 +55,14 @@ export const Developers: FC = () => {
                 </CardContent>
                 <CardActions sx={{ display: 'flex', gap: '0.3rem' }}>
                   <Link href={github}>
-                    <Image src='/github-icon.svg' alt='github-logo' width={20} height={20} />
+                    <Box className={styles.iconContainer}>
+                      <Image src='/github-icon.svg' alt='github-logo' width={20} height={20} />
+                    </Box>
                   </Link>
                   <Link href={linkedIn}>
-                    <Image src='/linkedIn-icon.svg' alt='linkedIn-logo' width={20} height={20} />
+                    <Box className={styles.iconContainer}>
+                      <Image src='/linkedIn-icon.svg' alt='linkedIn-logo' width={20} height={20} />
+                    </Box>
                   </Link>
                 </CardActions>
               </Box>
