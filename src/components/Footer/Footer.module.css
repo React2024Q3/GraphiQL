@@ -10,7 +10,7 @@
 .footer__container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .link {
@@ -23,5 +23,5 @@
 }
 
 .year {
-  color: var(--mui-palette-primary-contrastText);
+  color: var(--mui-palette-secondary-light);
 }

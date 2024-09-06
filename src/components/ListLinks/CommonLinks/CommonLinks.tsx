@@ -1,18 +1,19 @@
 import { Link } from '@/navigation';
-
-import styles from '../ListLinks.module.css';
+import { Button } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 export function CommonLinks() {
+  const t = useTranslations('buttons');
   return (
     <>
-      <li className={styles.item}>
-        <Link className={styles.link} href='/rest'>
-          RESTful Client
+      <li>
+        <Link href='/rest'>
+          <Button variant='contained'>{t('rest')}</Button>
         </Link>
       </li>
-      <li className={styles.item}>
-        <Link className={styles.link} href='/graphiql'>
-          GraphiQL Client
+      <li>
+        <Link href='/graphiql'>
+          <Button variant='contained'>{t('graphql')}</Button>
         </Link>
       </li>
     </>

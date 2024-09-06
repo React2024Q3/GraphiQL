@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { HISTORY_LS } from '../constants';
 
 export default function useHistoryLS(): [string[], (url: string) => void] {
