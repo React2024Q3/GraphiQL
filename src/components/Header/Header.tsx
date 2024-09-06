@@ -8,17 +8,17 @@ import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button, Typography } from '@mui/material';
-import { useTranslations } from 'next-intl';
 
 import { LoadingSkeleton } from '../LoadingSkeleton';
 import Logo from '../Logo';
+import { AuthenticatedNav } from './AuthenticatedNav';
+import { GuestNav } from './GuestNav';
 import styles from './Header.module.css';
 
 export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
   const { user, loading } = useAuth();
-  const t = useTranslations('buttons');
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -58,37 +58,23 @@ export default function Header({ locale }: { locale: string }) {
     <header ref={headerRef} className={styles.header}>
       <Link className={styles.header__logo} href='./'>
         <Logo />
-        <Typography className={styles.header__logo_title} variant='h6' color='primary.light'>
-          REST/GraphiQL Client
-        </Typography>
+        <Button>
+          <Typography
+            className={styles.header__logo_title}
+            component='h1'
+            variant='subtitle1'
+            color='primary.light'
+          >
+            REST/GraphiQL Client
+          </Typography>
+        </Button>
       </Link>
 
       <nav className={styles.nav}>
         {loading ? (
           <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
         ) : (
-          !!user && (
-            <Link href='/history'>
-              <Button variant='contained'>History</Button>
-            </Link>
-          )
-        )}
-        {loading ? (
-          <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
-        ) : (
-          <Link href={!user ? '/sign-up' : '/'}>
-            <Button variant='contained'>{!user ? t('sign-up') : t('main')}</Button>
-          </Link>
-        )}
-
-        {loading ? (
-          <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
-        ) : (
-          <Link href={user ? '#' : '/sign-in'}>
-            <Button variant='contained' onClick={user ? logout : undefined}>
-              {user ? t('sign-out') : t('sign-in')}
-            </Button>
-          </Link>
+          <>{user ? <AuthenticatedNav logout={logout} /> : <GuestNav />}</>
         )}
 
         <LanguageSelect locale={locale} />

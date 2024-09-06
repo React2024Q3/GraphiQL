@@ -7,11 +7,12 @@ const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: {
-          //   minWidth: '8rem',
-          //   minHeight: '2.5rem',
-          //   fontSize: '1rem',
-        },
+        // text: {
+        //   '&:hover': {
+        //     color: '#64b5f6',
+        //     // backgroundColor: '#64b5f620',
+        //   },
+        // },
       },
     },
     MuiOutlinedInput: {

@@ -24,13 +24,15 @@ export default function ListLinks({ isUser }: { isUser: boolean }) {
       ) : (
         <>
           <li>
-            <Link href='sign-in'>
-              <Button variant='contained'>{t('sign-in')}</Button>
+            <Link href='/sign-up'>
+              <Button variant='contained'>{t('sign-up')}</Button>
             </Link>
           </li>
           <li>
-            <Link href='/sign-up'>
-              <Button variant='contained'>{t('sign-up')}</Button>
+            <Link href='sign-in'>
+              <Button variant='contained' color='secondary' sx={{ color: '#000' }}>
+                {t('sign-in')}
+              </Button>
             </Link>
           </li>
         </>
