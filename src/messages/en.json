@@ -39,5 +39,9 @@
     "message-1-sign-up": "Already have an account?",
     "message-1-sign-in": "Don't have an account?",
     "message-2": "now."
+  },
+  "history": {
+    "empty-1": "You haven't executed any requests",
+    "empty-2": "It's empty here. Try:"
   }
 }
