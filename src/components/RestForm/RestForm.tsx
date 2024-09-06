@@ -4,7 +4,7 @@ import { FormEvent, useState, useEffect } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { KeyValuePair } from '@/types&interfaces/types';
-import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs, TextField } from '@mui/material';
+import { Box, Button, FormControl, MenuItem, Select, SelectChangeEvent, Tab, Tabs, TextField } from '@mui/material';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
@@ -13,14 +13,15 @@ import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { useSearchParams } from 'next/navigation';
+import { Methods } from '@/types&interfaces/enums';
 
 interface ApiResponse {
   data?: unknown;
   error?: string;
 }
 
-function RestForm({ path }: { path: string[] }) {
-  const [method, setMethod] = useState<string>('GET');
+function RestForm({ initMethod, path }: { initMethod: string, path: string[] }) {
+  const [method, setMethod] = useState<string>(initMethod);
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [response, setResponse] = useState<ApiResponse | null>(null);
@@ -33,17 +34,17 @@ function RestForm({ path }: { path: string[] }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+console.log(path);
+
     if (path && path.length) {
-      setMethod(path[1].toUpperCase());
-    }
-
-    if (path && path.length > 2) {
-      const decodedUrl = atob(decodeURIComponent(path[2]));
+      const decodedUrl = atob(decodeURIComponent(path[0]));
       setUrl(decodedUrl);
+      console.log(decodedUrl);
+      
     }
 
-    if (path && path.length > 3) {
-      const decodedBody = atob(decodeURIComponent(path[3]));
+    if (path && path.length > 1) {
+      const decodedBody = atob(decodeURIComponent(path[1]));
       setBody(decodedBody);
     }
 
@@ -82,10 +83,10 @@ function RestForm({ path }: { path: string[] }) {
     // const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
 
     const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
+    const encodedBody = body && method !== Methods.GET && method !== Methods.DELETE ? encodeURIComponent(btoa(body)) : '';
 
     try {
-      let apiUrl = `/api/${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
+      let apiUrl = `${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
 
       if (currentKeyValuesHeader.length) {
         const stringHeader = currentKeyValuesHeader
@@ -95,7 +96,7 @@ function RestForm({ path }: { path: string[] }) {
       }
       saveUrlToLS(apiUrl);
 
-      const res = await fetch(apiUrl);
+      const res = await fetch('/api/' + apiUrl);
       if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
@@ -108,6 +109,15 @@ function RestForm({ path }: { path: string[] }) {
     }
   };
 
+  const onChangeMethod = (e: SelectChangeEvent<string>) => {
+    
+    setMethod(e.target.value);
+    const encodedUrl = encodeURIComponent(btoa(url));
+    const encodedBody = body && method !== Methods.GET && method !== Methods.DELETE ? encodeURIComponent(btoa(body)) : '';
+    
+    window.history.replaceState(null, '', `/${e.target.value}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`)
+  }
+
   return (
     <>
       <ErrorNotification error={error} />
@@ -115,7 +125,7 @@ function RestForm({ path }: { path: string[] }) {
       <form onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
-            <Select value={method} onChange={(e) => setMethod(e.target.value)}>
+            <Select value={method} onChange={onChangeMethod}>
               <MenuItem className={styles.selectItem} value='GET'>
                 GET
               </MenuItem>

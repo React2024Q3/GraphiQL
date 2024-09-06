@@ -6,7 +6,7 @@ export function CommonLinks() {
   return (
     <>
       <li className={styles.item}>
-        <Link className={styles.link} href='/rest'>
+        <Link className={styles.link} href='/get'>
           RESTful Client
         </Link>
       </li>
