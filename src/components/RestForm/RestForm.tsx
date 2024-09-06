@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { KeyValuePair } from '@/types&interfaces/types';
@@ -11,12 +11,15 @@ import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
+import useHistoryLS from '@/shared/hooks/useHistoryLS';
+import { useSearchParams } from 'next/navigation';
 
 interface ApiResponse {
   data?: unknown;
   error?: string;
 }
-function RestForm() {
+
+function RestForm({ path }: { path: string[] }) {
   const [method, setMethod] = useState<string>('GET');
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
@@ -26,6 +29,36 @@ function RestForm() {
   const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { loading, error } = useAuthRedirect();
+  const [_, saveUrlToLS] = useHistoryLS();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (path && path.length) {
+      setMethod(path[1].toUpperCase());
+    }
+
+    if (path && path.length > 2) {
+      const decodedUrl = atob(decodeURIComponent(path[2]));
+      setUrl(decodedUrl);
+    }
+
+    if (path && path.length > 3) {
+      const decodedBody = atob(decodeURIComponent(path[3]));
+      setBody(decodedBody);
+    }
+
+    const searchParamsArray = Array.from(searchParams.entries());
+    console.log(searchParamsArray);
+    
+    if (searchParamsArray.length > 0) {
+      const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
+        key,
+        value,
+        editable: false,
+      }));
+      setKeyValuePairsHeader(parsedHeaders);
+    }
+  }, [path, searchParams]);
 
   if (loading) {
     return <Loader />;
@@ -46,29 +79,27 @@ function RestForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const currentKeyValuesHeader = keyValuePairsHeader.filter((el) => !el.editable);
-    const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
-    console.log(currentKeyValuesHeader);
-    console.log(currentKeyValuesVar);
+    // const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
 
     const encodedUrl = encodeURIComponent(btoa(url));
     const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
-    // setKeyValuePairsHeader([]);
+
     try {
-      let apiUrl = `api/${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
+      let apiUrl = `/api/${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
 
       if (currentKeyValuesHeader.length) {
         const stringHeader = currentKeyValuesHeader
           .map(({ key, value }) => key + '=' + value)
           .join('&');
-        apiUrl += '?' + encodeURIComponent(stringHeader);
+        apiUrl += '?' + stringHeader.replaceAll('/', '%2F');
       }
-      console.log('apiUrl: ' + apiUrl);
+      saveUrlToLS(apiUrl);
 
       const res = await fetch(apiUrl);
-      console.log(res.status);
       if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
+
       setResponse(data.data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
@@ -139,9 +170,9 @@ function RestForm() {
             className={styles.keyValFormWrap}
             style={{ transform: `translateX(${-tabIndex * 50}%)` }}
           >
-            <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} />
+            <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} initPairs={keyValuePairsHeader} />
 
-            <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} />
+            <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} initPairs={keyValuePairsVar} />
           </Box>
         </Box>
       </form>
