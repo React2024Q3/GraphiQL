@@ -65,7 +65,7 @@ export default function Header({ locale }: { locale: string }) {
       ) : (
         !!user && (
           <Link href="/history">
-           <Button sx={{px: '1rem',minWidth: 'auto' }} variant='contained'>History</Button>
+           <Button variant='contained'>History</Button>
           </Link>
         )
       )}
@@ -73,7 +73,7 @@ export default function Header({ locale }: { locale: string }) {
           <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
         ) : (
           <Link href={!user ? '/sign-up' : '/'}>
-            <Button sx={{px: '1rem',minWidth: 'auto' }} variant='contained'>{!user ? 'Sign Up' : 'Main'}</Button>
+            <Button variant='contained'>{!user ? 'Sign Up' : 'Main'}</Button>
           </Link>
         )}
 
@@ -81,7 +81,7 @@ export default function Header({ locale }: { locale: string }) {
           <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
         ) : (
           <Link href={user ? '#' : '/sign-in'}>
-            <Button sx={{px: '1rem',minWidth: 'auto' }} variant='contained' onClick={user ? logout : undefined}>
+            <Button variant='contained' onClick={user ? logout : undefined}>
               {user ? 'Sign Out' : 'Sign In'}
             </Button>
           </Link>
