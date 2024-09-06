@@ -9,6 +9,7 @@ import { KeyValuePair } from '@/types&interfaces/types';
 import {
   Box,
   Button,
+  Container,
   FormControl,
   MenuItem,
   Select,
@@ -137,10 +138,10 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
   };
 
   return (
-    <>
+    <Container className={styles.formContainer}>
       <ErrorNotification error={error} />
       <ErrorNotification error={response?.error} />
-      <form onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
             <Select value={method} onChange={onChangeMethod}>
@@ -214,7 +215,7 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
       </form>
 
       <ResponseDisplay headers={headers} response={JSON.stringify(response, null, 2)} />
-    </>
+    </Container>
   );
 }
 
