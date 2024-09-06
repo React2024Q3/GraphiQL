@@ -40,7 +40,6 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
 
   const url = atob(decodeURIComponent(encodedUrl[0]));
   console.log(encodedUrl);
-  
 
   const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
@@ -56,7 +55,7 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
     headers[pair[0].toString()] = pair[1].toString();
   });
   console.log(headers);
-console.log(url);
+  console.log(url);
 
   try {
     const response = await fetch(url, {
@@ -72,7 +71,6 @@ console.log(url);
     } else {
       data = await response.text();
     }
-     
 
     return NextResponse.json({ data, headers: response.headers }, { status: response.status });
   } catch (error) {

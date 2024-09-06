@@ -64,15 +64,15 @@ export default function Header({ locale }: { locale: string }) {
       </Link>
 
       <nav className={styles.nav}>
-      {loading ? (
-        <LoadingSkeleton className={styles.header__skeleton} variant="rounded" />
-      ) : (
-        !!user && (
-          <Link href="/history">
-           <Button variant='contained'>History</Button>
-          </Link>
-        )
-      )}
+        {loading ? (
+          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
+        ) : (
+          !!user && (
+            <Link href='/history'>
+              <Button variant='contained'>History</Button>
+            </Link>
+          )
+        )}
         {loading ? (
           <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
         ) : (

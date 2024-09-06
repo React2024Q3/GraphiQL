@@ -1,18 +1,18 @@
 'use client';
 
-import { FormEvent, useState, useEffect } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
+import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs, TextField } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
-import useHistoryLS from '@/shared/hooks/useHistoryLS';
-import { useSearchParams } from 'next/navigation';
 
 interface ApiResponse {
   data?: unknown;
@@ -49,7 +49,7 @@ function RestForm({ path }: { path: string[] }) {
 
     const searchParamsArray = Array.from(searchParams.entries());
     console.log(searchParamsArray);
-    
+
     if (searchParamsArray.length > 0) {
       const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
         key,
@@ -170,9 +170,17 @@ function RestForm({ path }: { path: string[] }) {
             className={styles.keyValFormWrap}
             style={{ transform: `translateX(${-tabIndex * 50}%)` }}
           >
-            <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} initPairs={keyValuePairsHeader} />
+            <KeyValueForm
+              onPairsChange={handlePairsChangeHeader}
+              title={'Headers'}
+              initPairs={keyValuePairsHeader}
+            />
 
-            <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} initPairs={keyValuePairsVar} />
+            <KeyValueForm
+              onPairsChange={handlePairsChangeVar}
+              title={'Variables'}
+              initPairs={keyValuePairsVar}
+            />
           </Box>
         </Box>
       </form>

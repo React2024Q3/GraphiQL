@@ -1,53 +1,52 @@
-.urlWrap{
+.urlWrap {
   display: flex;
   align-items: center;
   gap: 1px;
   margin: 1rem 0;
-  align-items: stretch
+  align-items: stretch;
 }
 
-.selectItem{
+.selectItem {
   -webkit-text-stroke: 1px #333;
   padding: 0 10px;
   font-weight: 900;
 }
 
-.selectItem:nth-of-type(1){
+.selectItem:nth-of-type(1) {
   color: green;
 }
-.selectItem:nth-of-type(2){
+.selectItem:nth-of-type(2) {
   color: yellow;
 }
-.selectItem:nth-of-type(3){
+.selectItem:nth-of-type(3) {
   color: blue;
 }
-.selectItem:nth-of-type(4){
+.selectItem:nth-of-type(4) {
   color: red;
 }
-.selectItem:nth-of-type(5){
+.selectItem:nth-of-type(5) {
   color: blueviolet;
 }
 
-.urlInput{
+.urlInput {
   flex-grow: 1;
 }
 
-.urlInput input{
-  padding: .55rem;
+.urlInput input {
+  padding: 0.55rem;
 }
 
-.urlInput label{
+.urlInput label {
   top: -8px;
 }
 
-.keyValFormWrap{
+.keyValFormWrap {
   width: 200%;
   display: flex;
-  transition: all .4s linear;
+  transition: all 0.4s linear;
 }
 
-.keyValFormWrapWindow{
+.keyValFormWrapWindow {
   width: 100%;
   overflow: hidden;
-  
 }

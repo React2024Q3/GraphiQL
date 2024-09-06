@@ -65,7 +65,7 @@ a:hover {
   flex-grow: 1;
 }
 
-
-label.Mui-focused.MuiFormLabel-root, label.MuiFormLabel-filled.MuiFormLabel-root{
+label.Mui-focused.MuiFormLabel-root,
+label.MuiFormLabel-filled.MuiFormLabel-root {
   top: 0;
 }
