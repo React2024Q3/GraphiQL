@@ -6,7 +6,7 @@
   justify-content: space-between;
   top: 0;
   background-color: var(--mui-palette-grey-800);
-  padding: 1rem;
+  padding: 0.7rem 1rem;
   width: 100%;
   z-index: 100;
   transition: all 0.25s ease;
@@ -23,7 +23,18 @@
   padding: 0.3rem 1rem;
 }
 
-.header__skeleton {
-  min-width: 8rem;
-  min-height: 2.5rem;
+.button__skeleton {
+  min-width: 5.6rem;
+  min-height: 2.2rem;
+}
+
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
+.isScroll .header__logo_title {
+  color: var(--mui-palette-primary-700);
 }

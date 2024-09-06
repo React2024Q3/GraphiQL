@@ -15,11 +15,13 @@ import { handleAuthError } from '@/utils/authHelpers';
 import { singInValidationSchema } from '@/utils/validation/signInValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 function SignIn() {
   const router = useRouter();
   const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
+  const t = useTranslations();
 
   useEffect(() => {
     if (user) {
@@ -54,21 +56,21 @@ function SignIn() {
   return (
     <Container className={styles.auth__container}>
       <Typography className={styles.auth__title} variant='h4'>
-        Sign In
+        {t('buttons.sign-in')}
       </Typography>
       <ErrorNotification error={error} />
       <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
         <FormField<SignInFormData>
           name='email'
           control={control}
-          label='E-mail'
+          label={t('auth.email')}
           type={'email'}
           errors={errors}
         />
         <FormField<SignInFormData>
           name='password'
           control={control}
-          label='Password'
+          label={t('auth.password')}
           type={'password'}
           errors={errors}
         />
@@ -83,11 +85,11 @@ function SignIn() {
           variant='contained'
           disabled={loading}
         >
-          Sign In
+          {t('buttons.sign-in')}
         </Button>
         <Box className={styles.auth__message}>
-          Don't have an account?&nbsp;<Link href='/sign-up'>Sign up</Link>
-          &nbsp;now.
+          {t('auth.message-1-sign-in')}&nbsp;<Link href='/sign-up'>{t('buttons.sign-up')}</Link>
+          &nbsp;{t('auth.message-2')}
         </Box>
       </form>
     </Container>

@@ -1,12 +1,5 @@
-import { UserName } from '@/components/UserName';
-import { Container } from '@mui/material';
-
-import styles from './page.module.css';
+import { MainContent } from '@/components/MainContent';
 
 export default function Home() {
-  return (
-    <Container className={styles.main__page}>
-      <UserName />
-    </Container>
-  );
+  return <MainContent />;
 }

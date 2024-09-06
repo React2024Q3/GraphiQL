@@ -1,26 +1,36 @@
 'use client';
 
-import { FormEvent, useState, useEffect } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
+import useHistoryLS from '@/shared/hooks/useHistoryLS';
+import { Methods } from '@/types&interfaces/enums';
 import { KeyValuePair } from '@/types&interfaces/types';
-import { Box, Button, FormControl, MenuItem, Select, SelectChangeEvent, Tab, Tabs, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  TextField,
+} from '@mui/material';
+import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
 import styles from './RestForm.module.css';
-import useHistoryLS from '@/shared/hooks/useHistoryLS';
-import { useSearchParams } from 'next/navigation';
-import { Methods } from '@/types&interfaces/enums';
 
 interface ApiResponse {
   data?: unknown;
   error?: string;
 }
 
-function RestForm({ initMethod, path }: { initMethod: string, path: string[] }) {
+function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) {
   const [method, setMethod] = useState<string>(initMethod);
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
@@ -34,13 +44,12 @@ function RestForm({ initMethod, path }: { initMethod: string, path: string[] }) 
   const searchParams = useSearchParams();
 
   useEffect(() => {
-console.log(path);
+    console.log(path);
 
     if (path && path.length) {
       const decodedUrl = atob(decodeURIComponent(path[0]));
       setUrl(decodedUrl);
       console.log(decodedUrl);
-      
     }
 
     if (path && path.length > 1) {
@@ -50,7 +59,7 @@ console.log(path);
 
     const searchParamsArray = Array.from(searchParams.entries());
     console.log(searchParamsArray);
-    
+
     if (searchParamsArray.length > 0) {
       const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
         key,
@@ -83,7 +92,10 @@ console.log(path);
     // const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
 
     const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody = body && method !== Methods.GET && method !== Methods.DELETE ? encodeURIComponent(btoa(body)) : '';
+    const encodedBody =
+      body && method !== Methods.GET && method !== Methods.DELETE
+        ? encodeURIComponent(btoa(body))
+        : '';
 
     try {
       let apiUrl = `${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
@@ -110,13 +122,19 @@ console.log(path);
   };
 
   const onChangeMethod = (e: SelectChangeEvent<string>) => {
-    
     setMethod(e.target.value);
     const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody = body && method !== Methods.GET && method !== Methods.DELETE ? encodeURIComponent(btoa(body)) : '';
-    
-    window.history.replaceState(null, '', `/${e.target.value}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`)
-  }
+    const encodedBody =
+      body && method !== Methods.GET && method !== Methods.DELETE
+        ? encodeURIComponent(btoa(body))
+        : '';
+
+    window.history.replaceState(
+      null,
+      '',
+      `/${e.target.value}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`
+    );
+  };
 
   return (
     <>
@@ -180,9 +198,17 @@ console.log(path);
             className={styles.keyValFormWrap}
             style={{ transform: `translateX(${-tabIndex * 50}%)` }}
           >
-            <KeyValueForm onPairsChange={handlePairsChangeHeader} title={'Headers'} initPairs={keyValuePairsHeader} />
+            <KeyValueForm
+              onPairsChange={handlePairsChangeHeader}
+              title={'Headers'}
+              initPairs={keyValuePairsHeader}
+            />
 
-            <KeyValueForm onPairsChange={handlePairsChangeVar} title={'Variables'} initPairs={keyValuePairsVar} />
+            <KeyValueForm
+              onPairsChange={handlePairsChangeVar}
+              title={'Variables'}
+              initPairs={keyValuePairsVar}
+            />
           </Box>
         </Box>
       </form>

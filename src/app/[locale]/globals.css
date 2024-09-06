@@ -1,11 +1,13 @@
 :root {
-  --mui-palette-primary-main: #009688;
-  --mui-palette-primary-light: #33ab9f;
-  --mui-palette-primary-dark: #00695f;
+  --mui-palette-primary-main: #2196f3;
+  --mui-palette-primary-light: #64b5f6;
+  --mui-palette-primary-dark: #1769aa;
+  --mui-palette-primary-400: #42a5f5;
+  --mui-palette-primary-700: #1976d2;
   --mui-palette-primary-contrastText: #fff;
-  --mui-palette-secondary-main: #ffc400;
-  --mui-palette-secondary-light: #ffcf33;
-  --mui-palette-secondary-dark: #b28900;
+  --mui-palette-secondary-main: #ffc107;
+  --mui-palette-secondary-light: #ffd54f;
+  --mui-palette-secondary-dark: #ff8f00;
   --mui-palette-error-main: #d32f2f;
   --mui-palette-error-light: #ef5350;
   --mui-palette-error-dark: #c62828;
@@ -61,10 +63,9 @@ a:hover {
 
 .main {
   flex-grow: 1;
-  padding: 2rem 1rem;
 }
 
-
-label.Mui-focused.MuiFormLabel-root, label.MuiFormLabel-filled.MuiFormLabel-root{
+label.Mui-focused.MuiFormLabel-root,
+label.MuiFormLabel-filled.MuiFormLabel-root {
   top: 0;
 }
