@@ -1,11 +1,12 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { Methods } from '@/types&interfaces/enums';
-import { KeyValuePair } from '@/types&interfaces/types';
+import { KeyValuePair, MethodType } from '@/types&interfaces/types';
+import changeUrlClient from '@/utils/changeUrlClient';
 import {
   Box,
   Button,
@@ -31,8 +32,8 @@ interface ApiResponse {
   error?: string;
 }
 
-function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) {
-  const [method, setMethod] = useState<string>(initMethod);
+function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[] }) {
+  const [method, setMethod] = useState<MethodType>(initMethod);
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [response, setResponse] = useState<ApiResponse | null>(null);
@@ -43,31 +44,31 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
   const { loading, error } = useAuthRedirect();
   const [_, saveUrlToLS] = useHistoryLS();
   const searchParams = useSearchParams();
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    console.log(path);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      if (path && path.length) {
+        const decodedUrl = atob(decodeURIComponent(path[0]));
+        setUrl(decodedUrl);
+      }
 
-    if (path && path.length) {
-      const decodedUrl = atob(decodeURIComponent(path[0]));
-      setUrl(decodedUrl);
-      console.log(decodedUrl);
-    }
+      if (path && path.length > 1) {
+        const decodedBody = atob(decodeURIComponent(path[1]));
+        setBody(decodedBody);
+      }
 
-    if (path && path.length > 1) {
-      const decodedBody = atob(decodeURIComponent(path[1]));
-      setBody(decodedBody);
-    }
+      const searchParamsArray = Array.from(searchParams.entries());
 
-    const searchParamsArray = Array.from(searchParams.entries());
-    console.log(searchParamsArray);
-
-    if (searchParamsArray.length > 0) {
-      const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
-        key,
-        value,
-        editable: false,
-      }));
-      setKeyValuePairsHeader(parsedHeaders);
+      if (searchParamsArray.length > 0) {
+        const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
+          key,
+          value,
+          editable: false,
+        }));
+        setKeyValuePairsHeader(parsedHeaders);
+      }
     }
   }, [path, searchParams]);
 
@@ -77,6 +78,7 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
 
   const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsHeader(newPairs);
+    changeUrlClient(method, url, body, newPairs);
   };
 
   const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
@@ -89,24 +91,9 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const currentKeyValuesHeader = keyValuePairsHeader.filter((el) => !el.editable);
-    // const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
-
-    const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody =
-      body && method !== Methods.GET && method !== Methods.DELETE
-        ? encodeURIComponent(btoa(body))
-        : '';
-
     try {
-      let apiUrl = `${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
+      const apiUrl = changeUrlClient(method, url, body, keyValuePairsHeader);
 
-      if (currentKeyValuesHeader.length) {
-        const stringHeader = currentKeyValuesHeader
-          .map(({ key, value }) => key + '=' + value)
-          .join('&');
-        apiUrl += '?' + stringHeader.replaceAll('/', '%2F');
-      }
       saveUrlToLS(apiUrl);
 
       const res = await fetch('/api/' + apiUrl);
@@ -122,19 +109,9 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
     }
   };
 
-  const onChangeMethod = (e: SelectChangeEvent<string>) => {
-    setMethod(e.target.value);
-    const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody =
-      body && method !== Methods.GET && method !== Methods.DELETE
-        ? encodeURIComponent(btoa(body))
-        : '';
-
-    window.history.replaceState(
-      null,
-      '',
-      `/${e.target.value}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`
-    );
+  const onChangeMethod = (e: SelectChangeEvent<MethodType>) => {
+    setMethod(e.target.value as MethodType);
+    changeUrlClient(e.target.value as MethodType, url, body, keyValuePairsHeader);
   };
 
   return (
@@ -170,6 +147,7 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
               type='text'
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              onBlur={() => changeUrlClient(method, url, body, keyValuePairsHeader)}
               required
             />
           </FormControl>
@@ -179,11 +157,15 @@ function RestForm({ initMethod, path }: { initMethod: string; path: string[] }) 
           </Button>
         </div>
 
-        {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
+        {(method === Methods.POST || method === Methods.PUT || method === Methods.PATCH) && (
           <div>
             <label>
               Request body (JSON):
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                onBlur={() => changeUrlClient(method, url, body, keyValuePairsHeader)}
+              />
             </label>
           </div>
         )}
