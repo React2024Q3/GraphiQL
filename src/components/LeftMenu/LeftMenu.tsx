@@ -21,6 +21,7 @@ import Drawer from '@mui/material/Drawer';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
+import headerStyles from '../Header/Header.module.css';
 import { AUTH_NAV_LINKS, GUEST_NAV_LINKS } from '../Header/constants';
 import styles from './LeftMenu.module.css';
 
@@ -81,7 +82,11 @@ export const LeftMenu: FC = () => {
 
   return (
     <div>
-      <IconButton onClick={toggleDrawer(true)} color='secondary'>
+      <IconButton
+        onClick={toggleDrawer(true)}
+        color='secondary'
+        className={headerStyles.menu__button}
+      >
         <MenuIcon />
       </IconButton>
       <Drawer open={open} onClose={toggleDrawer(false)}>
