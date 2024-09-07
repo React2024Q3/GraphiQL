@@ -52,6 +52,7 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
     if (delPair) delPair.editable = true;
     const newPairs = pairs.filter((p) => !p.editable);
     setPairs([...newPairs, createNewPair()]);
+    onPairsChange(newPairs);
   };
 
   return (

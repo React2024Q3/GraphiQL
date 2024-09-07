@@ -72,3 +72,7 @@ label.Mui-focused.MuiFormLabel-root,
 label.MuiFormLabel-filled.MuiFormLabel-root {
   top: 0;
 }
+
+.page__title {
+  margin: 1rem;
+}

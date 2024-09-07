@@ -47,9 +47,8 @@ export default function History() {
           const request = urlToRequestTransform(encodeUrl);
           if (!request) return null;
           const { url, method } = request;
-          const route = method === 'GRAPHQL' ? 'graphiql' : 'rest';
           return (
-            <Link href={route + '/' + encodeUrl} key={index}>
+            <Link href={encodeUrl} key={index}>
               {`${method} ${url}`}
             </Link>
           );

@@ -1,3 +1,7 @@
+.formContainer {
+  padding: 1rem;
+}
+
 .urlWrap {
   display: flex;
   align-items: center;

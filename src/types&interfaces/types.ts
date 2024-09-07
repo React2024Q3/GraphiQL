@@ -1,3 +1,5 @@
+import { Methods } from './enums';
+
 export type SignInFormData = {
   email: string;
   password: string;
@@ -13,3 +15,5 @@ export type KeyValuePair = {
   value: string;
   editable: boolean;
 };
+
+export type MethodType = Methods.GET | Methods.DELETE | Methods.POST | Methods.PUT | Methods.PATCH;
