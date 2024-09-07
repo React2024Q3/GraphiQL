@@ -4,24 +4,24 @@
   align-items: center;
   gap: 2rem;
   padding: 1rem;
-  background-color: #333;
+  background-color: var(--mui-palette-grey-800);
 }
 
 .footer__container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .link {
-  color: #fff;
-  transition: color 0.2s ease;
+  color: var(--mui-palette-primary-contrastText);
+  transition: color 0.25s ease;
 }
 
 .link:hover {
-  color: #ffb749;
+  color: var(--mui-palette-secondary-main);
 }
 
 .year {
-  color: #fff;
+  color: var(--mui-palette-secondary-light);
 }

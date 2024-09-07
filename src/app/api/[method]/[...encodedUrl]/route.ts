@@ -2,43 +2,44 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { method: string; encodedUrl: string } }
+  { params }: { params: { method: string; encodedUrl: string[] } }
 ) {
   return handleRequest(req, params);
 }
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { method: string; encodedUrl: string } }
+  { params }: { params: { method: string; encodedUrl: string[] } }
 ) {
   return handleRequest(req, params);
 }
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { method: string; encodedUrl: string } }
+  { params }: { params: { method: string; encodedUrl: string[] } }
 ) {
   return handleRequest(req, params);
 }
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { method: string; encodedUrl: string } }
+  { params }: { params: { method: string; encodedUrl: string[] } }
 ) {
   return handleRequest(req, params);
 }
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { method: string; encodedUrl: string } }
+  { params }: { params: { method: string; encodedUrl: string[] } }
 ) {
   return handleRequest(req, params);
 }
 
-async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string }) {
+async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string[] }) {
   const { method, encodedUrl } = params;
 
   const url = atob(decodeURIComponent(encodedUrl[0]));
+  console.log(encodedUrl);
 
   const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
@@ -54,6 +55,7 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
     headers[pair[0].toString()] = pair[1].toString();
   });
   console.log(headers);
+  console.log(url);
 
   try {
     const response = await fetch(url, {
@@ -64,7 +66,6 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
 
     const contentType = response.headers.get('content-type');
     let data;
-
     if (contentType && contentType.includes('application/json')) {
       data = await response.json();
     } else {

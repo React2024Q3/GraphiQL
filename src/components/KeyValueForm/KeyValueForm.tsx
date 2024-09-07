@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { KeyValuePair } from '@/types&interfaces/types';
 import { Box, Button, Grid, TextField } from '@mui/material';
@@ -8,10 +8,24 @@ import { Box, Button, Grid, TextField } from '@mui/material';
 type KeyValueFormProps = {
   onPairsChange: (pairs: KeyValuePair[]) => void;
   title: string;
+  initPairs?: KeyValuePair[];
 };
 
-export default function KeyValueForm({ onPairsChange, title }: KeyValueFormProps) {
-  const [pairs, setPairs] = useState<KeyValuePair[]>([{ key: '', value: '', editable: true }]);
+const createNewPair = (): KeyValuePair => ({
+  key: '',
+  value: '',
+  editable: true,
+});
+
+export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyValueFormProps) {
+  const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initPairs && initPairs.length) {
+      setPairs([...initPairs, createNewPair()]);
+    }
+  }, [initPairs]);
 
   const handleAddPair = () => {
     const lastPair = pairs[pairs.length - 1];
@@ -19,23 +33,25 @@ export default function KeyValueForm({ onPairsChange, title }: KeyValueFormProps
       const updatedPairs = pairs.map((pair, index) =>
         index === pairs.length - 1 ? { ...pair, editable: false } : pair
       );
+      setPairs([...updatedPairs, createNewPair()]);
       onPairsChange(updatedPairs);
-      setPairs([...updatedPairs, { key: '', value: '', editable: true }]);
+      setError(null);
     } else {
-      alert('Please fill both key and value fields.');
+      setError('Please fill both key and value fields.');
     }
   };
 
   const handleChange = (index: number, field: 'key' | 'value', newValue: string) => {
     const newPairs = [...pairs];
-    newPairs[index][field] = newValue;
+    newPairs[index] = { ...newPairs[index], [field]: newValue };
     setPairs(newPairs);
   };
 
   const handleRemovePair = (index: number) => {
-    const newPairs = pairs.filter((_, i) => i !== index);
-    setPairs(newPairs);
-    onPairsChange(newPairs);
+    const delPair = pairs.find((_, i) => i === index);
+    if (delPair) delPair.editable = true;
+    const newPairs = pairs.filter((p) => !p.editable);
+    setPairs([...newPairs, createNewPair()]);
   };
 
   return (
@@ -43,7 +59,14 @@ export default function KeyValueForm({ onPairsChange, title }: KeyValueFormProps
       <h3>{title}</h3>
       <Grid container spacing={2} mt={1}>
         {pairs.map((pair, index) => (
-          <Grid container item spacing={2} key={index} alignItems='center'>
+          <Grid
+            container
+            item
+            spacing={2}
+            key={index}
+            alignItems='top'
+            style={{ maxWidth: 'calc( 100% - 70px )' }}
+          >
             <Grid item xs={5}>
               <TextField
                 label='Key'
@@ -51,6 +74,10 @@ export default function KeyValueForm({ onPairsChange, title }: KeyValueFormProps
                 onChange={(e) => handleChange(index, 'key', e.target.value)}
                 fullWidth
                 disabled={!pair.editable}
+                error={Boolean(error && pair.editable && pair.key.trim() === '')}
+                helperText={
+                  error && pair.editable && pair.key.trim() === '' ? 'Please fill in the key' : ''
+                }
               />
             </Grid>
             <Grid item xs={5}>
@@ -60,19 +87,40 @@ export default function KeyValueForm({ onPairsChange, title }: KeyValueFormProps
                 onChange={(e) => handleChange(index, 'value', e.target.value)}
                 fullWidth
                 disabled={!pair.editable}
+                error={Boolean(error && pair.editable && pair.value.trim() === '')}
+                helperText={
+                  error && pair.editable && pair.value.trim() === ''
+                    ? 'Please fill in the value'
+                    : ''
+                }
               />
             </Grid>
             <Grid item xs={2}>
               {pair.editable ? (
-                <Button variant='outlined' color='primary' onClick={handleAddPair}>
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  onClick={handleAddPair}
+                  sx={{ height: '56px' }}
+                >
                   Add
                 </Button>
               ) : (
-                <Button variant='outlined' color='error' onClick={() => handleRemovePair(index)}>
+                <Button
+                  variant='outlined'
+                  color='error'
+                  onClick={() => handleRemovePair(index)}
+                  sx={{ height: '56px' }}
+                >
                   Del
                 </Button>
               )}
             </Grid>
+            {error && pair.editable && (
+              <Grid item xs={12} sx={{ pt: '0 !important' }}>
+                <span style={{ color: 'red', fontSize: '0.8rem' }}>{error}</span>
+              </Grid>
+            )}
           </Grid>
         ))}
       </Grid>

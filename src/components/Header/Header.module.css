@@ -5,12 +5,11 @@
   align-items: center;
   justify-content: space-between;
   top: 0;
-  background-color: #333;
-  color: #ddd;
-  padding: 20px 10px;
+  background-color: var(--mui-palette-grey-800);
+  padding: 0.7rem 1rem;
   width: 100%;
   z-index: 100;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .nav {
@@ -19,64 +18,23 @@
   align-items: center;
 }
 
-.nav__link {
-  position: relative;
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  margin-right: 20px;
-}
-
-.nav__link::after {
-  content: '';
-  position: absolute;
-  background-color: currentColor;
-  height: 1px;
-  bottom: -3px;
-  left: 50%;
-  right: 50%;
-  transition: all 0.3s linear;
-}
-
-.nav__link:hover::after {
-  left: 0%;
-  right: 0%;
-}
-
-.lang select {
-  background-color: #444;
-  color: white;
-  border: none;
-  padding: 5px;
-  font-size: 16px;
-}
-
-.logoutBtn {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: all 0.3s linear;
-}
-
-.logoutBtn:hover {
-  background-color: white;
-  color: #ff4d4d;
-}
-
 .header.isScroll {
-  background-color: #ddd;
-  color: #333;
-  padding: 10px 10px;
+  background-color: var(--mui-palette-grey-400);
+  padding: 0.3rem 1rem;
 }
 
-.header.isScroll .nav {
-  font-size: 16px;
+.button__skeleton {
+  min-width: 5.6rem;
+  min-height: 2.2rem;
 }
 
-.header.isScroll .logoutButton {
-  padding: 5px 15px;
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
+.isScroll .header__logo_title {
+  color: var(--mui-palette-primary-700);
 }

@@ -3,29 +3,25 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ErrorNotification } from '@/components/ErrorNotification';
 import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
-import { Notification } from '@/components/Notification';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
-import {
-  StyledBox,
-  StyledButton,
-  StyledForm,
-  StyledHeader,
-  StyledMessageBox,
-} from '@/shared/styledComponents/styledForm';
+import styles from '@/shared/styles/auth.module.css';
 import { SignUpFormData } from '@/types&interfaces/types';
 import { handleAuthError } from '@/utils/authHelpers';
 import { singUpValidationSchema } from '@/utils/validation/signUpValidationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 function SignUp() {
   const router = useRouter();
   const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
+  const t = useTranslations();
 
   useEffect(() => {
     if (user) {
@@ -50,8 +46,9 @@ function SignUp() {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async ({ name, email, password }) => {
     try {
-      registerWithEmailAndPassword(name, email, password);
+      await registerWithEmailAndPassword(name, email, password);
     } catch (error) {
+      console.log(error);
       handleAuthError(error, setFirebaseError, setError);
     }
   };
@@ -61,45 +58,56 @@ function SignUp() {
   }
 
   return (
-    <Container>
-      <StyledBox>
-        <StyledHeader variant='h5'>Sign Up</StyledHeader>
-        {error && <Notification isOpen={!!error} message={error.message} severity='error' />}
-        <StyledForm component='form' onSubmit={handleSubmit(onSubmit)}>
-          <FormField<SignUpFormData> name='name' control={control} label='Name' errors={errors} />
-          <FormField<SignUpFormData>
-            name='email'
-            control={control}
-            label='E-mail'
-            type={'email'}
-            errors={errors}
-          />
-          <FormField<SignUpFormData>
-            name='password'
-            control={control}
-            label='Password'
-            type={'password'}
-            errors={errors}
-          />
-          <FormField<SignUpFormData>
-            name='confirmPassword'
-            control={control}
-            label='Confirm Password'
-            type={'password'}
-            errors={errors}
-          />
-          <Typography color='error' variant='body2'>
-            {firebaseError || '\u00A0'}
-          </Typography>
-          <StyledButton type='submit' fullWidth variant='contained' disabled={loading}>
-            Sign Up
-          </StyledButton>
-          <StyledMessageBox>
-            Already have an account?&nbsp;<Link href='/sign-in'>Sign in</Link>
-            &nbsp;now.
-          </StyledMessageBox>
-        </StyledForm>
-      </StyledBox>
+    <Container className={styles.auth__container}>
+      <Typography className={styles.auth__title} variant='h4'>
+        {t('buttons.sign-up')}
+      </Typography>
+      <ErrorNotification error={error} />
+      <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
+        <FormField<SignUpFormData>
+          name='name'
+          control={control}
+          label={t('auth.name')}
+          errors={errors}
+        />
+        <FormField<SignUpFormData>
+          name='email'
+          control={control}
+          label={t('auth.email')}
+          type={'email'}
+          errors={errors}
+        />
+        <FormField<SignUpFormData>
+          name='password'
+          control={control}
+          label={t('auth.password')}
+          type={'password'}
+          errors={errors}
+        />
+        <FormField<SignUpFormData>
+          name='confirmPassword'
+          control={control}
+          label={t('auth.confirm-password')}
+          type={'password'}
+          errors={errors}
+        />
+        <Typography color='error' variant='body2'>
+          {firebaseError || '\u00A0'}
+        </Typography>
+        <Button
+          className={styles.auth__button}
+          type='submit'
+          fullWidth
+          variant='contained'
+          disabled={loading}
+        >
+          {t('buttons.sign-up')}
+        </Button>
+        <Box className={styles.auth__message}>
+          {t('auth.message-1-sign-up')}&nbsp;<Link href='/sign-in'>{t('buttons.sign-in')}</Link>
+          &nbsp;{t('auth.message-2')}
+        </Box>
+      </form>
     </Container>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent } from 'react';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import { type Locale } from '@/navigation';
 import { useLocale } from 'next-intl';
@@ -13,16 +13,14 @@ export default function LanguageSelect() {
   const pathname = usePathname();
   const locale = useLocale() as Locale;
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (e: SelectChangeEvent<string>) => {
     router.push(pathname, { locale: e.target.value });
   };
 
   return (
-    <div className={styles.lang}>
-      <select value={locale} onChange={handleChange}>
-        <option value='en'>Eng</option>
-        <option value='ru'>Рус</option>
-      </select>
-    </div>
+    <Select className={styles.select} value={locale} onChange={(e) => handleChange(e)}>
+      <MenuItem value='en'>Eng</MenuItem>
+      <MenuItem value='ru'>Рус</MenuItem>
+    </Select>
   );
 }
