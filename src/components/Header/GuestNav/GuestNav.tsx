@@ -1,22 +1,22 @@
 import { FC } from 'react';
 
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+
+import styles from '../Header.module.css';
+import { GUEST_NAV_LINKS } from '../constants';
 
 export const GuestNav: FC = () => {
   const t = useTranslations('buttons');
 
   return (
-    <>
-      <Link href='/sign-up'>
-        <Button variant='contained'>{t('sign-up')}</Button>
-      </Link>
-      <Link href='/sign-in'>
-        <Button variant='contained' color='secondary' sx={{ color: '#000' }}>
-          {t('sign-in')}
-        </Button>
-      </Link>
-    </>
+    <Box className={styles.nav__buttons}>
+      {GUEST_NAV_LINKS.map((link) => (
+        <Link key={link.key} href={link.href}>
+          <Button className={styles.header__button}>{t(link.key)}</Button>
+        </Link>
+      ))}
+    </Box>
   );
 };

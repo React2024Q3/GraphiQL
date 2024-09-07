@@ -18,6 +18,16 @@
   align-items: center;
 }
 
+.nav__links {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.nav__buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .header.isScroll {
   background-color: var(--mui-palette-grey-400);
   padding: 0.3rem 1rem;
@@ -49,7 +59,14 @@
   color: var(--mui-palette-primary-light);
 }
 
-.header__logo_title:hover,
+.header__logo_title {
+  color: var(--mui-palette-secondary-light);
+}
+
+.header__logo_title:hover {
+  color: var(--mui-palette-secondary-200);
+}
+
 .header__button:hover {
   color: var(--mui-palette-primary-100);
 }

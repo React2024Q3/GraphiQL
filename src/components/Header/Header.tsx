@@ -7,9 +7,9 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
 
-import { LoadingSkeleton } from '../LoadingSkeleton';
+import { LeftMenu } from '../LeftMenu';
 import Logo from '../Logo';
 import { AuthenticatedNav } from './AuthenticatedNav';
 import { GuestNav } from './GuestNav';
@@ -19,6 +19,8 @@ export default function Header({ locale }: { locale: string }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
   const { user, loading } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -58,24 +60,18 @@ export default function Header({ locale }: { locale: string }) {
     <header ref={headerRef} className={styles.header}>
       <Link className={styles.header__logo} href='./'>
         <Logo />
-        <Button>
-          <Typography
-            className={styles.header__logo_title}
-            component='h1'
-            variant='subtitle1'
-            color='primary.light'
-          >
-            REST/GraphiQL Client
-          </Typography>
-        </Button>
+        {!loading && !isMobile && (
+          <Button>
+            <Typography className={styles.header__logo_title} component='h1' variant='subtitle1'>
+              REST/GraphiQL Client
+            </Typography>
+          </Button>
+        )}
       </Link>
 
       <nav className={styles.nav}>
-        {loading ? (
-          <LoadingSkeleton className={styles.header__skeleton} variant='rounded' />
-        ) : (
-          <>{user ? <AuthenticatedNav logout={logout} /> : <GuestNav />}</>
-        )}
+        {!loading &&
+          (isMobile ? <LeftMenu /> : user ? <AuthenticatedNav logout={logout} /> : <GuestNav />)}
 
         <LanguageSelect locale={locale} />
       </nav>
