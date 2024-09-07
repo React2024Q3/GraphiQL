@@ -5,18 +5,16 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { fetchUserName } from '@/firebase/utils';
 import { Box, Container, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 
 import { ErrorNotification } from '../../ErrorNotification';
 import ListLinks from '../../ListLinks';
-import { Loader } from '../../Loader';
-import { LoadingSkeleton } from '../../LoadingSkeleton';
 import styles from '../MainContent.module.css';
 import { getWelcomeString } from './helpers';
 
 export const WelcomeSection: FC = () => {
-  const { user, loading, error } = useAuth();
+  const { user } = useAuth();
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
   const t = useTranslations('Home');
@@ -29,46 +27,63 @@ export const WelcomeSection: FC = () => {
         err instanceof Error ? err : new Error('An error occured while fetching user data')
       );
     }
-  }, [user, loading]);
+  }, [user]);
 
   return (
     <Box className={styles.welcome}>
       <Container className={styles.welcome__container}>
-        <Box>
-          {loading ? (
-            <>
-              <Loader />
-              <LoadingSkeleton width='20rem' typographyVariant='h3' />
-            </>
-          ) : (
-            <Typography variant='h3' fontWeight={700}>
+        <Grid container spacing={2} width='100%'>
+          <Grid
+            size={{ xs: 12, md: 7, lg: 6 }}
+            display='flex'
+            flexDirection='column'
+            justifyContent='center'
+            sx={{
+              alignItems: {
+                xs: 'center',
+                md: 'flex-start',
+              },
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: '1.25rem',
+                  sm: '1.5rem',
+                  md: '2rem',
+                  lg: '3rem',
+                },
+                fontWeight: 700,
+              }}
+            >
               {getWelcomeString(user, name, t('welcome'))}
             </Typography>
-          )}
 
-          {loading ? (
-            <Box className={styles.button__skeletons}>
-              <LoadingSkeleton className={styles.button__skeleton} variant='rounded' width='6rem' />
-              <LoadingSkeleton className={styles.button__skeleton} variant='rounded' />
-            </Box>
-          ) : (
             <ListLinks isUser={!!user} />
-          )}
-        </Box>
-
-        <Box sx={{ position: 'relative', width: '546px', height: '414px' }}>
-          <Image
-            src='/main.png'
-            alt='main page picture'
-            sizes='546px'
-            fill
-            style={{
-              objectFit: 'contain',
+          </Grid>
+          <Grid
+            size={{ xs: 12, md: 5, lg: 6 }}
+            sx={{
+              display: 'flex',
+              justifyContent: {
+                xs: 'center',
+                md: 'flex-end',
+              },
             }}
-          />
-        </Box>
-
-        <ErrorNotification error={error} />
+          >
+            <Box
+              component='img'
+              sx={{
+                width: '100%',
+                height: 'auto',
+                maxWidth: { xs: 427, sm: 498, md: 559 },
+                maxHeight: { xs: 300, sm: 350, md: 400 },
+              }}
+              alt='Main page picture'
+              src='/main.png'
+            />
+          </Grid>
+        </Grid>
         <ErrorNotification error={fetchUserNameError} />
       </Container>
     </Box>

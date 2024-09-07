@@ -11,7 +11,19 @@ export const getWelcomeString = (
     <>
       {greetingPartWelcome}
       {!condition ? `!` : ', '}
-      <Typography variant='h3' component='span' fontWeight={700} color='primary.dark'>
+      <Typography
+        component='span'
+        color='primary.dark'
+        sx={{
+          fontSize: {
+            xs: '1.25rem',
+            sm: '1.5rem',
+            md: '2rem',
+            lg: '3rem',
+          },
+          fontWeight: 700,
+        }}
+      >
         {condition ? `${name}!` : '\u00A0'}
       </Typography>
       {}

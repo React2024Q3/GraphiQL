@@ -1,5 +1,4 @@
-.main__page,
-.welcome__container {
+.main__page {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,12 +7,6 @@
 .welcome__container,
 .container {
   padding: 3rem 1rem;
-}
-
-.welcome__container {
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
 }
 
 .title {
@@ -45,13 +38,9 @@
   background-color: var(--mui-palette-primary-light);
 }
 
-/* .course {
-  background-color: var(--mui-palette-grey-100);
-} */
-
 .developers__cards {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
   flex-grow: 1;
@@ -71,4 +60,16 @@
 .button__skeleton {
   min-width: 5.6rem;
   min-height: 2.2rem;
+}
+
+.iconContainer {
+  display: inline-block;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.iconContainer:hover {
+  transform: scale(1.1);
+  filter: brightness(1.3);
 }

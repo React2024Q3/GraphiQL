@@ -13,7 +13,20 @@ export const Footer: FC = () => {
       <Typography className={styles.year} variant='body2'>
         &copy; 2024
       </Typography>
-      <Box className={styles.footer__container}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+          },
+          gap: {
+            xs: '0.5rem',
+            sm: '1.5rem',
+          },
+          alignItems: 'center',
+        }}
+      >
         {DEVELOPERS.map(({ github, githubName }) => (
           <Link key={githubName} className={styles.link} href={github}>
             {githubName}
