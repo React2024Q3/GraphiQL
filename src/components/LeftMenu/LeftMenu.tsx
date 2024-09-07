@@ -36,9 +36,11 @@ export const LeftMenu: FC = () => {
 
   const DrawerList = (
     <Box className={styles.drawer__container} role='presentation' onClick={toggleDrawer(false)}>
-      <Typography className={styles.drawer__title} component='h1' variant='subtitle1'>
-        REST/GraphiQL Client
-      </Typography>
+      <Link className={styles.link} href='./'>
+        <Typography className={styles.drawer__title} component='h1' variant='subtitle1'>
+          REST/GraphiQL Client
+        </Typography>
+      </Link>
       {user ? (
         <>
           <List>
