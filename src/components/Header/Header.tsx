@@ -20,7 +20,7 @@ export default function Header({ locale }: { locale: string }) {
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
   const { user, loading } = useAuth();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const handleScroll = throttle(() => {

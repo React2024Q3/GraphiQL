@@ -13,7 +13,7 @@ export const AUTH_NAV_LINKS = [
   },
   {
     key: 'rest',
-    href: '/rest',
+    href: '/GET',
     icon: <SettingsIcon color='primary' />,
   },
   {
