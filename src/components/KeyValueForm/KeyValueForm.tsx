@@ -28,18 +28,18 @@ export default function KeyValueForm({
 }: KeyValueFormProps) {
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
   const [error, setError] = useState<string | null>(null);
-  const [vars, saveVarToLS] = useVariablesLS();
+  const [_, saveVarToLS] = useVariablesLS();
 
-  useEffect(() => {
-    if (isVars && vars && vars.length) {
-      const pairsLS: KeyValuePair[] = vars.map(({ key, value }) => ({
-        key,
-        value,
-        editable: false,
-      }));
-      setPairs([...pairsLS, createNewPair()]);
-    }
-  }, [isVars, vars]);
+  // useEffect(() => {
+  //   if (isVars && vars && vars.length) {
+  //     const pairsLS: KeyValuePair[] = vars.map(({ key, value }) => ({
+  //       key,
+  //       value,
+  //       editable: false,
+  //     }));
+  //     setPairs([...pairsLS, createNewPair()]);
+  //   }
+  // }, [isVars, vars]);
 
   useEffect(() => {
     if (initPairs && initPairs.length) {

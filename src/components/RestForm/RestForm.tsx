@@ -4,9 +4,11 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
+import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { Methods } from '@/types&interfaces/enums';
 import { KeyValuePair, MethodType } from '@/types&interfaces/types';
 import changeUrlClient from '@/utils/changeUrlClient';
+import transformVariables from '@/utils/transformVariables';
 import {
   Box,
   Button,
@@ -45,6 +47,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   const [_, saveUrlToLS] = useHistoryLS();
   const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
+  const [vars] = useVariablesLS();
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -72,6 +75,10 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
     }
   }, [path, searchParams]);
 
+  useEffect(() => {
+    setKeyValuePairsVar(vars.map(({ key, value }) => ({ key, value, editable: false })));
+  }, [vars]);
+
   if (loading) {
     return <Loader />;
   }
@@ -83,6 +90,12 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
   const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsVar(newPairs);
+    changeUrlClient(
+      method,
+      transformVariables(url, keyValuePairsVar),
+      transformVariables(body, keyValuePairsVar),
+      newPairs
+    );
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -92,7 +105,12 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const apiUrl = changeUrlClient(method, url, body, keyValuePairsHeader);
+      const apiUrl = changeUrlClient(
+        method,
+        transformVariables(url, keyValuePairsVar),
+        transformVariables(body, keyValuePairsVar),
+        keyValuePairsHeader
+      );
 
       saveUrlToLS(apiUrl);
 
@@ -147,7 +165,14 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               type='text'
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              onBlur={() => changeUrlClient(method, url, body, keyValuePairsHeader)}
+              onBlur={() =>
+                changeUrlClient(
+                  method,
+                  transformVariables(url, keyValuePairsVar),
+                  transformVariables(body, keyValuePairsVar),
+                  keyValuePairsHeader
+                )
+              }
               required
             />
           </FormControl>
@@ -164,7 +189,14 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                onBlur={() => changeUrlClient(method, url, body, keyValuePairsHeader)}
+                onBlur={() =>
+                  changeUrlClient(
+                    method,
+                    transformVariables(url, keyValuePairsVar),
+                    transformVariables(body, keyValuePairsVar),
+                    keyValuePairsHeader
+                  )
+                }
               />
             </label>
           </div>
