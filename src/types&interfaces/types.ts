@@ -16,4 +16,6 @@ export type KeyValuePair = {
   editable: boolean;
 };
 
+export type KeyValuePairVar = Omit<KeyValuePair, 'editable'>;
+
 export type MethodType = Methods.GET | Methods.DELETE | Methods.POST | Methods.PUT | Methods.PATCH;

@@ -191,6 +191,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               onPairsChange={handlePairsChangeVar}
               title={'Variables'}
               initPairs={keyValuePairsVar}
+              isVars={true}
             />
           </Box>
         </Box>

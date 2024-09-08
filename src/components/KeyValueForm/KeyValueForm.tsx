@@ -2,13 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 
+import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { KeyValuePair } from '@/types&interfaces/types';
+import recordToLS from '@/utils/recordToLS';
 import { Box, Button, Grid, TextField } from '@mui/material';
 
 type KeyValueFormProps = {
   onPairsChange: (pairs: KeyValuePair[]) => void;
   title: string;
   initPairs?: KeyValuePair[];
+  isVars?: boolean;
 };
 
 const createNewPair = (): KeyValuePair => ({
@@ -17,9 +20,26 @@ const createNewPair = (): KeyValuePair => ({
   editable: true,
 });
 
-export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyValueFormProps) {
+export default function KeyValueForm({
+  onPairsChange,
+  title,
+  initPairs,
+  isVars,
+}: KeyValueFormProps) {
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
   const [error, setError] = useState<string | null>(null);
+  const [vars, saveVarToLS] = useVariablesLS();
+
+  useEffect(() => {
+    if (isVars && vars && vars.length) {
+      const pairsLS: KeyValuePair[] = vars.map(({ key, value }) => ({
+        key,
+        value,
+        editable: false,
+      }));
+      setPairs([...pairsLS, createNewPair()]);
+    }
+  }, [isVars, vars]);
 
   useEffect(() => {
     if (initPairs && initPairs.length) {
@@ -35,6 +55,7 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
       );
       setPairs([...updatedPairs, createNewPair()]);
       onPairsChange(updatedPairs);
+      if (isVars) recordToLS(updatedPairs, saveVarToLS);
       setError(null);
     } else {
       setError('Please fill both key and value fields.');
@@ -53,6 +74,7 @@ export default function KeyValueForm({ onPairsChange, title, initPairs }: KeyVal
     const newPairs = pairs.filter((p) => !p.editable);
     setPairs([...newPairs, createNewPair()]);
     onPairsChange(newPairs);
+    if (isVars) recordToLS(newPairs, saveVarToLS);
   };
 
   return (

@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 
-import { KeyValuePair } from '@/types&interfaces/types';
+import { KeyValuePairVar } from '@/types&interfaces/types';
 
 import { REST_VAR_LS } from '../constants';
 
-export default function useVariables(): [KeyValuePair[], (varPair: KeyValuePair) => void] {
-  const [vars, setVars] = useState<KeyValuePair[]>([]);
+export default function useVariablesLS(): [
+  KeyValuePairVar[],
+  (updateVars: KeyValuePairVar[]) => void,
+] {
+  const [vars, setVars] = useState<KeyValuePairVar[]>([]);
 
-  const saveVarToLS = (newVar: KeyValuePair) => {
-    const newListVars = [newVar, ...vars];
-    setVars(newListVars);
+  const saveVarToLS = (updateVars: KeyValuePairVar[]) => {
+    setVars(updateVars);
     if (typeof window !== 'undefined') {
-      localStorage.setItem(REST_VAR_LS, JSON.stringify(newListVars));
+      localStorage.setItem(REST_VAR_LS, JSON.stringify(updateVars));
     }
   };
 
