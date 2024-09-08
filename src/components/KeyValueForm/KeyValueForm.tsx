@@ -50,15 +50,19 @@ export default function KeyValueForm({
   const handleAddPair = () => {
     const lastPair = pairs[pairs.length - 1];
     if (lastPair.key.trim() !== '' && lastPair.value.trim() !== '') {
+      setError(null);
+      if (pairs.find(({ key, editable }) => key === lastPair.key.trim() && !editable)) {
+        setError('Delete same key');
+        return;
+      }
       const updatedPairs = pairs.map((pair, index) =>
         index === pairs.length - 1 ? { ...pair, editable: false } : pair
       );
       setPairs([...updatedPairs, createNewPair()]);
       onPairsChange(updatedPairs);
       if (isVars) recordToLS(updatedPairs, saveVarToLS);
-      setError(null);
     } else {
-      setError('Please fill both key and value fields.');
+      setError('Fill both key and value fields.');
     }
   };
 
