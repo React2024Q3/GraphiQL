@@ -41,7 +41,7 @@
 .developers__cards {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.7rem;
   flex-wrap: wrap;
   flex-grow: 1;
 }
@@ -60,16 +60,4 @@
 .button__skeleton {
   min-width: 5.6rem;
   min-height: 2.2rem;
-}
-
-.iconContainer {
-  display: inline-block;
-  transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
-}
-
-.iconContainer:hover {
-  transform: scale(1.1);
-  filter: brightness(1.3);
 }
