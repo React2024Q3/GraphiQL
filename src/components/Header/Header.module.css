@@ -18,13 +18,17 @@
   align-items: center;
 }
 
-.nav__links {
+.nav__links,
+.nav__buttons {
   display: flex;
+  align-items: center;
+}
+
+.nav__links {
   gap: 0.3rem;
 }
 
 .nav__buttons {
-  display: flex;
   gap: 0.5rem;
 }
 
