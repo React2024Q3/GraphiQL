@@ -10,7 +10,7 @@ export default function RestPage({ params }: { params: { method: MethodType; pat
     <>
       <h2 className='page__title'>Rest Page</h2>
 
-      <RestForm initMethod={params.method} path={params.path} />
+      <RestForm initMethod={params.method.toUpperCase() as MethodType} path={params.path} />
     </>
   );
 }

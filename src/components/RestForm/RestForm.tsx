@@ -132,6 +132,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
     changeUrlClient(e.target.value as MethodType, url, body, keyValuePairsHeader);
   };
 
+  console.log('method: ' + method);
   return (
     <Container className={styles.formContainer}>
       <ErrorNotification error={error} />
