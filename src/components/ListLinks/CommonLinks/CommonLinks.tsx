@@ -7,7 +7,7 @@ export function CommonLinks() {
   return (
     <>
       <li>
-        <Link href='/rest'>
+        <Link href='/get'>
           <Button variant='contained'>{t('rest')}</Button>
         </Link>
       </li>

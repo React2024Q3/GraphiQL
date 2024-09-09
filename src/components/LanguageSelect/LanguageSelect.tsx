@@ -1,6 +1,6 @@
 'use client';
 
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import { type Locale } from '@/navigation';
 import { useLocale } from 'next-intl';
@@ -18,9 +18,11 @@ export default function LanguageSelect() {
   };
 
   return (
-    <Select className={styles.select} value={locale} onChange={(e) => handleChange(e)}>
-      <MenuItem value='en'>Eng</MenuItem>
-      <MenuItem value='ru'>Рус</MenuItem>
-    </Select>
+    <FormControl size='small'>
+      <Select className={styles.select} value={locale} onChange={(e) => handleChange(e)}>
+        <MenuItem value='en'>Eng</MenuItem>
+        <MenuItem value='ru'>Рус</MenuItem>
+      </Select>
+    </FormControl>
   );
 }

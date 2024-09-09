@@ -1,11 +1,26 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
-import { KeyValuePair } from '@/types&interfaces/types';
-import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs, TextField } from '@mui/material';
+import useVariablesLS from '@/shared/hooks/useVariablesLS';
+import { Methods } from '@/types&interfaces/enums';
+import { KeyValuePair, MethodType } from '@/types&interfaces/types';
+import changeUrlClient from '@/utils/changeUrlClient';
+import transformVariables from '@/utils/transformVariables';
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  TextField,
+} from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
@@ -19,8 +34,8 @@ interface ApiResponse {
   error?: string;
 }
 
-function RestForm({ path }: { path: string[] }) {
-  const [method, setMethod] = useState<string>('GET');
+function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[] }) {
+  const [method, setMethod] = useState<MethodType>(initMethod);
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [response, setResponse] = useState<ApiResponse | null>(null);
@@ -31,34 +46,38 @@ function RestForm({ path }: { path: string[] }) {
   const { loading, error } = useAuthRedirect();
   const [_, saveUrlToLS] = useHistoryLS();
   const searchParams = useSearchParams();
+  const isFirstRender = useRef(true);
+  const [vars] = useVariablesLS();
 
   useEffect(() => {
-    if (path && path.length) {
-      setMethod(path[1].toUpperCase());
-    }
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      if (path && path.length) {
+        const decodedUrl = atob(decodeURIComponent(path[0]));
+        setUrl(decodedUrl);
+      }
 
-    if (path && path.length > 2) {
-      const decodedUrl = atob(decodeURIComponent(path[2]));
-      setUrl(decodedUrl);
-    }
+      if (path && path.length > 1) {
+        const decodedBody = atob(decodeURIComponent(path[1]));
+        setBody(decodedBody);
+      }
 
-    if (path && path.length > 3) {
-      const decodedBody = atob(decodeURIComponent(path[3]));
-      setBody(decodedBody);
-    }
+      const searchParamsArray = Array.from(searchParams.entries());
 
-    const searchParamsArray = Array.from(searchParams.entries());
-    console.log(searchParamsArray);
-
-    if (searchParamsArray.length > 0) {
-      const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
-        key,
-        value,
-        editable: false,
-      }));
-      setKeyValuePairsHeader(parsedHeaders);
+      if (searchParamsArray.length > 0) {
+        const parsedHeaders: KeyValuePair[] = searchParamsArray.map(([key, value]) => ({
+          key,
+          value,
+          editable: false,
+        }));
+        setKeyValuePairsHeader(parsedHeaders);
+      }
     }
   }, [path, searchParams]);
+
+  useEffect(() => {
+    setKeyValuePairsVar(vars.map(({ key, value }) => ({ key, value, editable: false })));
+  }, [vars]);
 
   if (loading) {
     return <Loader />;
@@ -66,10 +85,17 @@ function RestForm({ path }: { path: string[] }) {
 
   const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsHeader(newPairs);
+    changeUrlClient(method, url, body, newPairs);
   };
 
   const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsVar(newPairs);
+    changeUrlClient(
+      method,
+      transformVariables(url, keyValuePairsVar),
+      transformVariables(body, keyValuePairsVar),
+      newPairs
+    );
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -78,24 +104,17 @@ function RestForm({ path }: { path: string[] }) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const currentKeyValuesHeader = keyValuePairsHeader.filter((el) => !el.editable);
-    // const currentKeyValuesVar = keyValuePairsVar.filter((el) => !el.editable);
-
-    const encodedUrl = encodeURIComponent(btoa(url));
-    const encodedBody = body && method !== 'GET' ? encodeURIComponent(btoa(body)) : '';
-
     try {
-      let apiUrl = `/api/${method}/${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}`;
+      const apiUrl = changeUrlClient(
+        method,
+        transformVariables(url, keyValuePairsVar),
+        transformVariables(body, keyValuePairsVar),
+        keyValuePairsHeader
+      );
 
-      if (currentKeyValuesHeader.length) {
-        const stringHeader = currentKeyValuesHeader
-          .map(({ key, value }) => key + '=' + value)
-          .join('&');
-        apiUrl += '?' + stringHeader.replaceAll('/', '%2F');
-      }
       saveUrlToLS(apiUrl);
 
-      const res = await fetch(apiUrl);
+      const res = await fetch('/api/' + apiUrl);
       if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
@@ -108,14 +127,20 @@ function RestForm({ path }: { path: string[] }) {
     }
   };
 
+  const onChangeMethod = (e: SelectChangeEvent<MethodType>) => {
+    setMethod(e.target.value as MethodType);
+    changeUrlClient(e.target.value as MethodType, url, body, keyValuePairsHeader);
+  };
+
+  console.log('method: ' + method);
   return (
-    <>
+    <Container className={styles.formContainer}>
       <ErrorNotification error={error} />
       <ErrorNotification error={response?.error} />
-      <form onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
-            <Select value={method} onChange={(e) => setMethod(e.target.value)}>
+            <Select value={method} onChange={onChangeMethod}>
               <MenuItem className={styles.selectItem} value='GET'>
                 GET
               </MenuItem>
@@ -141,6 +166,14 @@ function RestForm({ path }: { path: string[] }) {
               type='text'
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              onBlur={() =>
+                changeUrlClient(
+                  method,
+                  transformVariables(url, keyValuePairsVar),
+                  transformVariables(body, keyValuePairsVar),
+                  keyValuePairsHeader
+                )
+              }
               required
             />
           </FormControl>
@@ -150,11 +183,22 @@ function RestForm({ path }: { path: string[] }) {
           </Button>
         </div>
 
-        {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
+        {(method === Methods.POST || method === Methods.PUT || method === Methods.PATCH) && (
           <div>
             <label>
               Request body (JSON):
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                onBlur={() =>
+                  changeUrlClient(
+                    method,
+                    transformVariables(url, keyValuePairsVar),
+                    transformVariables(body, keyValuePairsVar),
+                    keyValuePairsHeader
+                  )
+                }
+              />
             </label>
           </div>
         )}
@@ -180,13 +224,14 @@ function RestForm({ path }: { path: string[] }) {
               onPairsChange={handlePairsChangeVar}
               title={'Variables'}
               initPairs={keyValuePairsVar}
+              isVars={true}
             />
           </Box>
         </Box>
       </form>
 
       <ResponseDisplay headers={headers} response={JSON.stringify(response, null, 2)} />
-    </>
+    </Container>
   );
 }
 

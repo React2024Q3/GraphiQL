@@ -2,12 +2,15 @@
   --mui-palette-primary-main: #2196f3;
   --mui-palette-primary-light: #64b5f6;
   --mui-palette-primary-dark: #1769aa;
+  --mui-palette-primary-100: #bbdefb;
   --mui-palette-primary-400: #42a5f5;
   --mui-palette-primary-700: #1976d2;
   --mui-palette-primary-contrastText: #fff;
   --mui-palette-secondary-main: #ffc107;
   --mui-palette-secondary-light: #ffd54f;
   --mui-palette-secondary-dark: #ff8f00;
+  --mui-palette-secondary-300: #ffd54f;
+  --mui-palette-secondary-200: #ffe082;
   --mui-palette-error-main: #d32f2f;
   --mui-palette-error-light: #ef5350;
   --mui-palette-error-dark: #c62828;
@@ -68,4 +71,8 @@ a:hover {
 label.Mui-focused.MuiFormLabel-root,
 label.MuiFormLabel-filled.MuiFormLabel-root {
   top: 0;
+}
+
+.page__title {
+  margin: 1rem;
 }

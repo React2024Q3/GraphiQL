@@ -4,16 +4,16 @@ import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 const theme = createTheme({
   cssVariables: true,
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          //   minWidth: '8rem',
-          //   minHeight: '2.5rem',
-          //   fontSize: '1rem',
-        },
-      },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 1060,
+      lg: 1200,
+      xl: 1536,
     },
+  },
+  components: {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
