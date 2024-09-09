@@ -14,6 +14,16 @@ vi.mock('@/components/Loader', () => ({
   Loader: () => <div>Loading...</div>,
 }));
 
+const submitFilledForm = () => {
+  fireEvent.change(screen.getByLabelText(/auth\.email/i), {
+    target: { value: 'test@example.com' },
+  });
+  fireEvent.change(screen.getByLabelText(/auth\.password/i), {
+    target: { value: 'Password123!' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-in' }));
+};
+
 describe('SignIn', () => {
   beforeEach(() => {
     (useAuth as Mock).mockReturnValue({ user: null, loading: false, error: null });
@@ -41,13 +51,7 @@ describe('SignIn', () => {
 
     render(<SignIn />);
 
-    fireEvent.change(screen.getByLabelText(/auth\.email/i), {
-      target: { value: 'test@example.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.password/i), {
-      target: { value: 'Password123!' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-in' }));
+    submitFilledForm();
 
     await waitFor(() => {
       expect(logInWithEmailAndPassword).toHaveBeenCalledWith('test@example.com', 'Password123!');
@@ -59,13 +63,7 @@ describe('SignIn', () => {
 
     render(<SignIn />);
 
-    fireEvent.change(screen.getByLabelText(/auth\.email/i), {
-      target: { value: 'invalid@example.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.password/i), {
-      target: { value: 'Aa1234567!' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-in' }));
+    submitFilledForm();
 
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument();
@@ -80,5 +78,19 @@ describe('SignIn', () => {
     render(<SignIn />);
 
     expect(replaceMock).toHaveBeenCalledWith('/');
+  });
+
+  it('shows error message when invalid credentials are provided', async () => {
+    (logInWithEmailAndPassword as Mock).mockRejectedValue(new Error('auth/invalid-credential'));
+
+    render(<SignIn />);
+
+    submitFilledForm();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Invalid credentials. Please check your email and password.')
+      ).toBeInTheDocument();
+    });
   });
 });

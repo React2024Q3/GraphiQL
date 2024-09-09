@@ -7,12 +7,33 @@ import { useTranslations } from 'next-intl';
 import { Mock, vi } from 'vitest';
 
 vi.mock('@/contexts/AuthContext/AuthContext');
-vi.mock('@/firebase/utils');
+vi.mock('@/firebase/utils', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    registerWithEmailAndPassword: vi.fn(),
+  };
+});
 vi.mock('@/navigation');
 vi.mock('next-intl');
 vi.mock('@/components/Loader', () => ({
   Loader: () => <div>Loading...</div>,
 }));
+
+const submitFilledForm = () => {
+  fireEvent.change(screen.getByLabelText(/auth\.name/i), { target: { value: 'Test User' } });
+  fireEvent.change(screen.getByLabelText(/auth\.email/i), {
+    target: { value: 'test@example.com' },
+  });
+  fireEvent.change(screen.getByLabelText(/auth\.password/i), {
+    target: { value: 'Password123!' },
+  });
+  fireEvent.change(screen.getByLabelText(/auth\.confirm-password/i), {
+    target: { value: 'Password123!' },
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-up' }));
+};
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -43,18 +64,7 @@ describe('SignUp', () => {
 
     render(<SignUp />);
 
-    fireEvent.change(screen.getByLabelText(/auth\.name/i), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByLabelText(/auth\.email/i), {
-      target: { value: 'test@example.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.password/i), {
-      target: { value: 'Password123!' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.confirm-password/i), {
-      target: { value: 'Password123!' },
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-up' }));
+    submitFilledForm();
 
     await waitFor(() => {
       expect(registerWithEmailAndPassword).toHaveBeenCalledWith(
@@ -70,18 +80,7 @@ describe('SignUp', () => {
 
     render(<SignUp />);
 
-    fireEvent.change(screen.getByLabelText(/auth\.name/i), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByLabelText(/auth\.email/i), {
-      target: { value: 'invalid@example.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.password/i), {
-      target: { value: 'Password123!' },
-    });
-    fireEvent.change(screen.getByLabelText(/auth\.confirm-password/i), {
-      target: { value: 'Password123!' },
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'buttons.sign-up' }));
+    submitFilledForm();
 
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument();
@@ -96,5 +95,19 @@ describe('SignUp', () => {
     render(<SignUp />);
 
     expect(replaceMock).toHaveBeenCalledWith('/');
+  });
+
+  it('shows an error when email is already in use', async () => {
+    (registerWithEmailAndPassword as Mock).mockRejectedValue(
+      new Error('auth/email-already-in-use')
+    );
+
+    render(<SignUp />);
+
+    submitFilledForm();
+
+    await waitFor(() =>
+      expect(screen.getByText('This email is already in use.')).toBeInTheDocument()
+    );
   });
 });
