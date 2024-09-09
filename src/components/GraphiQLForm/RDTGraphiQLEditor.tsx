@@ -4,14 +4,13 @@ import { useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
 // Include default styles
-import { DocExplorer, GraphiQLProvider, QueryEditor, VariableEditor } from '@graphiql/react';
+import { GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import { Box } from '@mui/material';
+import { RDTGraphiQLInterface } from './RDTGraphiQLInterface';
 
-import styles from './graphQLEditor.module.css';
-
-export const GraphQLEditor = ({ url, initialQuery, initialQueryVariables }: { url: string; initialQuery: string; initialQueryVariables: string }) => {
+export const RDTGraphiQLEditor = ({ url, initialQuery, initialQueryVariables }: { url: string; initialQuery: string; initialQueryVariables: string }) => {
   // const anotherFetcher = createGraphiQLFetcher({
   //   url: 'https://my.graphql.api/graphql',
   // });
@@ -24,6 +23,8 @@ export const GraphQLEditor = ({ url, initialQuery, initialQueryVariables }: { ur
   //   url: 'https://rickandmortyapi.com/graphql',
   // })
   //console.log(f);
+
+
   const memoFetcher = useMemo(
     () =>
       createGraphiQLFetcher({
@@ -51,24 +52,14 @@ export const GraphQLEditor = ({ url, initialQuery, initialQueryVariables }: { ur
   //     })
   //     console.log(createFetcher);
   //     setFetcher(createFetcher);
-  //   }
   // }, [url]); //url
+  //   }
 
   return (
     //  fetcher ? (
     <GraphiQLProvider fetcher={memoFetcher} query={initialQuery} variables={initialQueryVariables}>
       {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}> */}
-      <div className='graphiql-container'>
-        <div className={styles['query-and-vars-box']}>
-          <div className={styles['query-editor']}>
-            <QueryEditor></QueryEditor>
-          </div>
-          <div className={styles['variables-editor']}>
-            <VariableEditor></VariableEditor>
-          </div>
-        </div>
-        <DocExplorer></DocExplorer>
-      </div>
+      <RDTGraphiQLInterface></RDTGraphiQLInterface>
     </GraphiQLProvider>
     //  ) : (
     //    <div>Loading</div>

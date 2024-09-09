@@ -1,0 +1,10 @@
+.tabWrap {
+  width: 400%;
+  display: flex;
+  transition: all 0.4s linear;
+}
+
+.tabWrapWindow {
+  width: 100%;
+  overflow: hidden;
+}

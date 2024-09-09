@@ -1,7 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import {
   composeGraphQLPostRequestBody,
@@ -10,29 +10,37 @@ import {
 import type { GraphQLQueryType } from '@/data/graphQL/graphQLQueryType';
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
+import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
+import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
+import '@graphiql/react/dist/style.css';
+import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import {
   Box,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tab,
+  Tabs,
   TextField,
-  Button
 } from '@mui/material';
 import { ValidationError } from 'yup';
 
+import KeyValueForm from '../KeyValueForm';
 import ResponseDisplay from '../ResponseDisplay';
 //import { graphql } from 'cm6-graphql';
 //import { EditorView, basicSetup } from 'codemirror';
-import { GraphQLEditor } from './GraphQLEditor';
+import { RDTGraphiQLEditor } from './RDTGraphiQLEditor';
+import styles from './RDTGraphiQLForm.module.css';
+import { RDTGraphiQLInterface } from './RDTGraphiQLInterface';
 
 // GraphQL Editor won't render/work unless URL (and hence schema) is set
 const defaultURL = 'https://rickandmortyapi.com/graphql';
 
-export default function GraphiQLForm() {
-
+export default function RDTGraphiQLForm() {
   const [url, setUrl] = useState<string>(defaultURL);
 
   // const fetcher = useRef<Fetcher | null>(null);
@@ -54,6 +62,21 @@ export default function GraphiQLForm() {
 
   const [selectedExampleQueryName, setSelectedExampleQueryName] = useState<string>('None');
 
+  const [tabIndex, setTabIndex] = useState<number>(0);
+
+  const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([{key: "content-type", value: "application/json", editable: true}]);
+  const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([{key: "myvar", value: "myvalue", editable: true}]);
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue);
+  };
+  const memoFetcher = useMemo(
+    () =>
+      createGraphiQLFetcher({
+        url: url,
+      }),
+    [url]
+  );
   // const {
   //   control,
   //   handleSubmit,
@@ -64,6 +87,14 @@ export default function GraphiQLForm() {
   //   },
   //   resolver: yupResolver(urlSchema),
   // });
+
+  const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
+    setKeyValuePairsHeader(newPairs);
+  };
+
+  const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
+    setKeyValuePairsVar(newPairs);
+  };
 
   const validateURLTextField = (text: string) => {
     try {
@@ -144,22 +175,24 @@ export default function GraphiQLForm() {
       }
     }
 
-    setUrlTextFieldValue(selectedExampleQuery? selectedExampleQuery.url : '');
-    setUrl(selectedExampleQuery? selectedExampleQuery.url : defaultURL);
+    setUrlTextFieldValue(selectedExampleQuery ? selectedExampleQuery.url : '');
+    setUrl(selectedExampleQuery ? selectedExampleQuery.url : defaultURL);
 
-    setQuery(selectedExampleQuery? selectedExampleQuery.query: '');
+    setQuery(selectedExampleQuery ? selectedExampleQuery.query : '');
     //console.log(JSON.stringify(selectedExampleQuery.queryVariables));
-    setQueryVariables(selectedExampleQuery? JSON.stringify(selectedExampleQuery.queryVariables): '{}');
+    setQueryVariables(
+      selectedExampleQuery ? JSON.stringify(selectedExampleQuery.queryVariables) : '{}'
+    );
     //console.log(`queryVariables: ${queryVariables}`);
-    if ((selectedExampleQuery) &&  ('headers' in selectedExampleQuery)) {
+    if (selectedExampleQuery && 'headers' in selectedExampleQuery) {
       setRequestHeaders(parseRequestHeadersString(selectedExampleQuery['headers'] as string));
     } else {
       setRequestHeaders({
         'Content-Type': 'application/json',
-      })
+      });
     }
-
   };
+  console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(responseData)}`);
 
   return (
     <div>
@@ -193,7 +226,7 @@ export default function GraphiQLForm() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <TextField
           id='standard-basic'
-          sx = {{width: '75%'}}
+          sx={{ width: '75%' }}
           value={urlTextFieldValue}
           onChange={handleURLTextFieldChange}
           label='URL'
@@ -201,19 +234,66 @@ export default function GraphiQLForm() {
           helperText={urlTextFieldError}
           onBlur={handleURLTextFieldBlur}
         />
-        <Button variant="contained" sx = {{width: '200px'}} onClick={handleSubmit}>Run</Button>
-
+        <Button variant='contained' sx={{ width: '200px' }} onClick={handleSubmit}>
+          Run
+        </Button>
       </Box>
-      <form onSubmit={handleSubmit}>
-        {/* <div>
+      <GraphiQLProvider
+        fetcher={memoFetcher}
+        query={query}
+        variables={queryVariables}
+        response={JSON.stringify(responseData, null, 2)}
+        headers={JSON.stringify(requestHeaders)}
+      >
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+            <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
+              <Tab label='Query' />
+              <Tab label='Headers' />
+              <Tab label='Variables' />
+              <Tab label='Documentation' />
+            </Tabs>
+          </Box>
+          <Box className={styles.tabWrapWindow}>
+            <Box className={styles.tabWrap} style={{ transform: `translateX(${-tabIndex * 25}%)` }}>
+              <Box sx={{ width:'25%' }}>
+                <RDTGraphiQLInterface></RDTGraphiQLInterface>
+              </Box>
+              <Box sx={{ width:'25%' }}>
+
+              <KeyValueForm
+                onPairsChange={handlePairsChangeHeader}
+                title={'Headers'}
+                initPairs={keyValuePairsHeader}
+              />
+              </Box>
+              <Box sx={{ width:'25%' }}>
+
+              <KeyValueForm
+                onPairsChange={handlePairsChangeVar}
+                title={'Variables'}
+                initPairs={keyValuePairsVar}
+              />
+              </Box>
+              <Box sx={{ width:'25%' }}>
+
+              <DocExplorer></DocExplorer>
+              </Box>
+            </Box>
+          </Box>
+          {/* <div>
           <label>
             URL:
             <input type='text' defaultValue={url} onBlur={handleURLTextFieldBlur} required />
           </label>
         </div> */}
-        {/* {url ? ( */}
-          <GraphQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></GraphQLEditor>
-        {/* ) : (
+          {/* {url ? ( */}
+          {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}> */}
+        </form>
+      </GraphiQLProvider>
+
+      {/* <RDTGraphiQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></RDTGraphiQLEditor> */}
+      {/* ) : (
           <div>
             <label>
               Query:
@@ -226,9 +306,8 @@ export default function GraphiQLForm() {
             </label>
           </div>
         )} */}
-        {/* /<button type='submit'>Send request</button> */}
-      </form>
-      <ResponseDisplay headers={responseHeaders} response={JSON.stringify(responseData, null, 2)} />
+      {/* /<button type='submit'>Send request</button> */}
+      {/* <ResponseDisplay headers={responseHeaders} response={JSON.stringify(responseData, null, 2)} /> */}
     </div>
   );
 }
