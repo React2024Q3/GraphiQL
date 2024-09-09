@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-
+// import clsx from 'clsx'
 import {
   composeGraphQLPostRequestBody,
   parseRequestHeadersString,
@@ -12,12 +12,13 @@ import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
-import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
+import { DocExplorer, GraphiQLProvider, ResponseEditor } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import {
   Box,
   Button,
+  Container,
   FormControl,
   InputLabel,
   MenuItem,
@@ -36,6 +37,7 @@ import ResponseDisplay from '../ResponseDisplay';
 import { RDTGraphiQLEditor } from './RDTGraphiQLEditor';
 import styles from './RDTGraphiQLForm.module.css';
 import { RDTGraphiQLInterface } from './RDTGraphiQLInterface';
+import './missingGraphiQLStyles.css';
 
 // GraphQL Editor won't render/work unless URL (and hence schema) is set
 const defaultURL = 'https://rickandmortyapi.com/graphql';
@@ -64,8 +66,12 @@ export default function RDTGraphiQLForm() {
 
   const [tabIndex, setTabIndex] = useState<number>(0);
 
-  const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([{key: "content-type", value: "application/json", editable: true}]);
-  const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([{key: "myvar", value: "myvalue", editable: true}]);
+  const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([
+    { key: 'content-type', value: 'application/json', editable: true },
+  ]);
+  const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([
+    { key: 'myvar', value: 'myvalue', editable: true },
+  ]);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
@@ -77,16 +83,6 @@ export default function RDTGraphiQLForm() {
       }),
     [url]
   );
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm<{
-  //   defaultValues: {
-  //     url: '',
-  //   },
-  //   resolver: yupResolver(urlSchema),
-  // });
 
   const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsHeader(newPairs);
@@ -195,20 +191,8 @@ export default function RDTGraphiQLForm() {
   console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(responseData)}`);
 
   return (
-    <div>
-      {/* <FormControl>
-        <InputLabel id='example-query-select-label'>Query example</InputLabel>
-        <Select
-          labelId='example-query-select-label'
-          id='example-query-select'
-          value={''}
-          label='Query example'
-          onChange={handleExampleQueryChange}
-        >
-          <MenuItem value={exampleQueries[0]}>{exampleQueries[0]}</MenuItem>
-          <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
-        </Select>
-      </FormControl> */}
+    <Container className={styles.formContainer}>
+
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
         <TextField
           select
@@ -223,6 +207,7 @@ export default function RDTGraphiQLForm() {
           <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
         </TextField>
       </Box>
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <TextField
           id='standard-basic'
@@ -238,6 +223,7 @@ export default function RDTGraphiQLForm() {
           Run
         </Button>
       </Box>
+
       <GraphiQLProvider
         fetcher={memoFetcher}
         query={query}
@@ -254,30 +240,32 @@ export default function RDTGraphiQLForm() {
               <Tab label='Documentation' />
             </Tabs>
           </Box>
+
           <Box className={styles.tabWrapWindow}>
             <Box className={styles.tabWrap} style={{ transform: `translateX(${-tabIndex * 25}%)` }}>
-              <Box sx={{ width:'25%' }}>
+
+              <Box sx={{ width: '25%', maxHeight: '400px' }} className='graphiql-container'>
                 <RDTGraphiQLInterface></RDTGraphiQLInterface>
               </Box>
-              <Box sx={{ width:'25%' }}>
 
-              <KeyValueForm
-                onPairsChange={handlePairsChangeHeader}
-                title={'Headers'}
-                initPairs={keyValuePairsHeader}
-              />
+              <Box sx={{ width: '25%', maxHeight: '400px' }}>
+                <KeyValueForm
+                  onPairsChange={handlePairsChangeHeader}
+                  title={'Headers'}
+                  initPairs={keyValuePairsHeader}
+                />
               </Box>
-              <Box sx={{ width:'25%' }}>
 
-              <KeyValueForm
-                onPairsChange={handlePairsChangeVar}
-                title={'Variables'}
-                initPairs={keyValuePairsVar}
-              />
+              <Box sx={{ width: '25%', maxHeight: '400px' }}>
+                <KeyValueForm
+                  onPairsChange={handlePairsChangeVar}
+                  title={'Variables'}
+                  initPairs={keyValuePairsVar}
+                />
               </Box>
-              <Box sx={{ width:'25%' }}>
-
-              <DocExplorer></DocExplorer>
+              
+              <Box sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }} className='graphiql-container'>
+                  <DocExplorer></DocExplorer>
               </Box>
             </Box>
           </Box>
@@ -290,6 +278,12 @@ export default function RDTGraphiQLForm() {
           {/* {url ? ( */}
           {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}> */}
         </form>
+
+        <Box sx={{ minHeight: '200px', display: 'flex' }} className='graphiql-container'>
+            <div className={'graphiql-response'}>
+              <ResponseEditor></ResponseEditor>
+            </div>
+        </Box>
       </GraphiQLProvider>
 
       {/* <RDTGraphiQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></RDTGraphiQLEditor> */}
@@ -306,8 +300,7 @@ export default function RDTGraphiQLForm() {
             </label>
           </div>
         )} */}
-      {/* /<button type='submit'>Send request</button> */}
       {/* <ResponseDisplay headers={responseHeaders} response={JSON.stringify(responseData, null, 2)} /> */}
-    </div>
+    </Container>
   );
 }

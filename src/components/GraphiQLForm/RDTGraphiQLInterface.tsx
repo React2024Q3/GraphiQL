@@ -22,7 +22,7 @@ export function RDTGraphiQLInterface() {
   console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
   return (
     <>
-      <div className='graphiql-container'>
+      {/* <div className='graphiql-container'> */}
         <div className={styles['query-and-vars-box']}>
           <div className={styles['query-editor']}>
             <QueryEditor></QueryEditor>
@@ -41,7 +41,7 @@ export function RDTGraphiQLInterface() {
         <div className={styles['request-headers-editor']}>
         <HeaderEditor></HeaderEditor>
         </div> */}
-      </div>
+      {/* </div> */}
 
       {/* </div> */}
       {/* 
