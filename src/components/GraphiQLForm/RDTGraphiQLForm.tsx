@@ -2,6 +2,8 @@
 
 import { FormEvent, useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
+
+import { Loader } from '@/components/Loader';
 // import clsx from 'clsx'
 import {
   composeGraphQLPostRequestBody,
@@ -12,7 +14,7 @@ import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
-import { DocExplorer, GraphiQLProvider, ResponseEditor } from '@graphiql/react';
+import { DocExplorer, GraphiQLProvider, ResponseEditor, Spinner } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import {
@@ -31,12 +33,10 @@ import {
 import { ValidationError } from 'yup';
 
 import KeyValueForm from '../KeyValueForm';
-import ResponseDisplay from '../ResponseDisplay';
-//import { graphql } from 'cm6-graphql';
-//import { EditorView, basicSetup } from 'codemirror';
 import { RDTGraphiQLEditor } from './RDTGraphiQLEditor';
 import styles from './RDTGraphiQLForm.module.css';
 import { RDTGraphiQLInterface } from './RDTGraphiQLInterface';
+import { RDTResponseEditor } from './RDTResponseEditor';
 import './missingGraphiQLStyles.css';
 
 // GraphQL Editor won't render/work unless URL (and hence schema) is set
@@ -53,6 +53,8 @@ export default function RDTGraphiQLForm() {
   const [requestHeaders, setRequestHeaders] = useState<Record<string, string>>({
     'Content-Type': 'application/json',
   });
+  // manually fetching GraphQL request through API Handler on server, not using createGraphiQLFetcher from @graphiQL
+  const [isFetching, setIsFetching] = useState(false);
   const [responseData, setResponseData] = useState<JSON>();
 
   const [responseHeaders, setResponseHeaders] = useState<string>('');
@@ -129,23 +131,24 @@ export default function RDTGraphiQLForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    setIsFetching(true);
     const encodedUrl = encodeURIComponent(btoa(url));
+    //console.log(composeGraphQLPostRequestBody(query, queryVariables));
     const encodedBody = encodeURIComponent(
       btoa(composeGraphQLPostRequestBody(query, queryVariables))
     );
     try {
-      console.log('sending request to our api route');
-      const response = await fetch(`api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
-      console.log(`responsik status: $responsik.status`);
+      const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
+      console.log(`response status: ${response.status}}`);
       const data = await response.json();
-
       console.log(`client received data: ${data}`);
 
       setResponseData(data);
+      setIsFetching(false);
       console.log(data);
     } catch (error) {
       console.log(error);
+      setIsFetching(false);
     }
   };
 
@@ -192,22 +195,6 @@ export default function RDTGraphiQLForm() {
 
   return (
     <Container className={styles.formContainer}>
-
-      <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        <TextField
-          select
-          size='medium'
-          sx={{ width: 200 }}
-          label='Query example'
-          value={selectedExampleQueryName}
-          onChange={handleExampleQueryChange}
-        >
-          <MenuItem value={exampleQueries[0]}>{exampleQueries[0]}</MenuItem>
-          <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
-          <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
-        </TextField>
-      </Box>
-
       <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <TextField
           id='standard-basic'
@@ -219,6 +206,21 @@ export default function RDTGraphiQLForm() {
           helperText={urlTextFieldError}
           onBlur={handleURLTextFieldBlur}
         />
+
+        {/* <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}> */}
+        <TextField
+          select
+          size='medium'
+          sx={{ width: '200px' }}
+          label='Query example'
+          value={selectedExampleQueryName}
+          onChange={handleExampleQueryChange}
+        >
+          <MenuItem value={exampleQueries[0]}>{exampleQueries[0]}</MenuItem>
+          <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
+          <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
+        </TextField>
+        {/* </Box> */}
         <Button variant='contained' sx={{ width: '200px' }} onClick={handleSubmit}>
           Run
         </Button>
@@ -243,7 +245,6 @@ export default function RDTGraphiQLForm() {
 
           <Box className={styles.tabWrapWindow}>
             <Box className={styles.tabWrap} style={{ transform: `translateX(${-tabIndex * 25}%)` }}>
-
               <Box sx={{ width: '25%', maxHeight: '400px' }} className='graphiql-container'>
                 <RDTGraphiQLInterface></RDTGraphiQLInterface>
               </Box>
@@ -263,27 +264,18 @@ export default function RDTGraphiQLForm() {
                   initPairs={keyValuePairsVar}
                 />
               </Box>
-              
-              <Box sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }} className='graphiql-container'>
-                  <DocExplorer></DocExplorer>
+
+              <Box
+                sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}
+                className='graphiql-container'
+              >
+                <DocExplorer></DocExplorer>
               </Box>
             </Box>
           </Box>
-          {/* <div>
-          <label>
-            URL:
-            <input type='text' defaultValue={url} onBlur={handleURLTextFieldBlur} required />
-          </label>
-        </div> */}
-          {/* {url ? ( */}
-          {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}> */}
         </form>
 
-        <Box sx={{ minHeight: '200px', display: 'flex' }} className='graphiql-container'>
-            <div className={'graphiql-response'}>
-              <ResponseEditor></ResponseEditor>
-            </div>
-        </Box>
+        <RDTResponseEditor isFetching={isFetching}></RDTResponseEditor>
       </GraphiQLProvider>
 
       {/* <RDTGraphiQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></RDTGraphiQLEditor> */}
@@ -300,7 +292,6 @@ export default function RDTGraphiQLForm() {
             </label>
           </div>
         )} */}
-      {/* <ResponseDisplay headers={responseHeaders} response={JSON.stringify(responseData, null, 2)} /> */}
     </Container>
   );
 }

@@ -1,21 +1,15 @@
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  /* --editor-background: transparent; */
-  /* width: 100%;
+  /* --editor-background: transparent;
   height: 300px; */
-  /* flex: 1; */
-  //height: 300px;
   display: flex;
   width: 100%;
   flex-direction: column;
-
 } 
 
  .graphiql-container .graphiql-response .result-window {
   position: relative;
   height: 100%;
   width: 100%;
-
-
 }
