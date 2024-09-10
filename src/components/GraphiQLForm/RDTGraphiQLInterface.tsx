@@ -4,10 +4,8 @@ import {
   HeaderEditor,
   PrettifyIcon,
   QueryEditor,
-  ResponseEditor,
   ToolbarButton,
   VariableEditor,
-  useEditorContext,
   usePrettifyEditors,
 } from '@graphiql/react';
 import { Button } from '@mui/material';
@@ -16,10 +14,8 @@ import styles from './RDTGraphiQLInterface.module.css';
 
 export function RDTGraphiQLInterface() {
   const prettify = usePrettifyEditors();
-  const { initialResponse, responseEditor } = useEditorContext({
-    nonNull: true,
-  });
-  console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
+
+  //console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
   return (
     <>
       {/* <div className='graphiql-container'> */}

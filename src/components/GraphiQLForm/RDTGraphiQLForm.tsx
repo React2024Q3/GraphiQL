@@ -3,10 +3,10 @@
 import { FormEvent, useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 
-import { Loader } from '@/components/Loader';
 // import clsx from 'clsx'
 import {
   composeGraphQLPostRequestBody,
+  GraphQLApiResponse,
   parseRequestHeadersString,
 } from '@/data/graphQL/graphQLHelper';
 import type { GraphQLQueryType } from '@/data/graphQL/graphQLQueryType';
@@ -14,7 +14,7 @@ import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
-import { DocExplorer, GraphiQLProvider, ResponseEditor, Spinner } from '@graphiql/react';
+import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import {
@@ -31,6 +31,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ValidationError } from 'yup';
+import { ErrorNotification } from '../ErrorNotification';
 
 import KeyValueForm from '../KeyValueForm';
 import { RDTGraphiQLEditor } from './RDTGraphiQLEditor';
@@ -55,9 +56,9 @@ export default function RDTGraphiQLForm() {
   });
   // manually fetching GraphQL request through API Handler on server, not using createGraphiQLFetcher from @graphiQL
   const [isFetching, setIsFetching] = useState(false);
-  const [responseData, setResponseData] = useState<JSON>();
+  const [response, setResponse] = useState<GraphQLApiResponse>();
 
-  const [responseHeaders, setResponseHeaders] = useState<string>('');
+  //const [responseHeaders, setResponseHeaders] = useState<string>('');
 
   const exampleQueries = ['None', 'Rick&Morty', 'TODO app'];
 
@@ -132,22 +133,32 @@ export default function RDTGraphiQLForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsFetching(true);
+    setResponse({});
     const encodedUrl = encodeURIComponent(btoa(url));
     //console.log(composeGraphQLPostRequestBody(query, queryVariables));
     const encodedBody = encodeURIComponent(
       btoa(composeGraphQLPostRequestBody(query, queryVariables))
     );
+
     try {
       const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
-      console.log(`response status: ${response.status}}`);
-      const data = await response.json();
-      console.log(`client received data: ${data}`);
 
-      setResponseData(data);
+      try {
+        const data = await response.json();
+        setResponse({status: response.status, data: data});
+      }
+      catch (e) {
+        setResponse({status: response.status, errorMessage: 'Server returned not valid JSON'});
+      }
+
       setIsFetching(false);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      //network and CORS errors
+      let message;
+      if (e instanceof Error) message = e.message;
+      else message = String(e);
+
+      setResponse({ networkError: new Error('Please check your network and CORS settings') })
       setIsFetching(false);
     }
   };
@@ -191,10 +202,12 @@ export default function RDTGraphiQLForm() {
       });
     }
   };
-  console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(responseData)}`);
+  console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
   return (
     <Container className={styles.formContainer}>
+      <ErrorNotification error={response?.networkError} />
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <TextField
           id='standard-basic'
@@ -221,16 +234,16 @@ export default function RDTGraphiQLForm() {
           <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
         </TextField>
         {/* </Box> */}
-        <Button variant='contained' sx={{ width: '200px' }} onClick={handleSubmit}>
+        <Button variant='contained' disabled={isFetching} sx={{ width: '200px' }} onClick={handleSubmit}>
           Run
         </Button>
       </Box>
-
+      
       <GraphiQLProvider
         fetcher={memoFetcher}
         query={query}
         variables={queryVariables}
-        response={JSON.stringify(responseData, null, 2)}
+        response={JSON.stringify(response?.data, null, 2)}
         headers={JSON.stringify(requestHeaders)}
       >
         <form onSubmit={handleSubmit}>
@@ -275,7 +288,7 @@ export default function RDTGraphiQLForm() {
           </Box>
         </form>
 
-        <RDTResponseEditor isFetching={isFetching}></RDTResponseEditor>
+        <RDTResponseEditor isFetching={isFetching} responseStatus={response?.status}></RDTResponseEditor>
       </GraphiQLProvider>
 
       {/* <RDTGraphiQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></RDTGraphiQLEditor> */}
