@@ -88,6 +88,7 @@ export const LeftMenu: FC = () => {
         onClick={toggleDrawer(true)}
         color='secondary'
         className={headerStyles.menu__button}
+        aria-label='menu'
       >
         <MenuIcon />
       </IconButton>

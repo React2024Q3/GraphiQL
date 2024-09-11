@@ -19,7 +19,12 @@ export default function LanguageSelect() {
 
   return (
     <FormControl size='small'>
-      <Select className={styles.select} value={locale} onChange={(e) => handleChange(e)}>
+      <Select
+        className={styles.select}
+        value={locale}
+        onChange={(e) => handleChange(e)}
+        data-testid='select-lang'
+      >
         <MenuItem value='en'>Eng</MenuItem>
         <MenuItem value='ru'>Рус</MenuItem>
       </Select>
