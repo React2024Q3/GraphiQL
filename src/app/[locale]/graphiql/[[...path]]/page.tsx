@@ -1,9 +1,9 @@
-import GraphiQLForm from '@/components/GraphiQLForm';
+import RDTGraphiQLForm from '@/components/GraphiQLForm';
 
-export default function GraphiQLPage() {
+export default function GraphiQLPage({ params }: {params: {path: string[]}}) {
   return (
     <>
-      <GraphiQLForm />
+      <RDTGraphiQLForm path={params.path}/>
     </>
   );
 }

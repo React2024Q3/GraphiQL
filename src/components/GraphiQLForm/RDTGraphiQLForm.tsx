@@ -3,14 +3,14 @@
 import { FormEvent, useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import useHistoryLS from '@/shared/hooks/useHistoryLS';
 
-// import clsx from 'clsx'
 import {
-  composeGraphQLPostRequestBody,
   GraphQLApiResponse,
   parseQueryFromPath,
-  parseRequestHeadersString,
   GraphQLQuery,
+  composePathFromQuery,
+  shallowChangeUrlInBrowser
 } from '@/data/graphQL/graphQLHelper';
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
@@ -23,11 +23,7 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
-  InputLabel,
   MenuItem,
-  Select,
-  SelectChangeEvent,
   Tab,
   Tabs,
   TextField,
@@ -76,7 +72,7 @@ const defaultFormUIState: GraphQLFormUIState = {
   editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
 }
 
-export default function RDTGraphiQLForm(path: string[]) {
+export default function RDTGraphiQLForm({path}: {path: string[]}) {
   const [url, setUrl] = useState(defaultFormUIState.url);
 
   // const fetcher = useRef<Fetcher | null>(null);
@@ -97,6 +93,8 @@ export default function RDTGraphiQLForm(path: string[]) {
   const [keyValuePairsVar, setKeyValuePairsVar] = useState(defaultFormUIState.editorVariables);
   
   const searchParams = useSearchParams();
+  const [_, saveUrlToLS] = useHistoryLS();
+
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -108,7 +106,7 @@ export default function RDTGraphiQLForm(path: string[]) {
       applyFormUIState(getFormUIStateForQuery(query));
     }  
 
-  })
+  },[])
 
   const getFormUIStateForQuery = (query: GraphQLQuery, selectedExampleQuery?: string): GraphQLFormUIState => {
     const state = {...defaultFormUIState};
@@ -202,14 +200,15 @@ export default function RDTGraphiQLForm(path: string[]) {
     e.preventDefault();
     setIsFetching(true);
     setResponse({data:{}});
-    const encodedUrl = encodeURIComponent(btoa(url));
-    //console.log(composeGraphQLPostRequestBody(query, queryVariables));
-    const encodedBody = encodeURIComponent(
-      btoa(composeGraphQLPostRequestBody(query, queryVariables))
-    );
+
+    let path = composePathFromQuery({url: url, query: query, queryVariables: queryVariables, headers: requestHeaders})
+    let browserPath = `graphiql/${path}`;
+    shallowChangeUrlInBrowser(browserPath);
+    saveUrlToLS(browserPath);
 
     try {
-      const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
+      //const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
+      const response = await fetch(`/api/GRAPHQL/${path}`, { method: 'POST' });
 
       try {
         const data = await response.json();
@@ -223,8 +222,12 @@ export default function RDTGraphiQLForm(path: string[]) {
     } catch (e) {
       //network and CORS errors
       let message;
-      if (e instanceof Error) message = e.message;
-      else message = String(e);
+      if (e instanceof Error) {
+        message = e.message;
+      } else {
+        message = String(e);
+      }
+      console.log(message);
 
       setResponse({ networkError: new Error('Please check your network and CORS settings') })
       setIsFetching(false);
@@ -264,14 +267,10 @@ export default function RDTGraphiQLForm(path: string[]) {
     let formUIState = { ...defaultFormUIState};
     if (selectedExampleQuery) {
       formUIState = getFormUIStateForQuery(selectedExampleQuery, e.target.value)
-      console.dir(`getFormUIState for query`);
-      console.dir(selectedExampleQuery, {depth: null});
-      console.dir(formUIState, {depth: null});
-
-
     }
     applyFormUIState(formUIState);
   };
+
   console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
   return (
@@ -321,10 +320,10 @@ export default function RDTGraphiQLForm(path: string[]) {
         // the provider via schema props here
         //headers={JSON.stringify(requestHeaders)}
 
-        // if we don't have URL yet - then we should skip introscpection query (which will
-        // return an error otherwise by setting schema to null explicitly)
+        // if we don't have URL yet - then we should skip introspection query (which will
+        // return an error otherwise) by setting schema to null explicitly
         // if the url is provided, then we want graphiql to make introspection query automatically
-        // and load the shema. we should aim to provide schema manually via our server action in future
+        // and load the schema. we should aim to provide schema manually via our server action in future
         schema={(url === defaultFormUIState.url) ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
@@ -363,7 +362,7 @@ export default function RDTGraphiQLForm(path: string[]) {
                 sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}
                 className='graphiql-container'
               >
-                {/* <DocExplorer></DocExplorer> */}
+                <DocExplorer></DocExplorer>
               </Box>
             </Box>
           </Box>

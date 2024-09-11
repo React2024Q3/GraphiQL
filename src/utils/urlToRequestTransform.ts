@@ -1,6 +1,11 @@
 import { ARRAY_METHODS } from '@/shared/constants';
+import { parseQueryUrlFromPath } from '../data/graphQL/graphQLHelper'
 
 export default function urlToRequestTransform(encodedUrl: string) {
+  if(encodedUrl.includes('graphiql')) {
+    return {method: 'GraphQL', url: parseQueryUrlFromPath(encodedUrl)}
+  }
+
   const method = ARRAY_METHODS.find((method) => encodedUrl.includes(`${method}/`));
   if (!method) return null;
 
