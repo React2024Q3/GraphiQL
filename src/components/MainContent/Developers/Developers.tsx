@@ -39,6 +39,7 @@ export const Developers: FC = () => {
                 maxWidth: '370px',
               }}
               key={github}
+              data-testid='card'
             >
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flex: '1 0 auto' }}>
