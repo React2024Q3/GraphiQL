@@ -19,9 +19,9 @@ export default function changeUrlClient(
 
   if (keyValuePairsHeader && currentKeyValuesHeader.length) {
     const stringHeader = currentKeyValuesHeader
-      .map(({ key, value }) => key + '=' + value)
+      .map(({ key, value }) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
-    apiUrl += '?' + stringHeader.replaceAll('/', '%2F');
+    apiUrl += '?' + stringHeader;
   }
 
   window.history.replaceState(null, '', `/${apiUrl}`);
