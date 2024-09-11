@@ -12,7 +12,7 @@ import { Button } from '@mui/material';
 
 import styles from './RDTGraphiQLInterface.module.css';
 
-export function RDTGraphiQLInterface() {
+export function RDTGraphiQLInterface(props : {onQueryEdit: (value: string) => void; onQueryVariablesEdit: (value: string) => void}) {
   const prettify = usePrettifyEditors();
 
   //console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
@@ -21,10 +21,10 @@ export function RDTGraphiQLInterface() {
       {/* <div className='graphiql-container'> */}
         <div className={styles['query-and-vars-box']}>
           <div className={styles['query-editor']}>
-            <QueryEditor></QueryEditor>
+            <QueryEditor onEdit={props.onQueryEdit}></QueryEditor>
           </div>
           <div className={styles['variables-editor']}>
-            <VariableEditor></VariableEditor>
+            <VariableEditor onEdit={props.onQueryVariablesEdit}></VariableEditor>
           </div>
         </div>
         <Button variant='contained' sx={{ width: '200px' }} onClick={prettify}>

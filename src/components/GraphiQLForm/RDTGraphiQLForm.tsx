@@ -271,7 +271,16 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
     applyFormUIState(formUIState);
   };
 
-  console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
+  const onQueryEdit= (value: string) => {
+    setQuery(value);
+  }
+
+  const onQueryVariablesEdit = (value: string) => {
+    setQueryVariables(value);
+  }
+  
+
+  //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
   return (
     <Container className={styles.formContainer}>
@@ -314,11 +323,11 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
         variables={queryVariables}
         response={JSON.stringify(response?.data, null, 2)}
 
+        // headers={JSON.stringify(requestHeaders)}
         // setting headers messes up default Introspection query for some APIs due to cors.
         // @graphiql fetches the schema automatically, on the client
         // TODO: make a server action to fetch schema on the our server and provide it to
         // the provider via schema props here
-        //headers={JSON.stringify(requestHeaders)}
 
         // if we don't have URL yet - then we should skip introspection query (which will
         // return an error otherwise) by setting schema to null explicitly
@@ -339,7 +348,7 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           <Box className={styles.tabWrapWindow}>
             <Box className={styles.tabWrap} style={{ transform: `translateX(${-tabIndex * 25}%)` }}>
               <Box sx={{ width: '25%', maxHeight: '400px' }} className='graphiql-container'>
-                <RDTGraphiQLInterface></RDTGraphiQLInterface>
+                <RDTGraphiQLInterface onQueryEdit={onQueryEdit} onQueryVariablesEdit={onQueryVariablesEdit}></RDTGraphiQLInterface>
               </Box>
 
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
