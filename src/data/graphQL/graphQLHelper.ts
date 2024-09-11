@@ -48,7 +48,7 @@ export function composePathFromQuery(query: GraphQLQuery): string | null {
   }
 }
 
-export function parseQueryUrlFromistoryPath(path: string) {
+export function parseQueryUrlFromHistoryPath(path: string) {
   // path.split('/')[0]:  base64(url)
   // ...
   const urlPart = path.split('/')[0];
@@ -69,7 +69,7 @@ export function parseQueryFromPath(
       const url = atob(decodeURIComponent(path[0]));
       const bodyJSON = JSON.parse(atob(decodeURIComponent(path[1])));
       const query = bodyJSON.query;
-      const queryVariables = bodyJSON.variables;
+      const queryVariables = JSON.stringify(bodyJSON.variables);
       let headers: KeyValuePair[] = [];
       if (searchParams) {
         headers = convertSearchParamsStringToKeyValuePairs(searchParams.toString());
