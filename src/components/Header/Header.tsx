@@ -15,7 +15,7 @@ import { AuthenticatedNav } from './AuthenticatedNav';
 import { GuestNav } from './GuestNav';
 import styles from './Header.module.css';
 
-export default function Header({ locale }: { locale: string }) {
+export default function Header() {
   const headerRef = useRef<HTMLElement | null>(null);
   const removeClassTimeout = useRef<NodeJS.Timeout | null>(null);
   const { user, loading } = useAuth();
@@ -73,7 +73,7 @@ export default function Header({ locale }: { locale: string }) {
         {!loading &&
           (isMobile ? <LeftMenu /> : user ? <AuthenticatedNav logout={logout} /> : <GuestNav />)}
 
-        <LanguageSelect locale={locale} />
+        <LanguageSelect />
       </nav>
     </header>
   );
