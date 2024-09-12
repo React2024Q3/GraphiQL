@@ -15,7 +15,8 @@ async function handleRequest(
 
   const url = atob(decodeURIComponent(encodedUrl));
   const body = atob(decodeURIComponent(encodedBody));
-
+  const headersString = req.url.split('?')[1];
+  console.log(headersString);
   try {
     const myRequest = new Request(url, {
       method: 'POST',
@@ -26,7 +27,7 @@ async function handleRequest(
     });
 
     const response = await fetch(myRequest);
-  
+
     let data = '{data: noData}';
     if (response.ok) {
       data = await response.json();
@@ -34,8 +35,11 @@ async function handleRequest(
     } else {
       console.log(response.status);
     }
- 
-    const nextResponse = NextResponse.json({ data, headers: response.headers }, { status: response.status });
+
+    const nextResponse = NextResponse.json(
+      { data, headers: response.headers },
+      { status: response.status }
+    );
     return nextResponse;
   } catch (error) {
     console.error(error);

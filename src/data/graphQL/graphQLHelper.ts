@@ -28,7 +28,7 @@ export interface GraphQLApiResponse {
 
 // to avoid refetching and remounting
 export function shallowChangeUrlInBrowser(newUrl: string) {
-  window.history.replaceState(null, '', newUrl)
+  window.history.replaceState(null, '', newUrl);
 }
 
 export function composePathFromQuery(query: GraphQLQuery): string | null {
@@ -55,7 +55,6 @@ export function parseQueryUrlFromHistoryPath(path: string) {
   const url = atob(decodeURIComponent(urlPart));
   return url;
 }
-
 
 export function parseQueryFromPath(
   path: string[],

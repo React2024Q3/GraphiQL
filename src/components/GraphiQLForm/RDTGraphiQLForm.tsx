@@ -2,45 +2,34 @@
 
 import { FormEvent, useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
-import useHistoryLS from '@/shared/hooks/useHistoryLS';
 
 import {
   GraphQLApiResponse,
-  parseQueryFromPath,
   GraphQLQuery,
   composePathFromQuery,
-  shallowChangeUrlInBrowser
+  parseQueryFromPath,
+  shallowChangeUrlInBrowser,
 } from '@/data/graphQL/graphQLHelper';
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
+import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
 import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
-import {
-  Box,
-  Button,
-  Container,
-  MenuItem,
-  Tab,
-  Tabs,
-  TextField,
-} from '@mui/material';
+import { Box, Button, Container, MenuItem, Tab, Tabs, TextField } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
 import { ValidationError } from 'yup';
-import { ErrorNotification } from '../ErrorNotification';
 
+import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
-import { RDTGraphiQLEditor } from './RDTGraphiQLEditor';
 import styles from './RDTGraphiQLForm.module.css';
-import { RDTGraphiQLInterface } from './RDTGraphiQLInterface';
-import { RDTResponseEditor } from './RDTResponseEditor';
+import { RDTGraphiQLRequestEditor } from './RDTGraphiQLRequestEditor';
+import { RDTGraphiQLResponseEditor } from './RDTGraphiQLResponseEditor';
 import './missingGraphiQLStyles.css';
 
 const exampleQueries = ['None', 'Rick&Morty', 'TODO app'];
-// GraphQL Editor won't render/work unless URL (and hence schema) is set
-const defaultFetcherURL = 'https://rickandmortyapi.com/graphql';
 interface GraphQLFormUIState {
   url: string;
   query: string;
@@ -51,7 +40,7 @@ interface GraphQLFormUIState {
   urlTexFieldValue: string;
   urlTextFieldError: string;
   selectedExampleQueryName: string;
-  tabIndex:number;
+  tabIndex: number;
   editorVariables: KeyValuePair[];
 }
 
@@ -59,10 +48,10 @@ const defaultFormUIState: GraphQLFormUIState = {
   url: '',
   query: '',
   queryVariables: '{}',
-  requestHeaders: [{key: 'content-type', value: 'application/json', editable: true}],
+  requestHeaders: [{ key: 'content-type', value: 'application/json', editable: true }],
 
   isFetching: false,
-  response: { data: {}},
+  response: { data: {} },
 
   urlTexFieldValue: '',
   urlTextFieldError: '',
@@ -70,9 +59,9 @@ const defaultFormUIState: GraphQLFormUIState = {
   tabIndex: 0,
 
   editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
-}
+};
 
-export default function RDTGraphiQLForm({path}: {path: string[]}) {
+export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const [url, setUrl] = useState(defaultFormUIState.url);
 
   // const fetcher = useRef<Fetcher | null>(null);
@@ -80,36 +69,50 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
   const [query, setQuery] = useState(defaultFormUIState.query);
   const [queryVariables, setQueryVariables] = useState(defaultFormUIState.queryVariables);
   const [requestHeaders, setRequestHeaders] = useState(defaultFormUIState.requestHeaders);
-  
-  // manually fetching GraphQL request through API Handler on server, not using createGraphiQLFetcher from @graphiQL
+
+  // manually fetching GraphQL request through API Handler on server,
+  // not using createGraphiQLFetcher from @graphiQL fro requests (only for schema)
   const [isFetching, setIsFetching] = useState(false);
   const [response, setResponse] = useState<GraphQLApiResponse>(defaultFormUIState.response);
 
   const [urlTextFieldValue, setUrlTextFieldValue] = useState(defaultFormUIState.urlTexFieldValue);
   const [urlTextFieldError, setUrlTextFieldError] = useState(defaultFormUIState.urlTextFieldError);
-  const [selectedExampleQueryName, setSelectedExampleQueryName] = useState(defaultFormUIState.selectedExampleQueryName);
+  const [selectedExampleQueryName, setSelectedExampleQueryName] = useState(
+    defaultFormUIState.selectedExampleQueryName
+  );
   const [tabIndex, setTabIndex] = useState(defaultFormUIState.tabIndex);
 
   const [keyValuePairsVar, setKeyValuePairsVar] = useState(defaultFormUIState.editorVariables);
-  
+
   const searchParams = useSearchParams();
   const [_, saveUrlToLS] = useHistoryLS();
 
   const isFirstRender = useRef(true);
 
+  // GraphQL Editor won't render/work unless URL (and hence schema) is set
+  const memoFetcher: Fetcher = useMemo(
+    () =>
+      createGraphiQLFetcher({
+        url: url,
+      }),
+    [url]
+  );
+
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
     }
-    let query = parseQueryFromPath(path, searchParams)
+    let query = parseQueryFromPath(path, searchParams);
     if (query) {
       applyFormUIState(getFormUIStateForQuery(query));
-    }  
+    }
+  }, []);
 
-  },[])
-
-  const getFormUIStateForQuery = (query: GraphQLQuery, selectedExampleQuery?: string): GraphQLFormUIState => {
-    const state = {...defaultFormUIState};
+  const getFormUIStateForQuery = (
+    query: GraphQLQuery,
+    selectedExampleQuery?: string
+  ): GraphQLFormUIState => {
+    const state = { ...defaultFormUIState };
     state.url = query.url;
     state.urlTexFieldValue = query.url;
     state.query = query.query;
@@ -121,7 +124,7 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
       state.selectedExampleQueryName = selectedExampleQuery;
     }
     return state;
-  }
+  };
 
   const applyFormUIState = (state: GraphQLFormUIState) => {
     setUrl(state.url);
@@ -139,19 +142,11 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
     setTabIndex(state.tabIndex);
 
     setKeyValuePairsVar(state.editorVariables);
-  }
+  };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
-
-  const memoFetcher = useMemo(
-    () =>
-      createGraphiQLFetcher({
-        url: url,
-      }),
-    [url]
-  );
 
   const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
     setRequestHeaders(newPairs);
@@ -199,9 +194,14 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsFetching(true);
-    setResponse({data:{}});
+    setResponse({ data: {} });
 
-    let path = composePathFromQuery({url: url, query: query, queryVariables: queryVariables, headers: requestHeaders})
+    let path = composePathFromQuery({
+      url: url,
+      query: query,
+      queryVariables: queryVariables,
+      headers: requestHeaders,
+    });
     let browserPath = `graphiql/${path}`;
     shallowChangeUrlInBrowser(browserPath);
     saveUrlToLS(browserPath);
@@ -212,10 +212,9 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
 
       try {
         const data = await response.json();
-        setResponse({status: response.status, data: data});
-      }
-      catch (e) {
-        setResponse({status: response.status, errorMessage: 'Server returned not valid JSON'});
+        setResponse({ status: response.status, data: data });
+      } catch (e) {
+        setResponse({ status: response.status, errorMessage: 'Server returned not valid JSON' });
       }
 
       setIsFetching(false);
@@ -229,7 +228,7 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
       }
       console.log(message);
 
-      setResponse({ networkError: new Error('Please check your network and CORS settings') })
+      setResponse({ networkError: new Error('Please check your network and CORS settings') });
       setIsFetching(false);
     }
   };
@@ -248,7 +247,8 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           url: queryRM.url,
           query: queryRM.query,
           queryVariables: JSON.stringify(queryRM.queryVariables),
-          headers: queryRM.headers};
+          headers: queryRM.headers,
+        };
         break;
       }
       case exampleQueries[2]: {
@@ -256,7 +256,8 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           url: queryTODO.url,
           query: queryTODO.query,
           queryVariables: JSON.stringify(queryTODO.queryVariables),
-          headers: queryTODO.headers};
+          headers: queryTODO.headers,
+        };
         break;
       }
       default: {
@@ -264,21 +265,20 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
       }
     }
 
-    let formUIState = { ...defaultFormUIState};
+    let formUIState = { ...defaultFormUIState };
     if (selectedExampleQuery) {
-      formUIState = getFormUIStateForQuery(selectedExampleQuery, e.target.value)
+      formUIState = getFormUIStateForQuery(selectedExampleQuery, e.target.value);
     }
     applyFormUIState(formUIState);
   };
 
-  const onQueryEdit= (value: string) => {
+  const onQueryEdit = (value: string) => {
     setQuery(value);
-  }
+  };
 
   const onQueryVariablesEdit = (value: string) => {
     setQueryVariables(value);
-  }
-  
+  };
 
   //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
@@ -297,8 +297,6 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           helperText={urlTextFieldError}
           onBlur={handleURLTextFieldBlur}
         />
-
-        {/* <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}> */}
         <TextField
           select
           size='medium'
@@ -311,29 +309,32 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
           <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
         </TextField>
-        {/* </Box> */}
-        <Button variant='contained' disabled={isFetching} sx={{ width: '200px' }} onClick={handleSubmit}>
+        <Button
+          variant='contained'
+          disabled={isFetching}
+          sx={{ width: '200px' }}
+          onClick={handleSubmit}
+        >
           Run
         </Button>
       </Box>
-      
+
       <GraphiQLProvider
         fetcher={memoFetcher}
         query={query}
         variables={queryVariables}
         response={JSON.stringify(response?.data, null, 2)}
-
         // headers={JSON.stringify(requestHeaders)}
         // setting headers messes up default Introspection query for some APIs due to cors.
         // @graphiql fetches the schema automatically, on the client
-        // TODO: make a server action to fetch schema on the our server and provide it to
+        // TODO: make a server action to fetch schema on our server and pass it to
         // the provider via schema props here
 
         // if we don't have URL yet - then we should skip introspection query (which will
-        // return an error otherwise) by setting schema to null explicitly
-        // if the url is provided, then we want graphiql to make introspection query automatically
-        // and load the schema. we should aim to provide schema manually via our server action in future
-        schema={(url === defaultFormUIState.url) ? null : undefined}
+        // return an error otherwise) by setting schema to `null` explicitly.
+        // if the url is provided - then we set `schema: undefined` and graphiql will make
+        // introspection query automatically and load the schema. we should aim to provide schema manually via our server action in future
+        schema={url === defaultFormUIState.url ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -348,7 +349,10 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           <Box className={styles.tabWrapWindow}>
             <Box className={styles.tabWrap} style={{ transform: `translateX(${-tabIndex * 25}%)` }}>
               <Box sx={{ width: '25%', maxHeight: '400px' }} className='graphiql-container'>
-                <RDTGraphiQLInterface onQueryEdit={onQueryEdit} onQueryVariablesEdit={onQueryVariablesEdit}></RDTGraphiQLInterface>
+                <RDTGraphiQLRequestEditor
+                  onQueryEdit={onQueryEdit}
+                  onQueryVariablesEdit={onQueryVariablesEdit}
+                ></RDTGraphiQLRequestEditor>
               </Box>
 
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
@@ -377,23 +381,11 @@ export default function RDTGraphiQLForm({path}: {path: string[]}) {
           </Box>
         </form>
 
-        <RDTResponseEditor isFetching={isFetching} responseStatus={response?.status}></RDTResponseEditor>
+        <RDTGraphiQLResponseEditor
+          isFetching={isFetching}
+          responseStatus={response?.status}
+        ></RDTGraphiQLResponseEditor>
       </GraphiQLProvider>
-
-      {/* <RDTGraphiQLEditor url={url} initialQuery={query} initialQueryVariables={queryVariables}></RDTGraphiQLEditor> */}
-      {/* ) : (
-          <div>
-            <label>
-              Query:
-              <input
-                type='text'
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                required
-              />
-            </label>
-          </div>
-        )} */}
     </Container>
   );
 }
