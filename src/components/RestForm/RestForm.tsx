@@ -82,7 +82,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
         setKeyValuePairsHeader(parsedHeaders);
       }
     }
-  }, [path, searchParams]);
+  }, [path, searchParams, t]);
 
   useEffect(() => {
     setKeyValuePairsVar(vars.map(({ key, value }) => ({ key, value, editable: false })));
@@ -138,8 +138,9 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   };
 
   const onChangeMethod = (e: SelectChangeEvent<MethodType>) => {
-    setMethod(e.target.value as MethodType);
-    if (e.target.value !== Methods.GET && e.target.value !== Methods.DELETE) {
+    const val = e.target.value as MethodType;
+    setMethod(val);
+    if (val === Methods.POST || val === Methods.PATCH || val === Methods.PUT) {
       const newHeaders = switchTextJsonHeader(isJsonMode, keyValuePairsHeader);
       setKeyValuePairsHeader(newHeaders);
       changeUrlClient(e.target.value as MethodType, url, body, newHeaders);
