@@ -38,7 +38,7 @@ export default function RootLayout({
         <ThemeProvider theme={responsiveFontSizesTheme}>
           <body className={inter.className}>
             <AuthProvider>
-              <Header locale={locale} />
+              <Header />
               <main className='main'>{children}</main>
               <Footer />
             </AuthProvider>

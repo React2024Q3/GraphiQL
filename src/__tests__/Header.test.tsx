@@ -27,7 +27,7 @@ vi.mock('next-intl', async (importOriginal) => {
 const renderHeaderWithProviders = () => {
   return render(
     <NextIntlClientProvider locale={'en'}>
-      <Header locale='en' />
+      <Header />
     </NextIntlClientProvider>
   );
 };
