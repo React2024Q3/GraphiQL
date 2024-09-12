@@ -20,14 +20,7 @@ module.exports = {
     '.prettierrc.cjs',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    'react-compiler',
-    'react-refresh',
-    '@typescript-eslint',
-    'react',
-    'react-hooks',
-    'prettier',
-  ],
+  plugins: ['react-refresh', '@typescript-eslint', 'react', 'react-hooks', 'prettier'],
   rules: {
     // 'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react-hooks/rules-of-hooks': 'error',
@@ -38,7 +31,6 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/no-unescaped-entities': 0,
     'prettier/prettier': 'error',
-    'react-compiler/react-compiler': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/ban-ts-comment': 'error',
     '@typescript-eslint/no-non-null-assertion': 'off',

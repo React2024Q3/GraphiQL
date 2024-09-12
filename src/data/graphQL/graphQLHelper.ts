@@ -1,14 +1,11 @@
 import { KeyValuePair } from '@/types&interfaces/types';
 import { URLSearchParams } from 'url';
 
-export type JSONValue = string | number | boolean | JSONObject | JSONArray;
+export type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>;
 
 interface JSONObject {
   [x: string]: JSONValue;
 }
-
-interface JSONArray extends Array<JSONValue> {}
-
 export interface GraphQLQuery {
   url: string;
   query: string;

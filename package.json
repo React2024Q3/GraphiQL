@@ -49,18 +49,17 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/coverage-v8": "^2.0.5",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "^14.2.10",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-compiler": "^0.0.0-experimental-eeb1b2a-20240818",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.9",
     "husky": "^8.0.0",
     "jsdom": "^24.1.1",
     "prettier": "^3.3.3",
     "redux-mock-store": "^1.5.4",
-    "typescript": "^5",
+    "typescript": "^5.6.0",
     "vitest": "^2.0.5"
   }
 }
