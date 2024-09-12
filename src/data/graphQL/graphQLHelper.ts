@@ -7,7 +7,7 @@ interface JSONObject {
   [x: string]: JSONValue;
 }
 
-interface JSONArray extends Array<JSONValue> {}
+type JSONArray = JSONValue[];
 
 export interface GraphQLQuery {
   url: string;

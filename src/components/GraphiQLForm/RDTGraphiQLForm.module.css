@@ -16,13 +16,11 @@
   overflow: hidden;
 }
 
-
-
 .response-editor {
   height: 100%;
   position: relative;
   width: 100%;
-/* display: flex;
+  /* display: flex;
 height: 300px;
 width: 100%;
 margin-top: 20px; */
