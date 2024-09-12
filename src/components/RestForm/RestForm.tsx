@@ -21,6 +21,7 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
@@ -48,6 +49,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
   const [vars] = useVariablesLS();
+  const t = useTranslations();
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -142,19 +144,19 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           <FormControl size='small'>
             <Select value={method} onChange={onChangeMethod}>
               <MenuItem className={styles.selectItem} value='GET'>
-                GET
+                {t('methods.get')}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='POST'>
-                POST
+                {t('methods.post')}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='PUT'>
-                PUT
+                {t('methods.put')}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='DELETE'>
-                DELETE
+                {t('methods.delete')}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='PATCH'>
-                PATCH
+                {t('methods.patch')}
               </MenuItem>
             </Select>
           </FormControl>
@@ -179,14 +181,14 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           </FormControl>
 
           <Button variant='contained' type='submit'>
-            Send
+            {t('buttons.send')}
           </Button>
         </div>
 
         {(method === Methods.POST || method === Methods.PUT || method === Methods.PATCH) && (
           <div>
             <label>
-              Request body (JSON):
+              {t('client.req-body')}:
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
@@ -205,8 +207,8 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-            <Tab label='Headers' />
-            <Tab label='Variables' />
+            <Tab label={t('client.headers')} />
+            <Tab label={t('client.variables')} />
           </Tabs>
         </Box>
         <Box className={styles.keyValFormWrapWindow}>
@@ -216,13 +218,13 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           >
             <KeyValueForm
               onPairsChange={handlePairsChangeHeader}
-              title={'Headers'}
+              title={t('client.headers')}
               initPairs={keyValuePairsHeader}
             />
 
             <KeyValueForm
               onPairsChange={handlePairsChangeVar}
-              title={'Variables'}
+              title={t('client.variables')}
               initPairs={keyValuePairsVar}
               isVars={true}
             />
