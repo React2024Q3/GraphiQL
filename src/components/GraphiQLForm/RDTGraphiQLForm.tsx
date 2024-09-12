@@ -12,6 +12,7 @@ import {
 } from '@/data/graphQL/graphQLHelper';
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
+import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
@@ -25,6 +26,7 @@ import { ValidationError } from 'yup';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
+import { Loader } from '../Loader';
 import styles from './RDTGraphiQLForm.module.css';
 import { RDTGraphiQLRequestEditor } from './RDTGraphiQLRequestEditor';
 import { RDTGraphiQLResponseEditor } from './RDTGraphiQLResponseEditor';
@@ -87,6 +89,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
   const searchParams = useSearchParams();
   const [_, saveUrlToLS] = useHistoryLS();
+  const { loading: isAuthLoading, error: authError } = useAuthRedirect();
 
   const isFirstRender = useRef(true);
   const t = useTranslations('graphiql');
@@ -286,9 +289,13 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
   //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
+  if (isAuthLoading) {
+    return <Loader />;
+  }
   return (
     <Container className={styles.formContainer}>
       <ErrorNotification error={response?.networkError} />
+      <ErrorNotification error={authError} />
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
         <TextField
