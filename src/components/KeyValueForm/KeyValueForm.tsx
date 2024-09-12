@@ -54,7 +54,7 @@ export default function KeyValueForm({
     if (lastPair.key.trim() !== '' && lastPair.value.trim() !== '') {
       setError(null);
       if (pairs.find(({ key, editable }) => key === lastPair.key.trim() && !editable)) {
-        setError('Delete same key');
+        setError('errors.delete-same-key');
         return;
       }
       const updatedPairs = pairs.map((pair, index) =>
@@ -64,7 +64,7 @@ export default function KeyValueForm({
       onPairsChange(updatedPairs);
       if (isVars) recordToLS(updatedPairs, saveVarToLS);
     } else {
-      setError('Fill both key and value fields.');
+      setError('errors.fill-key-value');
     }
   };
 
@@ -105,7 +105,7 @@ export default function KeyValueForm({
                 disabled={!pair.editable}
                 error={Boolean(error && pair.editable && pair.key.trim() === '')}
                 helperText={
-                  error && pair.editable && pair.key.trim() === '' ? 'Please fill in the key' : ''
+                  error && pair.editable && pair.key.trim() === '' ? t('errors.fill-in-key') : ''
                 }
               />
             </Grid>
@@ -119,7 +119,7 @@ export default function KeyValueForm({
                 error={Boolean(error && pair.editable && pair.value.trim() === '')}
                 helperText={
                   error && pair.editable && pair.value.trim() === ''
-                    ? 'Please fill in the value'
+                    ? t('errors.fill-in-value')
                     : ''
                 }
               />

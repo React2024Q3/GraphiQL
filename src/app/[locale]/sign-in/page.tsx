@@ -75,7 +75,7 @@ function SignIn() {
           errors={errors}
         />
         <Typography color='error' variant='body2'>
-          {firebaseError || '\u00A0'}
+          {t(firebaseError) || '\u00A0'}
         </Typography>
         <Button
           color='primary'
