@@ -6,31 +6,40 @@ import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { Methods } from '@/types&interfaces/enums';
+import { ApiResponse } from '@/types&interfaces/interfaces';
 import { KeyValuePair, MethodType } from '@/types&interfaces/types';
 import changeUrlClient from '@/utils/changeUrlClient';
 import transformVariables from '@/utils/transformVariables';
-import { Box, Button, Container, FormControl, MenuItem, Select, SelectChangeEvent, Tab, Tabs, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  TextField,
+} from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
+import CodeEditor from './CodeEditor';
 import styles from './RestForm.module.css';
-import CodeEditor from './CodeEditor'; // Импортируем новый компонент
-
-interface ApiResponse {
-  data?: unknown;
-  error?: string;
-}
 
 function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[] }) {
   const [method, setMethod] = useState<MethodType>(initMethod);
   const [url, setUrl] = useState<string>('');
   const [body, setBody] = useState<string>('');
-  const [isJsonMode, setIsJsonMode] = useState<boolean>(true); // New state for toggling between JSON and text modes
+  const [isJsonMode, setIsJsonMode] = useState<boolean>(true);
   const [response, setResponse] = useState<ApiResponse | null>(null);
   const [headers, setHeaders] = useState<string>('');
+  const [statusCode, setStatusCode] = useState<string>('');
+  const [statusText, setStatusText] = useState<string>('');
   const [keyValuePairsHeader, setKeyValuePairsHeader] = useState<KeyValuePair[]>([]);
   const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -106,9 +115,11 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       saveUrlToLS(apiUrl);
 
       const res = await fetch('/api/' + apiUrl);
-      if (res.status === 500) throw new Error('Server error');
+      // if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
+      setStatusCode(res.status.toString());
+      setStatusText(res.statusText);
 
       setResponse(data.data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
@@ -124,7 +135,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   };
 
   const toggleMode = () => {
-    setIsJsonMode(!isJsonMode); // Toggle between JSON and text modes
+    setIsJsonMode(!isJsonMode);
   };
 
   return (
@@ -201,7 +212,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               onPairsChange={handlePairsChangeHeader}
               title={'Headers'}
               initPairs={keyValuePairsHeader}
-              height = {tabIndex === -1 ? '0' : 'none'}
+              height={tabIndex === -1 ? '0' : 'none'}
             />
 
             <KeyValueForm
@@ -209,13 +220,20 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               title={'Variables'}
               initPairs={keyValuePairsVar}
               isVars={true}
-              height = {tabIndex === 0 ? '0' : 'none'}
+              height={tabIndex === 0 ? '0' : 'none'}
             />
           </Box>
         </Box>
       </form>
 
-      <ResponseDisplay headers={headers} response={JSON.stringify(response, null, 2)} />
+      {response ? (
+        <ResponseDisplay
+          statusCode={statusCode}
+          statusText={statusText}
+          headers={headers}
+          response={response}
+        />
+      ) : null}
     </Container>
   );
 }

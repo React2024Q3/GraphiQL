@@ -27,7 +27,7 @@ export default function KeyValueForm({
   title,
   initPairs,
   isVars,
-  height
+  height,
 }: KeyValueFormProps) {
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +75,7 @@ export default function KeyValueForm({
   };
 
   return (
-    <Box sx={{ width: '100%'}} style={{ maxHeight: `${height}`, overflow: 'hidden' }}>
+    <Box sx={{ width: '100%' }} style={{ maxHeight: `${height}`, overflow: 'hidden' }}>
       <h3>{title}</h3>
       <Grid container spacing={2} mt={1}>
         {pairs.map((pair, index) => (

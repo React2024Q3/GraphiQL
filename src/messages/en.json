@@ -57,6 +57,8 @@
   "client": {
     "req-body": "Request body (JSON)",
     "res-body": "Response body",
+    "res-statusText": "Response status text",
+    "res-statusCode": "Response status code",
     "res-header": "Response header",
     "no-res-body": "No response body",
     "no-res-header": "No response header",
