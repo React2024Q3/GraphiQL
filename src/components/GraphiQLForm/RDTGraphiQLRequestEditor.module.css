@@ -1,0 +1,22 @@
+.query-editor {
+  width: 70%;
+}
+
+.variables-editor {
+  width: 25%;
+}
+
+.request-headers-editor {
+  height: 300px;
+
+}
+
+.query-and-vars-box {
+  display: flex;
+  height: 300px;
+  width: 100%;
+  margin-top: 20px;
+  justify-content: space-between;
+
+}
+

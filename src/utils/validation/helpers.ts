@@ -26,4 +26,17 @@ const confirmPasswordSchema = yup
   .required('Confirm password is required')
   .oneOf([yup.ref('password')], 'Passwords must match');
 
-export { nameSchema, emailSchema, passwordSchema, confirmPasswordSchema };
+// matches:
+// vercel.com
+// www.vercel.com
+// uptime-monitor-fe.vercel.app
+// https://uptime-monitor-fe.vercel.app/
+const urlRe = /^((ftp|http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]+(\/[a-zA-Z0-9_-]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?\/?$/gm;
+
+
+const urlSchema = yup
+.string()
+.matches(urlRe, 'URL is not valid')
+
+
+export { nameSchema, emailSchema, passwordSchema, confirmPasswordSchema, urlSchema };
