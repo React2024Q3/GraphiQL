@@ -64,5 +64,17 @@
     "variables": "Variables",
     "key": "Key",
     "value": "Value"
+  },
+  "graphiql": {
+    "prettifyButton": "Prettify query\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL is not valid",
+    "urlLabel": "URL",
+    "queryExample": "Query example",
+    "queryTab": "Query",
+    "headersTab": "Headers",
+    "variablesTab": "Variables",
+    "documentationTab": "Documentation",
+    "runButton": "Run",
+    "status": "Status"
   }
 }

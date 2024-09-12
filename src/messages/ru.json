@@ -64,5 +64,17 @@
     "variables": "Переменные",
     "key": "Ключ",
     "value": "Значение"
+  },
+  "graphiql": {
+    "prettifyButton": "Форматировать запрос\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL невалиден",
+    "urlLabel": "URL",
+    "queryExample": "Пример запроса",
+    "queryTab": "Запрос",
+    "headersTab": "Заголовки",
+    "variablesTab": "Переменные",
+    "documentationTab": "Документация",
+    "runButton": "Выполнить",
+    "status": "Статус"
   }
 }

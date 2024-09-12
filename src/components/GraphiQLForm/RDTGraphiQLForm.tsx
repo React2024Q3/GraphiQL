@@ -19,6 +19,7 @@ import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import { Box, Button, Container, MenuItem, Tab, Tabs, TextField } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ValidationError } from 'yup';
 
@@ -29,7 +30,7 @@ import { RDTGraphiQLRequestEditor } from './RDTGraphiQLRequestEditor';
 import { RDTGraphiQLResponseEditor } from './RDTGraphiQLResponseEditor';
 import './missingGraphiQLStyles.css';
 
-const exampleQueries = ['None', 'Rick&Morty', 'TODO app'];
+const exampleQueries = ['--', 'Rick&Morty', 'TODO app'];
 interface GraphQLFormUIState {
   url: string;
   query: string;
@@ -55,7 +56,7 @@ const defaultFormUIState: GraphQLFormUIState = {
 
   urlTexFieldValue: '',
   urlTextFieldError: '',
-  selectedExampleQueryName: 'None',
+  selectedExampleQueryName: '--',
   tabIndex: 0,
 
   editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
@@ -88,6 +89,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const [_, saveUrlToLS] = useHistoryLS();
 
   const isFirstRender = useRef(true);
+  const t = useTranslations('graphiql');
 
   // GraphQL Editor won't render/work unless URL (and hence schema) is set
   const memoFetcher: Fetcher = useMemo(
@@ -164,11 +166,11 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       setUrlTextFieldError('');
       return true;
     } catch (error) {
-      console.log(`value: ${text} is not valie dut to ${error}`);
+      console.log(`value: ${text} is not valid due to ${error}`);
       if (error instanceof ValidationError) {
         setUrlTextFieldError(error.message); // Set error message if validation fails
       } else {
-        setUrlTextFieldError('URL is not valid');
+        setUrlTextFieldError(t('urlNotValid'));
       }
       return false;
     }
@@ -294,7 +296,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           sx={{ width: '75%' }}
           value={urlTextFieldValue}
           onChange={handleURLTextFieldChange}
-          label='URL'
+          label={t('urlLabel')}
           error={!!urlTextFieldError}
           helperText={urlTextFieldError}
           onBlur={handleURLTextFieldBlur}
@@ -303,7 +305,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           select
           size='medium'
           sx={{ width: '200px' }}
-          label='Query example'
+          label={t('queryExample')}
           value={selectedExampleQueryName}
           onChange={handleExampleQueryChange}
         >
@@ -317,7 +319,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           sx={{ width: '200px' }}
           onClick={handleSubmit}
         >
-          Run
+          {t('runButton')}
         </Button>
       </Box>
 
@@ -341,10 +343,10 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         <form onSubmit={handleSubmit}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-              <Tab label='Query' />
-              <Tab label='Headers' />
-              <Tab label='Variables' />
-              <Tab label='Documentation' />
+              <Tab label={t('queryTab')} />
+              <Tab label={t('headersTab')} />
+              <Tab label={t('variablesTab')} />
+              <Tab label={t('documentationTab')} />
             </Tabs>
           </Box>
 
@@ -360,7 +362,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
                 <KeyValueForm
                   onPairsChange={handlePairsChangeHeader}
-                  title={'Headers'}
+                  title={t('headersTab')}
                   initPairs={requestHeaders}
                 />
               </Box>
@@ -368,7 +370,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
                 <KeyValueForm
                   onPairsChange={handlePairsChangeVar}
-                  title={'Variables'}
+                  title={t('variablesTab')}
                   initPairs={keyValuePairsVar}
                 />
               </Box>
