@@ -9,6 +9,7 @@ import { Methods } from '@/types&interfaces/enums';
 import { ApiResponse } from '@/types&interfaces/interfaces';
 import { KeyValuePair, MethodType } from '@/types&interfaces/types';
 import changeUrlClient from '@/utils/changeUrlClient';
+import switchTextJsonHeader from '@/utils/switchTextJsonHeader';
 import transformVariables from '@/utils/transformVariables';
 import {
   Box,
@@ -45,6 +46,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { loading, error } = useAuthRedirect();
+  const [parseError, setParseError] = useState<string | null>(null);
   const [_, saveUrlToLS] = useHistoryLS();
   const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
@@ -54,14 +56,19 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      if (path && path.length) {
-        const decodedUrl = atob(decodeURIComponent(path[0]));
-        setUrl(decodedUrl);
-      }
+      try {
+        if (path && path.length) {
+          const decodedUrl = atob(decodeURIComponent(path[0]));
+          setUrl(decodedUrl);
+        }
 
-      if (path && path.length > 1) {
-        const decodedBody = atob(decodeURIComponent(path[1]));
-        setBody(decodedBody);
+        if (path && path.length > 1) {
+          const decodedBody = atob(decodeURIComponent(path[1]));
+          setBody(decodedBody);
+        }
+      } catch (error) {
+        console.warn(error);
+        setParseError(t('errors.decode'));
       }
 
       const searchParamsArray = Array.from(searchParams.entries());
@@ -132,15 +139,25 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
   const onChangeMethod = (e: SelectChangeEvent<MethodType>) => {
     setMethod(e.target.value as MethodType);
-    changeUrlClient(e.target.value as MethodType, url, body, keyValuePairsHeader);
+    if (e.target.value !== Methods.GET && e.target.value !== Methods.DELETE) {
+      const newHeaders = switchTextJsonHeader(isJsonMode, keyValuePairsHeader);
+      setKeyValuePairsHeader(newHeaders);
+      changeUrlClient(e.target.value as MethodType, url, body, newHeaders);
+    } else {
+      changeUrlClient(e.target.value as MethodType, url, body, keyValuePairsHeader);
+    }
   };
 
   const toggleMode = () => {
+    const newHeaders = switchTextJsonHeader(!isJsonMode, keyValuePairsHeader);
+    setKeyValuePairsHeader(newHeaders);
+    changeUrlClient(method, url, body, newHeaders);
     setIsJsonMode(!isJsonMode);
   };
 
   return (
     <Container className={styles.formContainer}>
+      <ErrorNotification error={parseError} />
       <ErrorNotification error={error} />
       <ErrorNotification error={response?.error} />
       <form className={styles.form} onSubmit={handleSubmit}>
