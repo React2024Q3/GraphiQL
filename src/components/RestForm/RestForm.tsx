@@ -22,6 +22,7 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
 import { ErrorNotification } from '../ErrorNotification';
@@ -48,6 +49,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
   const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
   const [vars] = useVariablesLS();
+  const t = useTranslations();
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -115,7 +117,6 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       saveUrlToLS(apiUrl);
 
       const res = await fetch('/api/' + apiUrl);
-      // if (res.status === 500) throw new Error('Server error');
 
       const data = await res.json();
       setStatusCode(res.status.toString());
@@ -199,8 +200,8 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-            <Tab label='Headers' />
-            <Tab label='Variables' />
+            <Tab label={t('client.headers')} />
+            <Tab label={t('client.variables')} />
           </Tabs>
         </Box>
         <Box className={styles.keyValFormWrapWindow}>
@@ -210,14 +211,14 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           >
             <KeyValueForm
               onPairsChange={handlePairsChangeHeader}
-              title={'Headers'}
+              title={t('client.headers')}
               initPairs={keyValuePairsHeader}
               height={tabIndex === -1 ? '0' : 'none'}
             />
 
             <KeyValueForm
               onPairsChange={handlePairsChangeVar}
-              title={'Variables'}
+              title={t('client.variables')}
               initPairs={keyValuePairsVar}
               isVars={true}
               height={tabIndex === 0 ? '0' : 'none'}

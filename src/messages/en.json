@@ -65,6 +65,9 @@
     "headers": "Headers",
     "variables": "Variables",
     "key": "Key",
-    "value": "Value"
+    "value": "Value",
+    "fill-key": "Please fill in the key",
+    "fill-value": "Please fill in the value",
+    "fill-both": "Fill both key and value fields"
   }
 }
