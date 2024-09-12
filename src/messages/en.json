@@ -6,7 +6,10 @@
     "main": "Main",
     "rest": "REST Client",
     "graphql": "GraphiQL Client",
-    "history": "History"
+    "history": "History",
+    "send": "Send",
+    "add": "Add",
+    "delete": "Delete"
   },
   "Home": {
     "welcome": "Welcome to our app",
@@ -43,5 +46,23 @@
   "history": {
     "empty-1": "You haven't executed any requests",
     "empty-2": "It's empty here. Try:"
+  },
+  "methods": {
+    "get": "GET",
+    "post": "POST",
+    "put": "PUT",
+    "delete": "DELETE",
+    "patch": "PATCH"
+  },
+  "client": {
+    "req-body": "Request body (JSON)",
+    "res-body": "Response body",
+    "res-header": "Response header",
+    "no-res-body": "No response body",
+    "no-res-header": "No response header",
+    "headers": "Headers",
+    "variables": "Variables",
+    "key": "Key",
+    "value": "Value"
   }
 }

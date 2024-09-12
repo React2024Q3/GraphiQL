@@ -1,0 +1,6 @@
+{
+  "url": "https://graphqlzero.almansi.me/api",
+  "query": "query { todos { data { id title completed user { name } } } }",
+  "queryVariables": {},
+  "headers": [{ "key": "content-type", "value": "application/json", "editable": true }]
+}

@@ -1,13 +1,16 @@
 'use client';
 
+import { type Locale } from '@/navigation';
 import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { useLocale } from 'next-intl';
 
 import { usePathname, useRouter } from '../../navigation';
 import styles from './LanguageSelect.module.css';
 
-export default function LanguageChanger({ locale }: { locale: string }) {
+export default function LanguageSelect() {
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useLocale() as Locale;
 
   const handleChange = (e: SelectChangeEvent<string>) => {
     router.push(pathname, { locale: e.target.value });

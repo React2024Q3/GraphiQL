@@ -37,11 +37,6 @@
   padding: 0.3rem 1rem;
 }
 
-.button__skeleton {
-  min-width: 5.6rem;
-  min-height: 2.2rem;
-}
-
 .header__logo {
   display: flex;
   align-items: center;
