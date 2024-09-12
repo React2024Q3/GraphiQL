@@ -14,12 +14,14 @@ export const handleAuthError = (
     if (setError && error.message.includes('auth/email-already-in-use')) {
       setError('email', {
         type: 'manual',
-        message: 'This email is already in use.',
+        message: 'errors.email-in-use',
       });
     } else if (error.message.includes('auth/invalid-credential')) {
-      setFirebaseError('Invalid credentials. Please check your email and password.');
+      setFirebaseError('errors.invalid-credentials');
     } else {
-      setFirebaseError('An error occurred. Please try again.');
+      setFirebaseError('errors.error-occurred');
     }
+  } else {
+    setFirebaseError(error as string);
   }
 };

@@ -117,7 +117,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       saveUrlToLS(apiUrl);
 
       const res = await fetch('/api/' + apiUrl);
-      if (res.status === 500) throw new Error('Server error');
+      if (res.status === 500) throw new Error(t('errors.server-error'));
 
       const data = await res.json();
 
@@ -125,7 +125,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
       console.error('Request error:', error);
-      setResponse({ error: 'Request error.' });
+      setResponse({ error: t('errors.request-error') });
     }
   };
 
