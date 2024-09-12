@@ -14,7 +14,7 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
       try {
         onChange(JSON.stringify(JSON.parse(value), null, 2));
       } catch (error) {
-        console.error('JSON formatting error: ', error);
+        console.warn('JSON formatting error: ', error);
       }
     }
   };
@@ -27,6 +27,7 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
     <CodeMirror
       value={value}
       minHeight='250px'
+      height='auto'
       theme={vscodeDark}
       extensions={isJsonMode ? [json()] : []}
       onChange={handleChange}

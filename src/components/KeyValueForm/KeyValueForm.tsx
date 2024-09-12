@@ -13,6 +13,7 @@ type KeyValueFormProps = {
   title: string;
   initPairs?: KeyValuePair[];
   isVars?: boolean;
+  height: string;
 };
 
 const createNewPair = (): KeyValuePair => ({
@@ -26,22 +27,12 @@ export default function KeyValueForm({
   title,
   initPairs,
   isVars,
+  height
 }: KeyValueFormProps) {
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
   const [error, setError] = useState<string | null>(null);
   const [_, saveVarToLS] = useVariablesLS();
   const t = useTranslations();
-
-  // useEffect(() => {
-  //   if (isVars && vars && vars.length) {
-  //     const pairsLS: KeyValuePair[] = vars.map(({ key, value }) => ({
-  //       key,
-  //       value,
-  //       editable: false,
-  //     }));
-  //     setPairs([...pairsLS, createNewPair()]);
-  //   }
-  // }, [isVars, vars]);
 
   useEffect(() => {
     if (initPairs && initPairs.length) {
@@ -84,7 +75,7 @@ export default function KeyValueForm({
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%'}} style={{ maxHeight: `${height}`, overflow: 'hidden' }}>
       <h3>{title}</h3>
       <Grid container spacing={2} mt={1}>
         {pairs.map((pair, index) => (

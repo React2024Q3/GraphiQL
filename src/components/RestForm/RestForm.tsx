@@ -201,6 +201,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               onPairsChange={handlePairsChangeHeader}
               title={'Headers'}
               initPairs={keyValuePairsHeader}
+              height = {tabIndex === -1 ? '0' : 'none'}
             />
 
             <KeyValueForm
@@ -208,6 +209,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               title={'Variables'}
               initPairs={keyValuePairsVar}
               isVars={true}
+              height = {tabIndex === 0 ? '0' : 'none'}
             />
           </Box>
         </Box>
