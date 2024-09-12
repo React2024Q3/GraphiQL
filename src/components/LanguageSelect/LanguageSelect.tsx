@@ -1,8 +1,7 @@
 'use client';
 
-import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-
 import { type Locale } from '@/navigation';
+import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useLocale } from 'next-intl';
 
 import { usePathname, useRouter } from '../../navigation';

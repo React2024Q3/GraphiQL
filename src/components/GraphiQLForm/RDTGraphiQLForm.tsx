@@ -101,12 +101,13 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
+
+      const query = parseQueryFromPath(path, searchParams);
+      if (query) {
+        applyFormUIState(getFormUIStateForQuery(query));
+      }
     }
-    let query = parseQueryFromPath(path, searchParams);
-    if (query) {
-      applyFormUIState(getFormUIStateForQuery(query));
-    }
-  }, []);
+  }, [path, searchParams]);
 
   const getFormUIStateForQuery = (
     query: GraphQLQuery,
@@ -196,13 +197,13 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     setIsFetching(true);
     setResponse({ data: {} });
 
-    let path = composePathFromQuery({
+    const path = composePathFromQuery({
       url: url,
       query: query,
       queryVariables: queryVariables,
       headers: requestHeaders,
     });
-    let browserPath = `graphiql/${path}`;
+    const browserPath = `graphiql/${path}`;
     shallowChangeUrlInBrowser(browserPath);
     saveUrlToLS(browserPath);
 
@@ -214,6 +215,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         const data = await response.json();
         setResponse({ status: response.status, data: data });
       } catch (e) {
+        console.error(e);
         setResponse({ status: response.status, errorMessage: 'Server returned not valid JSON' });
       }
 

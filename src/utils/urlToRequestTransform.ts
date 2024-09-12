@@ -1,9 +1,13 @@
 import { ARRAY_METHODS } from '@/shared/constants';
-import { parseQueryUrlFromHistoryPath } from '../data/graphQL/graphQLHelper'
+
+import { parseQueryUrlFromHistoryPath } from '../data/graphQL/graphQLHelper';
 
 export default function urlToRequestTransform(encodedUrl: string) {
-  if(encodedUrl.includes('graphiql')) {
-    return {method: 'GraphQL', url: parseQueryUrlFromHistoryPath(encodedUrl.replace('graphiql/', ''))}
+  if (encodedUrl.includes('graphiql')) {
+    return {
+      method: 'GraphQL',
+      url: parseQueryUrlFromHistoryPath(encodedUrl.replace('graphiql/', '')),
+    };
   }
 
   const method = ARRAY_METHODS.find((method) => encodedUrl.includes(`${method}/`));

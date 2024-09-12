@@ -1,4 +1,3 @@
-
 /* The response view */
 .graphiql-container .graphiql-response {
   /* --editor-background: transparent;*/
@@ -6,9 +5,9 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-} 
+}
 
- .graphiql-container .graphiql-response .result-window {
+.graphiql-container .graphiql-response .result-window {
   position: relative;
   height: 100%;
   width: 100%;
