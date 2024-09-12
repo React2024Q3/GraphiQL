@@ -26,7 +26,7 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
   return (
     <CodeMirror
       value={value}
-      minHeight='150px'
+      minHeight='250px'
       theme={vscodeDark}
       extensions={isJsonMode ? [json()] : []}
       onChange={handleChange}
