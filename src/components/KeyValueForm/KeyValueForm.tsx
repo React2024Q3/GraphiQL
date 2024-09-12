@@ -6,6 +6,7 @@ import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import recordToLS from '@/utils/recordToLS';
 import { Box, Button, Grid, TextField } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 type KeyValueFormProps = {
   onPairsChange: (pairs: KeyValuePair[]) => void;
@@ -29,6 +30,7 @@ export default function KeyValueForm({
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
   const [error, setError] = useState<string | null>(null);
   const [_, saveVarToLS] = useVariablesLS();
+  const t = useTranslations();
 
   // useEffect(() => {
   //   if (isVars && vars && vars.length) {
@@ -96,7 +98,7 @@ export default function KeyValueForm({
           >
             <Grid item xs={5}>
               <TextField
-                label='Key'
+                label={t('client.key')}
                 value={pair.key}
                 onChange={(e) => handleChange(index, 'key', e.target.value)}
                 fullWidth
@@ -109,7 +111,7 @@ export default function KeyValueForm({
             </Grid>
             <Grid item xs={5}>
               <TextField
-                label='Value'
+                label={t('client.value')}
                 value={pair.value}
                 onChange={(e) => handleChange(index, 'value', e.target.value)}
                 fullWidth
@@ -130,7 +132,7 @@ export default function KeyValueForm({
                   onClick={handleAddPair}
                   sx={{ height: '56px' }}
                 >
-                  Add
+                  {t('buttons.add')}
                 </Button>
               ) : (
                 <Button
@@ -139,7 +141,7 @@ export default function KeyValueForm({
                   onClick={() => handleRemovePair(index)}
                   sx={{ height: '56px' }}
                 >
-                  Del
+                  {t('buttons.delete')}
                 </Button>
               )}
             </Grid>
