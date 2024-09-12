@@ -126,7 +126,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
       console.error('Request error:', error);
-      setResponse({ error: 'Request error.' });
+      setResponse({ error: t('errors.request-error') });
     }
   };
 
@@ -185,14 +185,14 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           </FormControl>
 
           <Button variant='contained' type='submit'>
-            Send
+            {t('buttons.send')}
           </Button>
         </div>
 
         {(method === Methods.POST || method === Methods.PUT || method === Methods.PATCH) && (
           <div>
             <Button variant='contained' onClick={toggleMode}>
-              {isJsonMode ? 'Switch to Text' : 'Switch to JSON'}
+              {isJsonMode ? t('buttons.to-text') : t('buttons.to-json')}
             </Button>
             <CodeEditor value={body} onChange={setBody} isJsonMode={isJsonMode} />
           </div>

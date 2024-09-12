@@ -8,6 +8,7 @@ import { logout } from '@/firebase/utils';
 import { Link } from '@/navigation';
 import throttle from '@/utils/throttle';
 import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 import { LeftMenu } from '../LeftMenu';
 import Logo from '../Logo';
@@ -21,6 +22,7 @@ export default function Header() {
   const { user, loading } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const t = useTranslations();
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -63,7 +65,7 @@ export default function Header() {
         {!loading && !isMobile && (
           <Button>
             <Typography className={styles.header__logo_title} component='h1' variant='subtitle1'>
-              REST/GraphiQL Client
+              {t('app-title')}
             </Typography>
           </Button>
         )}

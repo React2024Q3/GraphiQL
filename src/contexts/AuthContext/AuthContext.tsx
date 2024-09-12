@@ -3,6 +3,7 @@
 import { ReactNode, createContext, useContext } from 'react';
 
 import { auth } from '@/firebase/config';
+import { useTranslations } from 'next-intl';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { AuthContextType } from './types';
@@ -17,8 +18,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
+  const t = useTranslations();
+
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error(t('errors.use-auth-error'));
   }
+
   return context;
 };
