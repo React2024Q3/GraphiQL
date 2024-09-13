@@ -75,6 +75,8 @@
     "variablesTab": "Variables",
     "documentationTab": "Documentation",
     "runButton": "Run",
-    "status": "Status"
+    "status": "Status",
+    "sdlUrlLabel": "SDL URL",
+    "fetchSDLButton": "Fetch Schema"
   }
 }

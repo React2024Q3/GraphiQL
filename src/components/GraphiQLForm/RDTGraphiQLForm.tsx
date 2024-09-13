@@ -16,10 +16,11 @@ import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
-import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
+import { GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import { Box, Button, Container, MenuItem, Tab, Tabs, TextField } from '@mui/material';
+import { GraphQLSchema } from 'graphql';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ValidationError } from 'yup';
@@ -27,6 +28,7 @@ import { ValidationError } from 'yup';
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
+import RDTGraphiQLDocExplorer from './RDTGraphiQLDocExplorer';
 import styles from './RDTGraphiQLForm.module.css';
 import { RDTGraphiQLRequestEditor } from './RDTGraphiQLRequestEditor';
 import { RDTGraphiQLResponseEditor } from './RDTGraphiQLResponseEditor';
@@ -45,6 +47,7 @@ interface GraphQLFormUIState {
   selectedExampleQueryName: string;
   tabIndex: number;
   editorVariables: KeyValuePair[];
+  customSchema: GraphQLSchema | null;
 }
 
 const defaultFormUIState: GraphQLFormUIState = {
@@ -60,7 +63,7 @@ const defaultFormUIState: GraphQLFormUIState = {
   urlTextFieldError: '',
   selectedExampleQueryName: '--',
   tabIndex: 0,
-
+  customSchema: null,
   editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
 };
 
@@ -77,6 +80,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   // not using createGraphiQLFetcher from @graphiQL fro requests (only for schema)
   const [isFetching, setIsFetching] = useState(false);
   const [response, setResponse] = useState<GraphQLApiResponse>(defaultFormUIState.response);
+  const [customSchema, setCustomSchema] = useState<GraphQLSchema | null>(null);
 
   const [urlTextFieldValue, setUrlTextFieldValue] = useState(defaultFormUIState.urlTexFieldValue);
   const [urlTextFieldError, setUrlTextFieldError] = useState(defaultFormUIState.urlTextFieldError);
@@ -129,6 +133,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     if (selectedExampleQuery) {
       state.selectedExampleQueryName = selectedExampleQuery;
     }
+    state.customSchema = null;
     return state;
   };
 
@@ -146,6 +151,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
     setSelectedExampleQueryName(state.selectedExampleQueryName);
     setTabIndex(state.tabIndex);
+
+    setCustomSchema(state.customSchema);
 
     setKeyValuePairsVar(state.editorVariables);
   };
@@ -287,6 +294,9 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     setQueryVariables(value);
   };
 
+  const onCustomSchemaFetch = (schema: GraphQLSchema) => {
+    setCustomSchema(schema);
+  };
   //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
   if (isAuthLoading) {
@@ -335,17 +345,15 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         query={query}
         variables={queryVariables}
         response={JSON.stringify(response?.data, null, 2)}
+        // setting headers in Provider messes up default Introspection query for some APIs due to cors.
         // headers={JSON.stringify(requestHeaders)}
-        // setting headers messes up default Introspection query for some APIs due to cors.
-        // @graphiql fetches the schema automatically, on the client
-        // TODO: make a server action to fetch schema on our server and pass it to
-        // the provider via schema props here
 
-        // if we don't have URL yet - then we should skip introspection query (which will
+        // if we loaded custom Schema (via server action from custom SDL url) then we set it to Provider.
+        // Otherwise, if we don't have URL yet - then we should skip introspection query (which will
         // return an error otherwise) by setting schema to `null` explicitly.
         // if the url is provided - then we set `schema: undefined` and graphiql will make
         // introspection query automatically and load the schema. we should aim to provide schema manually via our server action in future
-        schema={url === defaultFormUIState.url ? null : undefined}
+        schema={customSchema ? customSchema : url === defaultFormUIState.url ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -382,11 +390,11 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
                 />
               </Box>
 
-              <Box
-                sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}
-                className='graphiql-container'
-              >
-                <DocExplorer></DocExplorer>
+              <Box sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}>
+                <RDTGraphiQLDocExplorer
+                  baseURL={url}
+                  onCustomSchemaFetch={onCustomSchemaFetch}
+                ></RDTGraphiQLDocExplorer>
               </Box>
             </Box>
           </Box>
