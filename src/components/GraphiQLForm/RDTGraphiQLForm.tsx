@@ -54,7 +54,7 @@ const defaultFormUIState: GraphQLFormUIState = {
   url: '',
   query: '',
   queryVariables: '{}',
-  requestHeaders: [{ key: 'content-type', value: 'application/json', editable: true }],
+  requestHeaders: [{ key: 'content-type', value: 'application/json', editable: false }],
 
   isFetching: false,
   response: { data: {} },
@@ -207,7 +207,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsFetching(true);
-    setResponse({ data: {} });
+    setResponse(defaultFormUIState.response);
 
     const path = composePathFromQuery({
       url: url,
@@ -227,20 +227,24 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         const data = await response.json();
         setResponse({ status: response.status, data: data });
       } catch (e) {
-        console.error(e);
-        setResponse({ status: response.status, errorMessage: 'Server returned not valid JSON' });
+        console.error(`Can't parse JSON returned by our server with error=${e}`);
+        setResponse({
+          status: response.status,
+          errorMessage: 'Server returned not valid JSON',
+          data: { result: 'Server returned not valid JSON' },
+        });
       }
 
       setIsFetching(false);
     } catch (e) {
-      //network and CORS errors
+      //network and CORS errors (on a way to our server)
       let message;
       if (e instanceof Error) {
         message = e.message;
       } else {
         message = String(e);
       }
-      console.log(message);
+      console.log(`error on our server ${message}`);
 
       setResponse({ networkError: new Error('Please check your network and CORS settings') });
       setIsFetching(false);
