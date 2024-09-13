@@ -9,7 +9,9 @@
     "history": "History",
     "send": "Send",
     "add": "Add",
-    "delete": "Delete"
+    "delete": "Delete",
+    "to-text": "Switch To Text",
+    "to-json": "Switch To JSON"
   },
   "app-title": "REST/GraphQL Client",
   "Home": {
@@ -48,23 +50,21 @@
     "empty-1": "You haven't executed any requests",
     "empty-2": "It's empty here. Try:"
   },
-  "methods": {
-    "get": "GET",
-    "post": "POST",
-    "put": "PUT",
-    "delete": "DELETE",
-    "patch": "PATCH"
-  },
   "client": {
     "req-body": "Request body (JSON)",
     "res-body": "Response body",
+    "res-statusText": "Response status text",
+    "res-statusCode": "Response status code",
     "res-header": "Response header",
     "no-res-body": "No response body",
     "no-res-header": "No response header",
     "headers": "Headers",
     "variables": "Variables",
     "key": "Key",
-    "value": "Value"
+    "value": "Value",
+    "fill-key": "Please fill in the key",
+    "fill-value": "Please fill in the value",
+    "fill-both": "Fill both key and value fields"
   },
   "not-found-page": {
     "title": "404 - Page Not Found",
@@ -92,6 +92,7 @@
     "password-length": "Password must be at least 8 characters long",
     "password-strength": "Password must contain at least one letter, one number, and one special character",
     "confirm-password-required": "Confirm Password is required",
-    "password-match": "Passwords must match"
+    "password-match": "Passwords must match",
+    "decode": "URL encoding error"
   }
 }

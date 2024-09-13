@@ -16,6 +16,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@codemirror/lang-json": "^6.0.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@graphiql/react": "^0.26.2",
@@ -25,6 +26,8 @@
     "@mui/material": "^6.0.1",
     "@reduxjs/toolkit": "^2.2.7",
     "@testing-library/dom": "^10.4.0",
+    "@uiw/codemirror-theme-vscode": "^4.23.2",
+    "@uiw/react-codemirror": "^4.23.2",
     "firebase": "^10.13.0",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.16.0",
