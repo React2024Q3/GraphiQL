@@ -59,8 +59,8 @@ describe('History Component', () => {
 
     renderHistoryWithProviders();
 
-    expect(screen.getByText('GET /api/getData')).toBeInTheDocument();
-    expect(screen.getByText('GET /api/postData')).toBeInTheDocument();
+    expect(screen.getByText('1. GET /api/getData')).toBeInTheDocument();
+    expect(screen.getByText('2. GET /api/postData')).toBeInTheDocument();
   });
 
   it('renders ErrorNotification when there is an error', () => {
