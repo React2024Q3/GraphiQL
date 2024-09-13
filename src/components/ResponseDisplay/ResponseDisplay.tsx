@@ -45,6 +45,7 @@ export default function ResponseDisplay({
             readOnly={true}
             value={isJson ? JSON.stringify(response, null, 2) : response.toString()}
             minHeight='50px'
+            maxHeight='900px'
             height='auto'
             theme={vscodeDark}
             extensions={isJson ? [json()] : []}

@@ -50,13 +50,6 @@
     "empty-1": "You haven't executed any requests",
     "empty-2": "It's empty here. Try:"
   },
-  "methods": {
-    "get": "GET",
-    "post": "POST",
-    "put": "PUT",
-    "delete": "DELETE",
-    "patch": "PATCH"
-  },
   "client": {
     "req-body": "Request body (JSON)",
     "res-body": "Response body",
