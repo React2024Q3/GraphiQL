@@ -5,8 +5,8 @@ export async function POST(req: NextRequest, { params }: { params: { encodedPath
 }
 
 async function handleRequest(req: NextRequest, params: { encodedPath: string[] }) {
-  const { encodedPath } = params;
   try {
+    const { encodedPath } = params;
     const url = atob(decodeURIComponent(encodedPath[0]));
     const body = atob(decodeURIComponent(encodedPath[1]));
     const headersString = decodeURIComponent(req.url.split('?')[1]);
@@ -20,39 +20,34 @@ async function handleRequest(req: NextRequest, params: { encodedPath: string[] }
         }
       }
     }
-    //console.log(`headers: ${JSON.stringify(headers)}`);
 
-    try {
-      const myRequest = new Request(url, {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      });
+    const myRequest = new Request(url, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    });
+    const response = await fetch(myRequest);
+    let data = '{data: noData}';
+    data = await response.json();
 
-      const response = await fetch(myRequest);
-
-      let data = '{data: noData}';
-      data = await response.json();
-      // console.log(response.status);
-      // console.log(data);
-
-      const nextResponse = NextResponse.json(
-        { data, headers: response.headers },
-        { status: response.status }
+    const nextResponse = NextResponse.json(
+      { data, headers: response.headers },
+      { status: response.status }
+    );
+    return nextResponse;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      return NextResponse.json(
+        { error: 'Request parameters error. Please check your URL' },
+        { status: 500 }
       );
-      return nextResponse;
-    } catch (error) {
-      console.error(error);
+    } else if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON response from server' }, { status: 500 });
+    } else {
       return NextResponse.json(
         { error: 'API server network/cors response error' },
         { status: 500 }
       );
     }
-  } catch {
-    //console.error(e);
-    return NextResponse.json(
-      { error: 'Request parameters error. Please check your URL' },
-      { status: 500 }
-    );
   }
 }

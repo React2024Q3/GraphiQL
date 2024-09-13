@@ -299,7 +299,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const onCustomSchemaFetch = (schema: GraphQLSchema) => {
     setCustomSchema(schema);
   };
-  //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
 
   if (isAuthLoading) {
     return <Loader />;

@@ -35,7 +35,6 @@ export default function RDTGraphiQLDocExplorer({
       }
       const schema = buildClientSchema(schemaJSON as unknown as IntrospectionQuery);
       onCustomSchemaFetch(schema);
-      console.log(schema);
     } catch (e) {
       console.error('Error fetching GraphQL schema:', e);
     }
