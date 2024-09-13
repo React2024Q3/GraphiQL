@@ -15,7 +15,6 @@ export default function RDTGraphiQLDocExplorer({
   baseURL: string;
   onCustomSchemaFetch: (schema: GraphQLSchema) => void;
 }) {
-  console.log(`baseURL: ${baseURL}`);
   const [isFetching, setIsFetching] = useState(false);
   const t = useTranslations('graphiql');
   const urlInputRef = React.useRef<HTMLInputElement>(null);
