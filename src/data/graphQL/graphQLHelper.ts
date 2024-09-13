@@ -42,8 +42,7 @@ export function composePathFromQuery(query: GraphQLQuery): string | null {
       path += convertKeyValuePairsToSearchParamsString(query.headers);
     }
     return path;
-  } catch (e) {
-    console.log(e);
+  } catch {
     return null;
   }
 }

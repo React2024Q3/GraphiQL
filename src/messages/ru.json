@@ -66,6 +66,20 @@
     "fill-value": "Пожалуйста, заполните значение",
     "fill-both": "Заполните поля ключа и значения"
   },
+  "graphiql": {
+    "prettifyButton": "Форматировать запрос\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL невалиден",
+    "urlLabel": "URL",
+    "queryExample": "Пример запроса",
+    "queryTab": "Запрос",
+    "headersTab": "Заголовки",
+    "variablesTab": "Переменные",
+    "documentationTab": "Документация",
+    "runButton": "Выполнить",
+    "status": "Статус",
+    "sdlUrlLabel": "Cобственный SDL URL",
+    "fetchSDLButton": "Загрузить Схему"
+  },
   "not-found-page": {
     "title": "404 - Страница не найдена",
     "description": "Страница, которую вы ищете, не существует.",

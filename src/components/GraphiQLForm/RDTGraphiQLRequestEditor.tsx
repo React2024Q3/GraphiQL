@@ -1,5 +1,6 @@
 import { QueryEditor, VariableEditor, usePrettifyEditors } from '@graphiql/react';
 import { Button } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 import styles from './RDTGraphiQLRequestEditor.module.css';
 
@@ -8,8 +9,8 @@ export function RDTGraphiQLRequestEditor(props: {
   onQueryVariablesEdit: (value: string) => void;
 }) {
   const prettify = usePrettifyEditors();
+  const t = useTranslations('graphiql');
 
-  //console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
   return (
     <>
       {/* <div className='graphiql-container'> */}
@@ -21,8 +22,12 @@ export function RDTGraphiQLRequestEditor(props: {
           <VariableEditor onEdit={props.onQueryVariablesEdit}></VariableEditor>
         </div>
       </div>
-      <Button variant='contained' sx={{ width: '200px' }} onClick={prettify}>
-        Prettify query (Shift-Ctrl-P)
+      <Button
+        variant='contained'
+        sx={{ width: '250px', whiteSpace: 'pre-line' }}
+        onClick={prettify}
+      >
+        {t('prettifyButton')}
       </Button>
     </>
   );
