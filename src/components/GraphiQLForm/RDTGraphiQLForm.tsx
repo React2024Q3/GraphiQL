@@ -288,7 +288,9 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     <Container className={styles.formContainer}>
       <ErrorNotification error={response?.networkError} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', gap: '0.5rem' }}
+      >
         <TextField
           id='standard-basic'
           sx={{ width: '75%' }}

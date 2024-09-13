@@ -21,7 +21,7 @@ export function RDTGraphiQLRequestEditor(props: {
           <VariableEditor onEdit={props.onQueryVariablesEdit}></VariableEditor>
         </div>
       </div>
-      <Button variant='contained' sx={{ width: '200px' }} onClick={prettify}>
+      <Button variant='contained' sx={{ width: '200px', marginBottom: '1rem' }} onClick={prettify}>
         Prettify query (Shift-Ctrl-P)
       </Button>
     </>

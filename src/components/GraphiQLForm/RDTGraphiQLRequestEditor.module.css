@@ -1,9 +1,9 @@
 .query-editor {
-  width: 70%;
+  flex-grow: 3;
 }
 
 .variables-editor {
-  width: 25%;
+  flex-grow: 1;
 }
 
 .request-headers-editor {
@@ -14,6 +14,6 @@
   display: flex;
   height: 300px;
   width: 100%;
-  margin-top: 20px;
-  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
 }
