@@ -176,7 +176,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       setUrlTextFieldError('');
       return true;
     } catch (error) {
-      console.log(`value: ${text} is not valid due to ${error}`);
       if (error instanceof ValidationError) {
         setUrlTextFieldError(error.message); // Set error message if validation fails
       } else {
@@ -244,8 +243,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       } else {
         message = String(e);
       }
-      console.log(`error on our server ${message}`);
-
+      console.error(`error on our server ${message}`);
       setResponse({ networkError: new Error('Please check your network and CORS settings') });
       setIsFetching(false);
     }

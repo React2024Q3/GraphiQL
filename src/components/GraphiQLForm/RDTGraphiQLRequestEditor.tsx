@@ -11,7 +11,6 @@ export function RDTGraphiQLRequestEditor(props: {
   const prettify = usePrettifyEditors();
   const t = useTranslations('graphiql');
 
-  //console.log(`RDTGraphiQLInterface rerender and initialResponse is ${initialResponse}`);
   return (
     <>
       {/* <div className='graphiql-container'> */}

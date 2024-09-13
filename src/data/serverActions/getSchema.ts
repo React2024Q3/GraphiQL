@@ -3,7 +3,7 @@
 import {
   IntrospectionQuery,
   buildClientSchema,
-  getIntrospectionQuery, //printSchema,
+  getIntrospectionQuery,
   validateSchema,
 } from 'graphql';
 
@@ -19,7 +19,6 @@ export const getSchema = async (url: string): Promise<JSON | null> => {
     if (!validateSchema(schema)) {
       throw new Error('Invalid schema');
     }
-    //console.log(printSchema(schema));
     return data;
   } catch (e) {
     console.error('Error fetching GraphQL schema:', e);
