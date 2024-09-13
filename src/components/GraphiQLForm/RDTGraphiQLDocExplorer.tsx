@@ -43,10 +43,10 @@ export default function RDTGraphiQLDocExplorer({
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+      <Box sx={{ display: 'flex', marginTop: '1rem', gap: '0.5rem' }}>
         <TextField
           id='standard-basic'
-          sx={{ width: '75%' }}
+          sx={{ flexGrow: 5 }}
           value={SDLUrl}
           onChange={(e) => setSDLUrl(e.target.value)}
           label={t('sdlUrlLabel')}
@@ -55,7 +55,7 @@ export default function RDTGraphiQLDocExplorer({
         <Button
           variant='contained'
           disabled={isFetching}
-          sx={{ width: '200px' }}
+          sx={{ flexGrow: 0 }}
           onClick={handleSchemaFetch}
         >
           {t('fetchSDLButton')}

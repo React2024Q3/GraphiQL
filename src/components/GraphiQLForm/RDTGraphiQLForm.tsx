@@ -308,12 +308,10 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       <ErrorNotification error={response?.networkError} />
       <ErrorNotification error={authError} />
 
-      <Box
-        sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', gap: '0.5rem' }}
-      >
+      <Box sx={{ display: 'flex', marginTop: '1rem', gap: '0.5rem' }}>
         <TextField
           id='standard-basic'
-          sx={{ width: '75%' }}
+          sx={{ flexGrow: 4 }}
           value={urlTextFieldValue}
           onChange={handleURLTextFieldChange}
           label={t('urlLabel')}
@@ -324,7 +322,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         <TextField
           select
           size='medium'
-          sx={{ width: '200px' }}
+          sx={{ flexGrow: 1 }}
           label={t('queryExample')}
           value={selectedExampleQueryName}
           onChange={handleExampleQueryChange}
@@ -336,7 +334,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         <Button
           variant='contained'
           disabled={isFetching}
-          sx={{ width: '200px' }}
+          sx={{ flexGrow: 0 }}
           onClick={handleSubmit}
         >
           {t('runButton')}
