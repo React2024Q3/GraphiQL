@@ -74,9 +74,6 @@
   "errors": {
     "error-page-msg": "Что-то пошло не так!",
     "delete-same-key": "Удалить тот же ключ",
-    "fill-key-value": "Заполните поля ключа и значения",
-    "fill-in-key": "Пожалуйста, введите ключ",
-    "fill-in-value": "Пожалуйста, введите значение",
     "server-error": "Ошибка сервера",
     "request-error": "Ошибка запроса",
     "use-auth-error": "useAuth необходимо использовать внутри AuthProvider",

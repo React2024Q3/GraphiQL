@@ -74,9 +74,6 @@
   "errors": {
     "error-page-msg": "Something went wrong!",
     "delete-same-key": "Delete same key",
-    "fill-key-value": "Fill both key and value fields",
-    "fill-in-key": "Please, fill in the key",
-    "fill-in-value": "Please, fill in the value",
     "server-error": "Server error",
     "request-error": "Request error",
     "use-auth-error": "useAuth must be used within an AuthProvider",
