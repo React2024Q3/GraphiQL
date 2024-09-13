@@ -166,19 +166,19 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           <FormControl size='small'>
             <Select value={method} onChange={onChangeMethod}>
               <MenuItem className={styles.selectItem} value='GET'>
-                GET
+                {Methods.GET}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='POST'>
-                POST
+                {Methods.POST}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='PUT'>
-                PUT
+                {Methods.PUT}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='DELETE'>
-                DELETE
+                {Methods.DELETE}
               </MenuItem>
               <MenuItem className={styles.selectItem} value='PATCH'>
-                PATCH
+                {Methods.PATCH}
               </MenuItem>
             </Select>
           </FormControl>
