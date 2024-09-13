@@ -15,14 +15,22 @@ async function handleRequest(
 
   const url = atob(decodeURIComponent(encodedUrl));
   const body = atob(decodeURIComponent(encodedBody));
-  const headersString = req.url.split('?')[1];
-  console.log(headersString);
+  const headersString = decodeURIComponent(req.url.split('?')[1]);
+  const headers: HeadersInit = {};
+  if (headersString) {
+    const headerPairs = headersString.split('&');
+    for (const pair of headerPairs) {
+      const [key, value] = pair.split('=');
+      if (key && value) {
+        headers[key] = value;
+      }
+    }
+  }
+  // console.log(headers);
   try {
     const myRequest = new Request(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: body,
     });
 
