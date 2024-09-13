@@ -12,7 +12,7 @@ export function RDTGraphiQLResponseEditor({
   return (
     <Box sx={{ minHeight: '270px', display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        {responseStatus && `Status: ${responseStatus}`}
+        {responseStatus && `t('status'): ${responseStatus}`}
       </Box>
       <div className='graphiql-container'>
         <div className={'graphiql-response'}>

@@ -67,6 +67,20 @@
     "fill-value": "Please fill in the value",
     "fill-both": "Fill both key and value fields"
   },
+  "graphiql": {
+    "prettifyButton": "Prettify query\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL is not valid",
+    "urlLabel": "URL",
+    "queryExample": "Query example",
+    "queryTab": "Query",
+    "headersTab": "Headers",
+    "variablesTab": "Variables",
+    "documentationTab": "Documentation",
+    "runButton": "Run",
+    "status": "Status",
+    "sdlUrlLabel": "SDL URL",
+    "fetchSDLButton": "Fetch Schema"
+  },
   "not-found-page": {
     "title": "404 - Page Not Found",
     "description": "The page you are looking for does not exist.",

@@ -12,24 +12,29 @@ import {
 } from '@/data/graphQL/graphQLHelper';
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
+import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { KeyValuePair } from '@/types&interfaces/types';
 import { urlSchema } from '@/utils/validation/helpers';
-import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
+import { GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
 import { Fetcher, createGraphiQLFetcher } from '@graphiql/toolkit';
 import { Box, Button, Container, MenuItem, Tab, Tabs, TextField } from '@mui/material';
+import { GraphQLSchema } from 'graphql';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ValidationError } from 'yup';
 
 import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
+import { Loader } from '../Loader';
+import RDTGraphiQLDocExplorer from './RDTGraphiQLDocExplorer';
 import styles from './RDTGraphiQLForm.module.css';
 import { RDTGraphiQLRequestEditor } from './RDTGraphiQLRequestEditor';
 import { RDTGraphiQLResponseEditor } from './RDTGraphiQLResponseEditor';
 import './missingGraphiQLStyles.css';
 
-const exampleQueries = ['None', 'Rick&Morty', 'TODO app'];
+const exampleQueries = ['--', 'Rick&Morty', 'TODO app'];
 interface GraphQLFormUIState {
   url: string;
   query: string;
@@ -42,22 +47,23 @@ interface GraphQLFormUIState {
   selectedExampleQueryName: string;
   tabIndex: number;
   editorVariables: KeyValuePair[];
+  customSchema: GraphQLSchema | null;
 }
 
 const defaultFormUIState: GraphQLFormUIState = {
   url: '',
   query: '',
   queryVariables: '{}',
-  requestHeaders: [{ key: 'content-type', value: 'application/json', editable: true }],
+  requestHeaders: [{ key: 'content-type', value: 'application/json', editable: false }],
 
   isFetching: false,
   response: { data: {} },
 
   urlTexFieldValue: '',
   urlTextFieldError: '',
-  selectedExampleQueryName: 'None',
+  selectedExampleQueryName: '--',
   tabIndex: 0,
-
+  customSchema: null,
   editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
 };
 
@@ -74,6 +80,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   // not using createGraphiQLFetcher from @graphiQL fro requests (only for schema)
   const [isFetching, setIsFetching] = useState(false);
   const [response, setResponse] = useState<GraphQLApiResponse>(defaultFormUIState.response);
+  const [customSchema, setCustomSchema] = useState<GraphQLSchema | null>(null);
 
   const [urlTextFieldValue, setUrlTextFieldValue] = useState(defaultFormUIState.urlTexFieldValue);
   const [urlTextFieldError, setUrlTextFieldError] = useState(defaultFormUIState.urlTextFieldError);
@@ -86,8 +93,10 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
   const searchParams = useSearchParams();
   const [_, saveUrlToLS] = useHistoryLS();
+  const { loading: isAuthLoading, error: authError } = useAuthRedirect();
 
   const isFirstRender = useRef(true);
+  const t = useTranslations('graphiql');
 
   // GraphQL Editor won't render/work unless URL (and hence schema) is set
   const memoFetcher: Fetcher = useMemo(
@@ -124,6 +133,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     if (selectedExampleQuery) {
       state.selectedExampleQueryName = selectedExampleQuery;
     }
+    state.customSchema = null;
     return state;
   };
 
@@ -141,6 +151,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
     setSelectedExampleQueryName(state.selectedExampleQueryName);
     setTabIndex(state.tabIndex);
+
+    setCustomSchema(state.customSchema);
 
     setKeyValuePairsVar(state.editorVariables);
   };
@@ -164,11 +176,10 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       setUrlTextFieldError('');
       return true;
     } catch (error) {
-      console.log(`value: ${text} is not valie dut to ${error}`);
       if (error instanceof ValidationError) {
         setUrlTextFieldError(error.message); // Set error message if validation fails
       } else {
-        setUrlTextFieldError('URL is not valid');
+        setUrlTextFieldError(t('urlNotValid'));
       }
       return false;
     }
@@ -195,7 +206,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsFetching(true);
-    setResponse({ data: {} });
+    setResponse(defaultFormUIState.response);
 
     const path = composePathFromQuery({
       url: url,
@@ -215,21 +226,24 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         const data = await response.json();
         setResponse({ status: response.status, data: data });
       } catch (e) {
-        console.error(e);
-        setResponse({ status: response.status, errorMessage: 'Server returned not valid JSON' });
+        console.error(`Can't parse JSON returned by our server with error=${e}`);
+        setResponse({
+          status: response.status,
+          errorMessage: 'Server returned not valid JSON',
+          data: { result: 'Server returned not valid JSON' },
+        });
       }
 
       setIsFetching(false);
     } catch (e) {
-      //network and CORS errors
+      //network and CORS errors (on a way to our server)
       let message;
       if (e instanceof Error) {
         message = e.message;
       } else {
         message = String(e);
       }
-      console.log(message);
-
+      console.error(`error on our server ${message}`);
       setResponse({ networkError: new Error('Please check your network and CORS settings') });
       setIsFetching(false);
     }
@@ -282,11 +296,17 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     setQueryVariables(value);
   };
 
-  //console.log(`GraphiQLForm rerender and response is set as ${JSON.stringify(response?.data, null, 2)}`);
+  const onCustomSchemaFetch = (schema: GraphQLSchema) => {
+    setCustomSchema(schema);
+  };
 
+  if (isAuthLoading) {
+    return <Loader />;
+  }
   return (
     <Container className={styles.formContainer}>
       <ErrorNotification error={response?.networkError} />
+      <ErrorNotification error={authError} />
 
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', gap: '0.5rem' }}
@@ -296,7 +316,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           sx={{ width: '75%' }}
           value={urlTextFieldValue}
           onChange={handleURLTextFieldChange}
-          label='URL'
+          label={t('urlLabel')}
           error={!!urlTextFieldError}
           helperText={urlTextFieldError}
           onBlur={handleURLTextFieldBlur}
@@ -305,7 +325,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           select
           size='medium'
           sx={{ width: '200px' }}
-          label='Query example'
+          label={t('queryExample')}
           value={selectedExampleQueryName}
           onChange={handleExampleQueryChange}
         >
@@ -319,7 +339,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
           sx={{ width: '200px' }}
           onClick={handleSubmit}
         >
-          Run
+          {t('runButton')}
         </Button>
       </Box>
 
@@ -328,25 +348,23 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         query={query}
         variables={queryVariables}
         response={JSON.stringify(response?.data, null, 2)}
+        // setting headers in Provider messes up default Introspection query for some APIs due to cors.
         // headers={JSON.stringify(requestHeaders)}
-        // setting headers messes up default Introspection query for some APIs due to cors.
-        // @graphiql fetches the schema automatically, on the client
-        // TODO: make a server action to fetch schema on our server and pass it to
-        // the provider via schema props here
 
-        // if we don't have URL yet - then we should skip introspection query (which will
+        // if we loaded custom Schema (via server action from custom SDL url) then we set it to Provider.
+        // Otherwise, if we don't have URL yet - then we should skip introspection query (which will
         // return an error otherwise) by setting schema to `null` explicitly.
         // if the url is provided - then we set `schema: undefined` and graphiql will make
         // introspection query automatically and load the schema. we should aim to provide schema manually via our server action in future
-        schema={url === defaultFormUIState.url ? null : undefined}
+        schema={customSchema ? customSchema : url === defaultFormUIState.url ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-              <Tab label='Query' />
-              <Tab label='Headers' />
-              <Tab label='Variables' />
-              <Tab label='Documentation' />
+              <Tab label={t('queryTab')} />
+              <Tab label={t('headersTab')} />
+              <Tab label={t('variablesTab')} />
+              <Tab label={t('documentationTab')} />
             </Tabs>
           </Box>
 
@@ -362,7 +380,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
                 <KeyValueForm
                   onPairsChange={handlePairsChangeHeader}
-                  title={'Headers'}
+                  title={t('headersTab')}
                   initPairs={requestHeaders}
                   height='none'
                 />
@@ -371,17 +389,17 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
               <Box sx={{ width: '25%', maxHeight: '400px' }}>
                 <KeyValueForm
                   onPairsChange={handlePairsChangeVar}
-                  title={'Variables'}
+                  title={t('variablesTab')}
                   initPairs={keyValuePairsVar}
                   height='none'
                 />
               </Box>
 
-              <Box
-                sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}
-                className='graphiql-container'
-              >
-                <DocExplorer></DocExplorer>
+              <Box sx={{ width: '25%', maxHeight: '400px', overflow: 'scroll' }}>
+                <RDTGraphiQLDocExplorer
+                  baseURL={url}
+                  onCustomSchemaFetch={onCustomSchemaFetch}
+                ></RDTGraphiQLDocExplorer>
               </Box>
             </Box>
           </Box>
