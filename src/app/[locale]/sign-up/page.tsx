@@ -48,7 +48,6 @@ function SignUp() {
     try {
       await registerWithEmailAndPassword(name, email, password);
     } catch (error) {
-      console.log(error);
       handleAuthError(error, setFirebaseError, setError);
     }
   };

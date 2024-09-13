@@ -24,7 +24,7 @@ export function RDTGraphiQLRequestEditor(props: {
       </div>
       <Button
         variant='contained'
-        sx={{ width: '250px', whiteSpace: 'pre-line' }}
+        sx={{ width: '250px', whiteSpace: 'pre-line', marginBottom: '1rem' }}
         onClick={prettify}
       >
         {t('prettifyButton')}

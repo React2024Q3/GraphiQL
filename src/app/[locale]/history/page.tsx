@@ -1,15 +1,14 @@
 'use client';
 
 import { ErrorNotification } from '@/components/ErrorNotification';
+import { HistoryRequestsList } from '@/components/HistoryRequestsList';
 import { CommonLinks } from '@/components/ListLinks/CommonLinks';
 import linksStyles from '@/components/ListLinks/ListLinks.module.css';
 import { Loader } from '@/components/Loader';
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
-import urlToRequestTransform from '@/utils/urlToRequestTransform';
 import { Container, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 
 import styles from './history.module.css';
 
@@ -25,7 +24,7 @@ export default function History() {
   return (
     <Container className={styles.history__container}>
       <Typography className={styles.history__title} variant='h4' component='h4'>
-        History Requests
+        {t('title')}
       </Typography>
       {!listUrl.length ? (
         <>
@@ -36,16 +35,7 @@ export default function History() {
           </ul>
         </>
       ) : (
-        listUrl.map((encodeUrl: string, index: number) => {
-          const request = urlToRequestTransform(encodeUrl);
-          if (!request) return null;
-          const { url, method } = request;
-          return (
-            <Link href={encodeUrl} key={index}>
-              {`${method} ${url}`}
-            </Link>
-          );
-        })
+        <HistoryRequestsList list={listUrl} />
       )}
       <ErrorNotification error={error} />
     </Container>

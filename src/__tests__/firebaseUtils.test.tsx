@@ -125,19 +125,13 @@ describe('Firebase Auth and Firestore Functions', () => {
     expect(mockSetName).not.toHaveBeenCalled();
   });
 
-  it('should log and re-throw error if createUserWithEmailAndPassword fails', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
+  it('should re-throw error if createUserWithEmailAndPassword fails', async () => {
     const mockError = new Error('Failed to create user');
     (createUserWithEmailAndPassword as Mock).mockRejectedValue(mockError);
 
     await expect(
       registerWithEmailAndPassword('Test User', 'test@example.com', 'password123')
     ).rejects.toThrow('Failed to create user');
-
-    expect(consoleSpy).toHaveBeenCalledWith(mockError);
-
-    consoleSpy.mockRestore();
   });
 
   it('should throw a new "unknown error" if error is not an instance of Error', async () => {
@@ -155,9 +149,7 @@ describe('Firebase Auth and Firestore Functions', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should log and re-throw error if addDoc fails', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
+  it('should re-throw error if addDoc fails', async () => {
     const mockUser = { user: { uid: 'user123' } } as unknown as User;
     (createUserWithEmailAndPassword as Mock).mockResolvedValue(mockUser);
 
@@ -167,9 +159,5 @@ describe('Firebase Auth and Firestore Functions', () => {
     await expect(
       registerWithEmailAndPassword('Test User', 'test@example.com', 'password123')
     ).rejects.toThrow('Failed to add user to Firestore');
-
-    expect(consoleSpy).toHaveBeenCalledWith(mockError);
-
-    consoleSpy.mockRestore();
   });
 });

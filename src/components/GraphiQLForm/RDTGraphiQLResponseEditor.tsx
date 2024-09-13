@@ -3,16 +3,23 @@ import { ResponseEditor, Spinner } from '@graphiql/react';
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-export function RDTGraphiQLResponseEditor(props: { isFetching: boolean; responseStatus?: number }) {
+export function RDTGraphiQLResponseEditor({
+  isFetching,
+  responseStatus,
+}: {
+  isFetching: boolean;
+  responseStatus?: number;
+}) {
   const t = useTranslations('graphiql');
+
   return (
     <Box sx={{ minHeight: '270px', display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        {t('status')}: {props.responseStatus}
+        {responseStatus && `${t('status')}: ${responseStatus}`}
       </Box>
       <div className='graphiql-container'>
         <div className={'graphiql-response'}>
-          {props.isFetching ? (
+          {isFetching ? (
             <>
               {' '}
               <Spinner />

@@ -32,7 +32,6 @@ const registerWithEmailAndPassword: (
     });
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error);
       throw error;
     } else {
       throw new Error('errors.unknown-error');
