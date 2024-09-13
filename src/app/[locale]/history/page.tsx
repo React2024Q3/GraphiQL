@@ -15,15 +15,8 @@ import styles from './history.module.css';
 
 export default function History() {
   const { loading, error } = useAuthRedirect();
-  // const [history, setHistory] = useState<RequestType[]>([]);
   const [listUrl] = useHistoryLS();
   const t = useTranslations('history');
-  // history.sort((a, b) => b.timestamp - a.timestamp);
-
-  // useEffect(() => {
-  //   const storedHistory = JSON.parse(localStorage.getItem('request_history') || '[]');
-  //   setHistory(storedHistory);
-  // }, []);
 
   if (loading) {
     return <Loader />;
