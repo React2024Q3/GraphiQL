@@ -88,9 +88,7 @@ describe('SignIn', () => {
     submitFilledForm();
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Invalid credentials. Please check your email and password.')
-      ).toBeInTheDocument();
+      expect(screen.getByText('errors.invalid-credentials')).toBeInTheDocument();
     });
   });
 });

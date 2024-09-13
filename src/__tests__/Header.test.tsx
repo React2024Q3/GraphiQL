@@ -42,7 +42,6 @@ describe('Header', () => {
   it.todo('renders logo and title', () => {
     renderHeaderWithProviders();
     expect(screen.getByRole('button', { name: 'REST/GraphiQL Client' })).toBeInTheDocument();
-    // expect(screen.getByText(/REST\/GraphiQL Client/i)).toBeInTheDocument();
   });
 
   it('renders GuestNav when user is not authenticated', () => {
@@ -66,7 +65,7 @@ describe('Header', () => {
     const menuButton = screen.getByRole('button', { name: /menu/i });
     expect(menuButton).toBeInTheDocument();
     fireEvent.click(menuButton);
-    expect(screen.getByText('REST/GraphiQL Client')).toBeInTheDocument();
+    expect(screen.getByText('app-title')).toBeInTheDocument();
   });
 
   it('renders LanguageSelect', () => {

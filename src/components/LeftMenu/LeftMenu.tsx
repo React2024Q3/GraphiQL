@@ -27,7 +27,7 @@ import styles from './LeftMenu.module.css';
 
 export const LeftMenu: FC = () => {
   const [open, setOpen] = useState(false);
-  const t = useTranslations('buttons');
+  const t = useTranslations();
   const { user } = useAuth();
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -38,7 +38,7 @@ export const LeftMenu: FC = () => {
     <Box className={styles.drawer__container} role='presentation' onClick={toggleDrawer(false)}>
       <Link className={styles.link} href='./'>
         <Typography className={styles.drawer__title} component='h1' variant='subtitle1'>
-          REST/GraphiQL Client
+          {t('app-title')}
         </Typography>
       </Link>
       {user ? (
@@ -49,7 +49,7 @@ export const LeftMenu: FC = () => {
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>{link.icon}</ListItemIcon>
-                    <ListItemText primary={t(link.key)} />
+                    <ListItemText primary={t(`buttons.${link.key}`)} />
                   </ListItemButton>
                 </ListItem>
               </Link>
@@ -60,7 +60,7 @@ export const LeftMenu: FC = () => {
             <ListItem disablePadding onClick={logout}>
               <ListItemButton>
                 <ListItemIcon>{<LogoutIcon color='secondary' />}</ListItemIcon>
-                <ListItemText primary={t('sign-out')} />
+                <ListItemText primary={t('buttons.sign-out')} />
               </ListItemButton>
             </ListItem>
           </List>
@@ -72,7 +72,7 @@ export const LeftMenu: FC = () => {
               <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>{link.icon}</ListItemIcon>
-                  <ListItemText primary={t(link.key)} />
+                  <ListItemText primary={t(`buttons.${link.key}`)} />
                 </ListItemButton>
               </ListItem>
             </Link>

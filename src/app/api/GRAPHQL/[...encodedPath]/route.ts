@@ -48,8 +48,8 @@ async function handleRequest(req: NextRequest, params: { encodedPath: string[] }
         { status: 500 }
       );
     }
-  } catch (e) {
-    console.error(e);
+  } catch {
+    //console.error(e);
     return NextResponse.json(
       { error: 'Request parameters error. Please check your URL' },
       { status: 500 }

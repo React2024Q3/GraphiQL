@@ -35,7 +35,7 @@ const registerWithEmailAndPassword: (
       console.log(error);
       throw error;
     } else {
-      throw new Error('An unknown error occurred');
+      throw new Error('errors.unknown-error');
     }
   }
 };

@@ -383,6 +383,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
                   onPairsChange={handlePairsChangeHeader}
                   title={t('headersTab')}
                   initPairs={requestHeaders}
+                  height='none'
                 />
               </Box>
 
@@ -391,6 +392,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
                   onPairsChange={handlePairsChangeVar}
                   title={t('variablesTab')}
                   initPairs={keyValuePairsVar}
+                  height='none'
                 />
               </Box>
 
