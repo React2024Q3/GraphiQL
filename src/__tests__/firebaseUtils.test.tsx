@@ -148,7 +148,7 @@ describe('Firebase Auth and Firestore Functions', () => {
 
     await expect(
       registerWithEmailAndPassword('Test User', 'test@example.com', 'password123')
-    ).rejects.toThrow('An unknown error occurred');
+    ).rejects.toThrow('errors.unknown-error');
 
     expect(consoleSpy).not.toHaveBeenCalled();
 

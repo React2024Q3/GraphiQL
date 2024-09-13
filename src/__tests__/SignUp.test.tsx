@@ -106,8 +106,6 @@ describe('SignUp', () => {
 
     submitFilledForm();
 
-    await waitFor(() =>
-      expect(screen.getByText('This email is already in use.')).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText('errors.email-in-use')).toBeInTheDocument());
   });
 });

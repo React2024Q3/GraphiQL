@@ -7,6 +7,14 @@ vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));
 
+vi.mock('next-intl', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    useTranslations: () => (key: string) => key,
+  };
+});
+
 describe('AuthProvider', () => {
   it('provides the correct auth context when a user is authenticated', () => {
     const mockUser = { uid: '123', email: 'test@example.com' };
@@ -75,7 +83,7 @@ describe('useAuth Hook', () => {
     try {
       renderHook(() => useAuth());
     } catch (e) {
-      expect(e).toEqual(new Error('useAuth must be used within an AuthProvider'));
+      expect(e).toEqual(new Error('errors.use-auth-error'));
     }
   });
 });
