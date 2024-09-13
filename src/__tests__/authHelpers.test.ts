@@ -32,7 +32,7 @@ describe('handleAuthError', () => {
 
     expect(setError).toHaveBeenCalledWith('email', {
       type: 'manual',
-      message: 'This email is already in use.',
+      message: 'errors.email-in-use',
     });
     expect(setFirebaseError).not.toHaveBeenCalled();
   });
@@ -42,9 +42,7 @@ describe('handleAuthError', () => {
 
     handleAuthError(error, setFirebaseError);
 
-    expect(setFirebaseError).toHaveBeenCalledWith(
-      'Invalid credentials. Please check your email and password.'
-    );
+    expect(setFirebaseError).toHaveBeenCalledWith('errors.invalid-credentials');
     expect(setError).not.toHaveBeenCalled();
   });
 
@@ -53,7 +51,7 @@ describe('handleAuthError', () => {
 
     handleAuthError(error, setFirebaseError);
 
-    expect(setFirebaseError).toHaveBeenCalledWith('An error occurred. Please try again.');
+    expect(setFirebaseError).toHaveBeenCalledWith('errors.error-occurred');
     expect(setError).not.toHaveBeenCalled();
   });
 
@@ -62,7 +60,7 @@ describe('handleAuthError', () => {
 
     handleAuthError(error, setFirebaseError, setError);
 
-    expect(setFirebaseError).not.toHaveBeenCalled();
+    expect(setFirebaseError).toHaveBeenCalledWith(error);
     expect(setError).not.toHaveBeenCalled();
   });
 });

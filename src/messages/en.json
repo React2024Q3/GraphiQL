@@ -74,9 +74,6 @@
   "errors": {
     "error-page-msg": "Something went wrong!",
     "delete-same-key": "Delete same key",
-    "fill-key-value": "Fill both key and value fields",
-    "fill-in-key": "Please, fill in the key",
-    "fill-in-value": "Please, fill in the value",
     "server-error": "Server error",
     "request-error": "Request error",
     "use-auth-error": "useAuth must be used within an AuthProvider",
@@ -90,7 +87,7 @@
     "email-invalid": "Invalid email address",
     "password-required": "Password is required",
     "password-length": "Password must be at least 8 characters long",
-    "password-strength": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    "password-strength": "Password must contain at least one letter, one number, and one special character",
     "confirm-password-required": "Confirm Password is required",
     "password-match": "Passwords must match",
     "decode": "URL encoding error"

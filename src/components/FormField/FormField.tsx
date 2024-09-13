@@ -31,7 +31,7 @@ export function FormField<T extends FieldValues>({
           variant='outlined'
           required={required}
           error={!!errors[name as keyof typeof errors]}
-          helperText={errorString === ' ' ? errorString : t(errorString)}
+          helperText={errorString && errorString === ' ' ? errorString : t(errorString)}
           fullWidth
           margin='normal'
         />
