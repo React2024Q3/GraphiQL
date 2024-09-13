@@ -25,7 +25,7 @@ vi.mock('@/components/Footer', () => ({
 }));
 
 vi.mock('next/font/google', () => ({
-  Inter: vi.fn().mockReturnValue({ className: 'inter' }), // Return a mock object with the className you use in your app
+  Inter: vi.fn().mockReturnValue({ className: 'inter' }),
 }));
 
 const mockChildren = <div>Child Content</div>;
