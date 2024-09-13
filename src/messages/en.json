@@ -47,6 +47,7 @@
     "message-2": "now."
   },
   "history": {
+    "title": "History Requests",
     "empty-1": "You haven't executed any requests",
     "empty-2": "It's empty here. Try:"
   },
