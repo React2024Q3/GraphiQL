@@ -82,25 +82,6 @@ const mockResponse: Response = {
 
 global.fetch = vi.fn(() => Promise.resolve(mockResponse));
 
-// global.fetch = vi.fn(() =>
-//   Promise.resolve({
-//     ok: true,
-//     status: 200,
-//     statusText: 'OK',
-//     json: () => Promise.resolve({ success: true }),
-//     text: () => Promise.resolve('Text response'),
-//     redirected: false,
-//     url: 'https://example.com',
-//     headers: {
-//       get: vi.fn().mockReturnValue('application/json'),
-//       entries: () => new Map([['content-type', 'application/json']]).entries(),
-//     },
-//     clone: vi.fn(),
-//     body: null,
-//     bodyUsed: false,
-//   })
-// );
-
 describe('RestForm Component', () => {
   const mockInitMethod = Methods.GET;
 

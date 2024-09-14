@@ -92,9 +92,6 @@ describe('KeyValueForm Component', () => {
     fireEvent.change(keyInputs[1], { target: { value: 'duplicate-key' } });
     fireEvent.change(valueInputs[1], { target: { value: 'new-value' } });
     fireEvent.click(screen.getByText('Add'));
-
-    // expect(screen.getByText('Duplicate key detected')).toBeInTheDocument();
-    // expect(mockOnPairsChange).not.toHaveBeenCalled();
   });
 
   it('should initialize with provided pairs', () => {
