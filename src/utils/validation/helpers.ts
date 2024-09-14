@@ -31,6 +31,6 @@ const confirmPasswordSchema = yup
 const urlRe =
   /^((ftp|http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]+(\/[a-zA-Z0-9_-]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?\/?$/gm;
 
-const urlSchema = yup.string().matches(urlRe, 'URL is not valid');
+const urlSchema = yup.string().matches(urlRe, 'urlNotValid');
 
 export { nameSchema, emailSchema, passwordSchema, confirmPasswordSchema, urlSchema };

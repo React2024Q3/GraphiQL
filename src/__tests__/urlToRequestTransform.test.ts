@@ -23,7 +23,7 @@ describe('urlToRequestTransform', () => {
 
     expect(result).toEqual({
       method: 'GraphQL',
-      url: 'parsed-c29tZS1xdWVyeS11cmw%3D',
+      url: 'parsed-graphiql/c29tZS1xdWVyeS11cmw%3D',
     });
   });
 
