@@ -66,8 +66,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           setBody(decodedBody);
         }
       } catch (error) {
-        console.warn(error);
-        setParseError(t('errors.decode'));
+        if (error instanceof Error) setParseError(t('errors.decode'));
       }
 
       const searchParamsArray = Array.from(searchParams.entries());
@@ -133,8 +132,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       setResponse(data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
-      console.error('Request error:', error);
-      setResponse({ error: t('errors.request-error') });
+      if (error instanceof Error) setResponse({ error: t('errors.request-error') });
     }
   };
 

@@ -1,3 +1,6 @@
+import { useState } from 'react';
+
+import { ErrorNotification } from '@/components/ErrorNotification';
 import { json } from '@codemirror/lang-json';
 import CodeMirror from '@uiw/react-codemirror';
 
@@ -8,12 +11,14 @@ interface CodeEditorProps {
 }
 
 const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => {
+  const [error, setError] = useState<Error | null>(null);
+
   const handleBlur = () => {
     if (isJsonMode) {
       try {
         onChange(JSON.stringify(JSON.parse(value), null, 2));
       } catch (error) {
-        console.warn('JSON formatting error: ', error);
+        setError(error as Error);
       }
     }
   };
@@ -23,14 +28,17 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
   };
 
   return (
-    <CodeMirror
-      value={value}
-      minHeight='250px'
-      height='auto'
-      extensions={isJsonMode ? [json()] : []}
-      onChange={handleChange}
-      onBlur={handleBlur}
-    />
+    <>
+      {error && <ErrorNotification error={error} />}
+      <CodeMirror
+        value={value}
+        minHeight='250px'
+        height='auto'
+        extensions={isJsonMode ? [json()] : []}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+    </>
   );
 };
 

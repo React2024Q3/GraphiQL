@@ -64,18 +64,14 @@ describe('CodeEditor Component', () => {
     expect(mockOnChange).toHaveBeenCalledWith(formattedJson);
   });
 
-  it('should log a warning for invalid JSON and not call onChange onBlur', () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
+  it('should display an error notification for invalid JSON and not call onChange onBlur', () => {
     renderComponent('{"key": invalidJson}', true);
 
     const textarea = screen.getByTestId('codemirror-mock');
     fireEvent.blur(textarea);
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith('JSON formatting error: ', expect.any(SyntaxError));
+    expect(screen.getByText(/Unexpected token/i)).toBeInTheDocument();
     expect(mockOnChange).not.toHaveBeenCalled();
-
-    consoleWarnSpy.mockRestore();
   });
 
   it('should not format the value when isJsonMode is false', () => {
