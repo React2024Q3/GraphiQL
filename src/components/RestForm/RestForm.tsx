@@ -19,17 +19,16 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Tab,
-  Tabs,
   TextField,
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
-import { ErrorNotification } from '../ErrorNotification';
+import ErrorsNotificationsRestClient from '../ErrorsNotificationsRestClient';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
+import RestTabs from '../RestTabs';
 import CodeEditor from './CodeEditor';
 import styles from './RestForm.module.css';
 
@@ -67,8 +66,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           setBody(decodedBody);
         }
       } catch (error) {
-        console.warn(error);
-        setParseError(t('errors.decode'));
+        if (error instanceof Error) setParseError(t('errors.decode'));
       }
 
       const searchParamsArray = Array.from(searchParams.entries());
@@ -107,10 +105,6 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
     );
   };
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabIndex(newValue);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -120,20 +114,25 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
         transformVariables(body, keyValuePairsVar),
         keyValuePairsHeader
       );
-
       saveUrlToLS(apiUrl);
-
       const res = await fetch('/api/' + apiUrl);
 
-      const data = await res.json();
       setStatusCode(res.status.toString());
       setStatusText(res.statusText);
 
-      setResponse(data.data);
+      const contentType = res.headers.get('content-type');
+
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        data = { error: await res.text() };
+      }
+
+      setResponse(data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
-      console.error('Request error:', error);
-      setResponse({ error: t('errors.request-error') });
+      if (error instanceof Error) setResponse({ error: t('errors.request-error') });
     }
   };
 
@@ -158,28 +157,16 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
   return (
     <Container className={styles.formContainer}>
-      <ErrorNotification error={parseError} />
-      <ErrorNotification error={error} />
-      <ErrorNotification error={response?.error} />
+      <ErrorsNotificationsRestClient parseError={parseError} error={error} response={response} />
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
             <Select value={method} onChange={onChangeMethod}>
-              <MenuItem className={styles.selectItem} value={Methods.GET}>
-                {Methods.GET}
-              </MenuItem>
-              <MenuItem className={styles.selectItem} value={Methods.POST}>
-                {Methods.POST}
-              </MenuItem>
-              <MenuItem className={styles.selectItem} value={Methods.PUT}>
-                {Methods.PUT}
-              </MenuItem>
-              <MenuItem className={styles.selectItem} value={Methods.DELETE}>
-                {Methods.DELETE}
-              </MenuItem>
-              <MenuItem className={styles.selectItem} value={Methods.PATCH}>
-                {Methods.PATCH}
-              </MenuItem>
+              {Object.keys(Methods).map((key) => (
+                <MenuItem key={key} className={styles.selectItem} value={key}>
+                  {key}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
@@ -216,12 +203,8 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           </div>
         )}
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-            <Tab label={t('client.headers')} />
-            <Tab label={t('client.variables')} />
-          </Tabs>
-        </Box>
+        <RestTabs tabIndex={tabIndex} setTabIndex={setTabIndex} />
+
         <Box className={styles.keyValFormWrapWindow}>
           <Box
             className={styles.keyValFormWrap}

@@ -35,11 +35,13 @@ export async function PATCH(
   return handleRequest(req, params);
 }
 
-async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string[] }) {
+export async function handleRequest(
+  req: NextRequest,
+  params: { method: string; encodedUrl: string[] }
+) {
   const { method, encodedUrl } = params;
 
   const url = atob(decodeURIComponent(encodedUrl[0]));
-  console.log(encodedUrl);
 
   const body = encodedUrl[1] ? JSON.parse(atob(decodeURIComponent(encodedUrl[1]))) : undefined;
 
@@ -54,8 +56,6 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
   arrayOfPairs.forEach((pair) => {
     headers[pair[0].toString()] = pair[1].toString();
   });
-  console.log(headers);
-  console.log(url);
 
   try {
     const response = await fetch(url, {
@@ -74,8 +74,8 @@ async function handleRequest(req: NextRequest, params: { method: string; encoded
 
     return NextResponse.json({ data, headers: response.headers }, { status: response.status });
   } catch (error) {
-    console.error(error);
+    const msg = error instanceof Error ? error.message : 'Request response';
 
-    return NextResponse.json({ error: 'Request response' }, { status: 500 });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@ import RSS from './RSS';
 
 export default function Logo() {
   return (
-    <div className={styles.logo}>
+    <div role='img' className={styles.logo}>
       <svg
         className={styles.react}
         xmlns='http://www.w3.org/2000/svg'
