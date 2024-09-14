@@ -19,7 +19,7 @@ export default function Error({
   return (
     <div>
       <h2>{t('error-page-msg')}</h2>
-      <button onClick={() => reset()}>Try again</button>
+      <button onClick={() => reset()}>t('buttons.error-page')</button>
     </div>
   );
 }
