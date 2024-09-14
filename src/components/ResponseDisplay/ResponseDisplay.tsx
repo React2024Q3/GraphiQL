@@ -1,4 +1,5 @@
 import { ApiResponse } from '@/types&interfaces/interfaces';
+import transformStatusCodeToColor from '@/utils/transformStatusCodeToColor';
 import { json } from '@codemirror/lang-json';
 import { Box } from '@mui/material';
 import CodeMirror from '@uiw/react-codemirror';
@@ -20,11 +21,7 @@ export default function ResponseDisplay({
   const t = useTranslations('client');
   const isJson = headers && headers.includes('application/json');
 
-  const statusCodeInt = Number.parseInt(statusCode);
-  const statusColor =
-    !isNaN(statusCodeInt) && statusCodeInt > 99 && statusCodeInt < 400
-      ? 'rgb(0, 255, 0)'
-      : 'rgb(255, 0, 0)';
+  const statusColor = transformStatusCodeToColor(statusCode);
 
   const getResponseBodyAsString = (response: ApiResponse | null): string => {
     if (response === null) {
