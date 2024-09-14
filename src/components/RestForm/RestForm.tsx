@@ -26,7 +26,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
-import { ErrorNotification } from '../ErrorNotification';
+import ErrorsNotificationsRestClient from '../ErrorsNotificationsRestClient';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
@@ -164,9 +164,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
 
   return (
     <Container className={styles.formContainer}>
-      <ErrorNotification error={parseError} />
-      <ErrorNotification error={error} />
-      <ErrorNotification error={response?.error} />
+      <ErrorsNotificationsRestClient parseError={parseError} error={error} response={response} />
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.urlWrap}>
           <FormControl size='small'>
