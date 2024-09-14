@@ -14,7 +14,9 @@ import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
+import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { KeyValuePair } from '@/types&interfaces/types';
+import transformVariables from '@/utils/transformVariables';
 import { urlSchema } from '@/utils/validation/helpers';
 import { GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
@@ -46,7 +48,6 @@ interface GraphQLFormUIState {
   urlTextFieldError: string;
   selectedExampleQueryName: string;
   tabIndex: number;
-  editorVariables: KeyValuePair[];
   customSchema: GraphQLSchema | null;
 }
 
@@ -64,7 +65,6 @@ const defaultFormUIState: GraphQLFormUIState = {
   selectedExampleQueryName: '--',
   tabIndex: 0,
   customSchema: null,
-  editorVariables: [{ key: 'myvar', value: 'myvalue', editable: true }],
 };
 
 export default function RDTGraphiQLForm({ path }: { path: string[] }) {
@@ -89,7 +89,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   );
   const [tabIndex, setTabIndex] = useState(defaultFormUIState.tabIndex);
 
-  const [keyValuePairsVar, setKeyValuePairsVar] = useState(defaultFormUIState.editorVariables);
+  const [keyValuePairsVar, setKeyValuePairsVar] = useState<KeyValuePair[]>([]);
+  const [vars] = useVariablesLS();
 
   const searchParams = useSearchParams();
   const [_, saveUrlToLS] = useHistoryLS();
@@ -107,6 +108,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     [url]
   );
 
+  // the way we update URL in browser (via history.pushState) shouldn't trigger re-render of the component
+  // and path or searchParams change. Adding isFirstRender ref to be sure we don't re-render on every url change
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -117,6 +120,10 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       }
     }
   }, [path, searchParams]);
+
+  useEffect(() => {
+    setKeyValuePairsVar(vars.map(({ key, value }) => ({ key, value, editable: false })));
+  }, [vars]);
 
   const getFormUIStateForQuery = (
     query: GraphQLQuery,
@@ -137,6 +144,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     return state;
   };
 
+  // skipping editor variabales aka KeyValuePairsVar, as they are stored per editor instance, not per particular query
   const applyFormUIState = (state: GraphQLFormUIState) => {
     setUrl(state.url);
     setQuery(state.query);
@@ -153,8 +161,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     setTabIndex(state.tabIndex);
 
     setCustomSchema(state.customSchema);
-
-    setKeyValuePairsVar(state.editorVariables);
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -210,8 +216,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
     const path = composePathFromQuery({
       url: url,
-      query: query,
-      queryVariables: queryVariables,
+      query: transformVariables(query, keyValuePairsVar),
+      queryVariables: transformVariables(queryVariables, keyValuePairsVar),
       headers: requestHeaders,
     });
     const browserPath = `graphiql/${path}`;
@@ -389,6 +395,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
                   onPairsChange={handlePairsChangeVar}
                   title={t('variablesTab')}
                   initPairs={keyValuePairsVar}
+                  shouldSaveToLS={true}
                   height='none'
                 />
               </Box>
