@@ -22,7 +22,9 @@ export default function ResponseDisplay({
 
   const statusCodeInt = Number.parseInt(statusCode);
   const statusColor =
-    !isNaN(statusCodeInt) && statusCodeInt > 99 && statusCodeInt < 400 ? 'green' : 'red';
+    !isNaN(statusCodeInt) && statusCodeInt > 99 && statusCodeInt < 400
+      ? 'rgb(0, 255, 0)'
+      : 'rgb(255, 0, 0)';
 
   const getResponseBodyAsString = (response: ApiResponse | null): string => {
     if (response === null) {
@@ -45,7 +47,7 @@ export default function ResponseDisplay({
       <div>
         <h3>
           {t('res-statusCode')} :
-          <span style={{ fontWeight: 'normal', color: `${statusColor}` }}>
+          <span className='stroke' style={{ color: `${statusColor}` }}>
             {' '}
             "{statusCode ? statusCode : ''}"
           </span>
@@ -55,7 +57,7 @@ export default function ResponseDisplay({
       <div>
         <h3>
           {t('res-statusText')} :
-          <span style={{ fontWeight: 'normal', color: `${statusColor}` }}>
+          <span className='stroke' style={{ color: `${statusColor}` }}>
             {' '}
             "{statusText ? statusText : ''}"
           </span>
