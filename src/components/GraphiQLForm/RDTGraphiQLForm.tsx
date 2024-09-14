@@ -98,14 +98,22 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const isFirstRender = useRef(true);
   const t = useTranslations('graphiql');
 
-  // GraphQL Editor won't render/work unless URL (and hence schema) is set
-  const memoFetcher: Fetcher = useMemo(
-    () =>
-      createGraphiQLFetcher({
+  // GraphQL Editor won't render/work unless URL (and hence schema) is set;
+  // createGraphiQLFetcher checks window.fetch existence, assuming fetch is not available on server
+  // our ssr happens on node18+ with fetch available, so we assure createGraphiQLFetcher it exists and
+  // don't event need 'isomorphic-fetch' or 'node-fetch' for that.
+  const memoFetcher: Fetcher = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return createGraphiQLFetcher({
+        fetch: fetch,
         url: url,
-      }),
-    [url]
-  );
+      });
+    } else {
+      return createGraphiQLFetcher({
+        url: url,
+      });
+    }
+  }, [url]);
 
   // the way we update URL in browser (via history.pushState) shouldn't trigger re-render of the component
   // and path or searchParams change. Adding isFirstRender ref to be sure we don't re-render on every url change
@@ -247,12 +255,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       updateUrlInBrowser(statePath);
     }
   };
-
-  // useEffect(() => {
-  //   fetcher.current = createGraphiQLFetcher({
-  //     url: url,
-  //   });
-  // }, [url]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
