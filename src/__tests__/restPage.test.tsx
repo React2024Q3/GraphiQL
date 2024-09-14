@@ -8,8 +8,26 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }));
 
+vi.mock('next/navigation', async () => {
+  const actual = await vi.importActual('next/navigation');
+  return {
+    ...actual,
+    useRouter: () => ({ replace: vi.fn() }),
+    useSearchParams: () => ({
+      entries: () => new Map([['param', 'value']]).entries(),
+    }),
+  };
+});
 vi.mock('@/navigation', () => ({
   redirect: vi.fn(),
+}));
+
+vi.mock('@/contexts/AuthContext/AuthContext', () => ({
+  useAuth: () => ({
+    user: { uid: 'test-user' },
+    loading: false,
+    error: null,
+  }),
 }));
 
 describe('RestPage', () => {
@@ -21,9 +39,9 @@ describe('RestPage', () => {
 
     render(<RestPage params={params} />);
 
-    expect(screen.getByText('buttons.rest')).toBeInTheDocument();
+    expect(screen.getByText(/buttons.rest/)).toBeInTheDocument();
 
-    expect(screen.getByText('RestForm')).toBeInTheDocument();
+    expect(screen.getByText(/buttons.send/)).toBeInTheDocument();
   });
 
   it('redirects if an invalid method is provided', () => {
