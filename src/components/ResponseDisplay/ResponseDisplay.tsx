@@ -1,5 +1,6 @@
 import { ApiResponse } from '@/types&interfaces/interfaces';
 import { json } from '@codemirror/lang-json';
+import { Box } from '@mui/material';
 import CodeMirror from '@uiw/react-codemirror';
 import { useTranslations } from 'next-intl';
 
@@ -19,6 +20,10 @@ export default function ResponseDisplay({
   const t = useTranslations('client');
   const isJson = headers && headers.includes('application/json');
 
+  const statusCodeInt = Number.parseInt(statusCode);
+  const statusColor =
+    !isNaN(statusCodeInt) && statusCodeInt > 99 && statusCodeInt < 400 ? 'green' : 'red';
+
   const getResponseBodyAsString = (response: ApiResponse | null): string => {
     if (response === null) {
       return t('no-res-body');
@@ -36,18 +41,24 @@ export default function ResponseDisplay({
   };
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div>
         <h3>
           {t('res-statusCode')} :
-          <span style={{ fontWeight: 'normal' }}> "{statusCode ? statusCode : ''}"</span>
+          <span style={{ fontWeight: 'normal', color: `${statusColor}` }}>
+            {' '}
+            "{statusCode ? statusCode : ''}"
+          </span>
         </h3>
       </div>
 
       <div>
         <h3>
           {t('res-statusText')} :
-          <span style={{ fontWeight: 'normal' }}> "{statusText ? statusText : ''}"</span>
+          <span style={{ fontWeight: 'normal', color: `${statusColor}` }}>
+            {' '}
+            "{statusText ? statusText : ''}"
+          </span>
         </h3>
       </div>
 
@@ -70,6 +81,6 @@ export default function ResponseDisplay({
         <h3>{t('res-header')}:</h3>
         <pre>{headers ? headers : t('no-res-header')}</pre>
       </div>
-    </>
+    </Box>
   );
 }

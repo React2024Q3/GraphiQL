@@ -19,8 +19,6 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Tab,
-  Tabs,
   TextField,
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -30,6 +28,7 @@ import ErrorsNotificationsRestClient from '../ErrorsNotificationsRestClient';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import ResponseDisplay from '../ResponseDisplay';
+import RestTabs from '../RestTabs';
 import CodeEditor from './CodeEditor';
 import styles from './RestForm.module.css';
 
@@ -105,10 +104,6 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
       transformVariables(body, keyValuePairsVar),
       newPairs
     );
-  };
-
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabIndex(newValue);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -210,12 +205,8 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
           </div>
         )}
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
-            <Tab label={t('client.headers')} />
-            <Tab label={t('client.variables')} />
-          </Tabs>
-        </Box>
+        <RestTabs tabIndex={tabIndex} setTabIndex={setTabIndex} />
+
         <Box className={styles.keyValFormWrapWindow}>
           <Box
             className={styles.keyValFormWrap}
