@@ -76,3 +76,7 @@ label.MuiFormLabel-filled.MuiFormLabel-root {
 .page__title {
   margin: 1rem;
 }
+
+.stroke {
+  -webkit-text-stroke: 1px #333
+}

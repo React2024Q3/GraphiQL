@@ -11,7 +11,8 @@
     "add": "Add",
     "delete": "Delete",
     "to-text": "Switch To Text",
-    "to-json": "Switch To JSON"
+    "to-json": "Switch To JSON",
+    "error-page": "Try again"
   },
   "app-title": "REST/GraphQL Client",
   "Home": {
