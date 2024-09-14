@@ -183,7 +183,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       return true;
     } catch (error) {
       if (error instanceof ValidationError) {
-        setUrlTextFieldError(error.message); // Set error message if validation fails
+        setUrlTextFieldError(t(error.message)); // Set error message if validation fails
       } else {
         setUrlTextFieldError(t('urlNotValid'));
       }
@@ -313,40 +313,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     <Container className={styles.formContainer}>
       <ErrorNotification error={response?.networkError} />
       <ErrorNotification error={authError} />
-
-      <Box sx={{ display: 'flex', marginTop: '1rem', gap: '0.5rem' }}>
-        <TextField
-          id='standard-basic'
-          sx={{ flexGrow: 4 }}
-          value={urlTextFieldValue}
-          onChange={handleURLTextFieldChange}
-          label={t('urlLabel')}
-          error={!!urlTextFieldError}
-          helperText={urlTextFieldError}
-          onBlur={handleURLTextFieldBlur}
-        />
-        <TextField
-          select
-          size='medium'
-          sx={{ flexGrow: 1 }}
-          label={t('queryExample')}
-          value={selectedExampleQueryName}
-          onChange={handleExampleQueryChange}
-        >
-          <MenuItem value={exampleQueries[0]}>{exampleQueries[0]}</MenuItem>
-          <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
-          <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
-        </TextField>
-        <Button
-          variant='contained'
-          disabled={isFetching}
-          sx={{ flexGrow: 0 }}
-          onClick={handleSubmit}
-        >
-          {t('runButton')}
-        </Button>
-      </Box>
-
       <GraphiQLProvider
         fetcher={memoFetcher}
         query={query}
@@ -363,6 +329,39 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         schema={customSchema ? customSchema : url === defaultFormUIState.url ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
+          <Box sx={{ display: 'flex', marginTop: '1rem', gap: '0.5rem' }}>
+            <TextField
+              id='standard-basic'
+              sx={{ flexGrow: 4 }}
+              value={urlTextFieldValue}
+              onChange={handleURLTextFieldChange}
+              label={t('urlLabel')}
+              error={!!urlTextFieldError}
+              helperText={urlTextFieldError}
+              onBlur={handleURLTextFieldBlur}
+              required
+            />
+            <TextField
+              select
+              size='medium'
+              sx={{ flexGrow: 1 }}
+              label={t('queryExample')}
+              value={selectedExampleQueryName}
+              onChange={handleExampleQueryChange}
+            >
+              <MenuItem value={exampleQueries[0]}>{exampleQueries[0]}</MenuItem>
+              <MenuItem value={exampleQueries[1]}>{exampleQueries[1]}</MenuItem>
+              <MenuItem value={exampleQueries[2]}>{exampleQueries[2]}</MenuItem>
+            </TextField>
+            <Button
+              variant='contained'
+              disabled={isFetching || !!urlTextFieldError}
+              sx={{ flexGrow: 0, alignSelf: 'stretch', maxHeight: '3.5rem' }}
+              type='submit'
+            >
+              {t('runButton')}
+            </Button>
+          </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label='basic tabs example'>
               <Tab label={t('queryTab')} />
