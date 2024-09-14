@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
@@ -37,11 +38,13 @@ export default function RootLayout({
       <NextIntlClientProvider locale={locale} messages={messages}>
         <ThemeProvider theme={responsiveFontSizesTheme}>
           <body className={inter.className}>
-            <AuthProvider>
-              <Header />
-              <main className='main'>{children}</main>
-              <Footer />
-            </AuthProvider>
+            <ErrorBoundary>
+              <AuthProvider>
+                <Header />
+                <main className='main'>{children}</main>
+                <Footer />
+              </AuthProvider>
+            </ErrorBoundary>
           </body>
         </ThemeProvider>
       </NextIntlClientProvider>

@@ -221,7 +221,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               onPairsChange={handlePairsChangeVar}
               title={t('client.variables')}
               initPairs={keyValuePairsVar}
-              isVars={true}
+              shouldSaveToLS={true}
               height={tabIndex === 0 ? '0' : 'none'}
             />
           </Box>

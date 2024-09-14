@@ -12,7 +12,7 @@ type KeyValueFormProps = {
   onPairsChange: (pairs: KeyValuePair[]) => void;
   title: string;
   initPairs?: KeyValuePair[];
-  isVars?: boolean;
+  shouldSaveToLS?: boolean;
   height: string;
 };
 
@@ -26,7 +26,7 @@ export default function KeyValueForm({
   onPairsChange,
   title,
   initPairs,
-  isVars,
+  shouldSaveToLS,
   height,
 }: KeyValueFormProps) {
   const [pairs, setPairs] = useState<KeyValuePair[]>([createNewPair()]);
@@ -53,7 +53,7 @@ export default function KeyValueForm({
       );
       setPairs([...updatedPairs, createNewPair()]);
       onPairsChange(updatedPairs);
-      if (isVars) recordToLS(updatedPairs, saveVarToLS);
+      if (shouldSaveToLS) recordToLS(updatedPairs, saveVarToLS);
     } else {
       setError(t('errors.fill-key-value'));
     }
@@ -71,7 +71,7 @@ export default function KeyValueForm({
     const newPairs = pairs.filter((p) => !p.editable);
     setPairs([...newPairs, createNewPair()]);
     onPairsChange(newPairs);
-    if (isVars) recordToLS(newPairs, saveVarToLS);
+    if (shouldSaveToLS) recordToLS(newPairs, saveVarToLS);
   };
 
   return (

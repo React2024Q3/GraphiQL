@@ -47,7 +47,8 @@
     "message-2": "сейчас."
   },
   "history": {
-    "empty-1": "Вы не выполнили ни одного запроса",
+    "title": "История Запросов",
+    "empty-1": "Вы не выполнили ни одного запроса.",
     "empty-2": "Здесь пусто. Попробуйте:"
   },
   "client": {
@@ -65,6 +66,20 @@
     "fill-key": "Пожалуйста, заполните ключ",
     "fill-value": "Пожалуйста, заполните значение",
     "fill-both": "Заполните поля ключа и значения"
+  },
+  "graphiql": {
+    "prettifyButton": "Форматировать запрос\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL невалиден",
+    "urlLabel": "URL",
+    "queryExample": "Пример запроса",
+    "queryTab": "Запрос",
+    "headersTab": "Заголовки",
+    "variablesTab": "Переменные",
+    "documentationTab": "Документация",
+    "runButton": "Выполнить",
+    "status": "Статус",
+    "sdlUrlLabel": "Cобственный SDL URL",
+    "fetchSDLButton": "Загрузить Схему"
   },
   "not-found-page": {
     "title": "404 - Страница не найдена",

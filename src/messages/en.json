@@ -47,7 +47,8 @@
     "message-2": "now."
   },
   "history": {
-    "empty-1": "You haven't executed any requests",
+    "title": "History Requests",
+    "empty-1": "You haven't executed any requests.",
     "empty-2": "It's empty here. Try:"
   },
   "client": {
@@ -65,6 +66,20 @@
     "fill-key": "Please fill in the key",
     "fill-value": "Please fill in the value",
     "fill-both": "Fill both key and value fields"
+  },
+  "graphiql": {
+    "prettifyButton": "Prettify query\n (Shift-Ctrl-P)",
+    "urlNotValid": "URL is not valid",
+    "urlLabel": "URL",
+    "queryExample": "Query example",
+    "queryTab": "Query",
+    "headersTab": "Headers",
+    "variablesTab": "Variables",
+    "documentationTab": "Documentation",
+    "runButton": "Run",
+    "status": "Status",
+    "sdlUrlLabel": "SDL URL",
+    "fetchSDLButton": "Fetch Schema"
   },
   "not-found-page": {
     "title": "404 - Page Not Found",
