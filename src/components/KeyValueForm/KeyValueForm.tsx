@@ -80,7 +80,7 @@ export default function KeyValueForm({
       <Grid2 columns={12} container spacing={2} mt={1}>
         {pairs.map((pair, index) => (
           <Grid2 sx={{ width: '100%' }} container spacing={2} key={index} alignItems='top'>
-            <Grid2 size={4.5}>
+            <Grid2 size={5}>
               <TextField
                 label={t('client.key')}
                 value={pair.key}
@@ -93,7 +93,7 @@ export default function KeyValueForm({
                 }
               />
             </Grid2>
-            <Grid2 size={4.5}>
+            <Grid2 size={5}>
               <TextField
                 label={t('client.value')}
                 value={pair.value}
@@ -108,7 +108,7 @@ export default function KeyValueForm({
                 }
               />
             </Grid2>
-            <Grid2 size={1}>
+            <Grid2 size={2}>
               {pair.editable ? (
                 <Button
                   variant='outlined'
@@ -129,9 +129,6 @@ export default function KeyValueForm({
                 </Button>
               )}
             </Grid2>
-            {error && pair.editable && (
-              <p style={{ color: 'red', fontSize: '0.8rem', paddingTop: '0' }}>{error}</p>
-            )}
           </Grid2>
         ))}
       </Grid2>
