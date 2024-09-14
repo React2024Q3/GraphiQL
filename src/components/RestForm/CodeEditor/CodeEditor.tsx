@@ -1,5 +1,4 @@
 import { json } from '@codemirror/lang-json';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import CodeMirror from '@uiw/react-codemirror';
 
 interface CodeEditorProps {
@@ -28,7 +27,6 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
       value={value}
       minHeight='250px'
       height='auto'
-      theme={vscodeDark}
       extensions={isJsonMode ? [json()] : []}
       onChange={handleChange}
       onBlur={handleBlur}

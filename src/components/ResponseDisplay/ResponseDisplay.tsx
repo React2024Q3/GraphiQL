@@ -2,7 +2,6 @@
 
 import { ApiResponse } from '@/types&interfaces/interfaces';
 import { json } from '@codemirror/lang-json';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import CodeMirror from '@uiw/react-codemirror';
 import { useTranslations } from 'next-intl';
 
@@ -47,7 +46,6 @@ export default function ResponseDisplay({
             minHeight='50px'
             maxHeight='500px'
             height='auto'
-            theme={vscodeDark}
             extensions={isJson ? [json()] : []}
           />
         ) : (
