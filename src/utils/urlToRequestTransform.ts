@@ -6,7 +6,7 @@ export default function urlToRequestTransform(encodedUrl: string) {
   if (encodedUrl.includes('graphiql')) {
     return {
       method: 'GraphQL',
-      url: parseQueryUrlFromHistoryPath(encodedUrl.replace('graphiql/', '')),
+      url: parseQueryUrlFromHistoryPath(encodedUrl.replace('/graphiql/', '')),
     };
   }
 

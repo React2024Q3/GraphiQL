@@ -7,6 +7,7 @@ import styles from './RDTGraphiQLRequestEditor.module.css';
 export function RDTGraphiQLRequestEditor(props: {
   onQueryEdit: (value: string) => void;
   onQueryVariablesEdit: (value: string) => void;
+  onBlur: () => void;
 }) {
   const prettify = usePrettifyEditors();
   const t = useTranslations('graphiql');
@@ -14,7 +15,7 @@ export function RDTGraphiQLRequestEditor(props: {
   return (
     <>
       {/* <div className='graphiql-container'> */}
-      <div className={styles['query-and-vars-box']}>
+      <div className={styles['query-and-vars-box']} onBlur={props.onBlur}>
         <div className={styles['query-editor']}>
           <QueryEditor onEdit={props.onQueryEdit}></QueryEditor>
         </div>

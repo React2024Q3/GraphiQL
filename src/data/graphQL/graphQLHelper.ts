@@ -1,4 +1,5 @@
 import { KeyValuePair } from '@/types&interfaces/types';
+import transformVariables from '@/utils/transformVariables';
 import { URLSearchParams } from 'url';
 
 export type JSONValue = string | number | boolean | JSONObject | JSONArray;
@@ -31,11 +32,19 @@ export function shallowChangeUrlInBrowser(newUrl: string) {
   window.history.replaceState(null, '', newUrl);
 }
 
-export function composePathFromQuery(query: GraphQLQuery): string | null {
+export function composeStatePathFromQuery(
+  query: GraphQLQuery,
+  editorVariables: KeyValuePair[]
+): string | null {
   try {
     const encodedUrl = encodeURIComponent(btoa(query.url));
     const encodedBody = encodeURIComponent(
-      btoa(composeGraphQLPostRequestBody(query.query, query.queryVariables))
+      btoa(
+        composeGraphQLRequestPostBody(
+          transformVariables(query.query, editorVariables),
+          transformVariables(query.queryVariables, editorVariables)
+        )
+      )
     );
     let path = encodedUrl + '/' + encodedBody;
     if (query.headers) {
@@ -89,7 +98,7 @@ export function convertKeyValuePairsToSearchParamsString(pairs: KeyValuePair[]):
 export function convertSearchParamsStringToKeyValuePairs(
   searchParamsString: string
 ): KeyValuePair[] {
-  const stringPairs = decodeURIComponent(searchParamsString.slice(1)).split('&');
+  const stringPairs = decodeURIComponent(searchParamsString).split('&');
   return stringPairs.map((pair) => {
     const keyValueArray = pair.split('=');
     return { key: keyValueArray[0], value: keyValueArray[1], editable: false };
@@ -97,6 +106,6 @@ export function convertSearchParamsStringToKeyValuePairs(
 }
 
 // variables in our mock files are already JSON (in order to avoid escaping ""), so to avoid double JSON,stringify() on it :
-export function composeGraphQLPostRequestBody(query: string, variables: string) {
+export function composeGraphQLRequestPostBody(query: string, variables: string) {
   return JSON.stringify({ query, variables: JSON.parse(variables) });
 }

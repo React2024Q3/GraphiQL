@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import {
   GraphQLApiResponse,
   GraphQLQuery,
-  composePathFromQuery,
+  composeStatePathFromQuery,
   parseQueryFromPath,
   shallowChangeUrlInBrowser,
 } from '@/data/graphQL/graphQLHelper';
@@ -16,7 +16,6 @@ import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { KeyValuePair } from '@/types&interfaces/types';
-import transformVariables from '@/utils/transformVariables';
 import { urlSchema } from '@/utils/validation/helpers';
 import { GraphiQLProvider } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
@@ -169,10 +168,43 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
   const handlePairsChangeHeader = (newPairs: KeyValuePair[]) => {
     setRequestHeaders(newPairs);
+    const statePath = composeStatePath(url, query, queryVariables, newPairs);
+    if (statePath) {
+      updateUrlInBrowser(statePath);
+    }
   };
 
   const handlePairsChangeVar = (newPairs: KeyValuePair[]) => {
     setKeyValuePairsVar(newPairs);
+    const statePath = composeStatePath(url, query, queryVariables, requestHeaders, newPairs);
+    if (statePath) {
+      updateUrlInBrowser(statePath);
+    }
+  };
+
+  const updateUrlInBrowser = (encodedStatePath: string) => {
+    const browserURL = `/graphiql/${encodedStatePath}`;
+    shallowChangeUrlInBrowser(browserURL);
+    return browserURL;
+  };
+
+  const composeStatePath = (
+    urlArg?: string,
+    queryArg?: string,
+    queryVariablesArg?: string,
+    headersArg?: KeyValuePair[],
+    editorVariablesArg?: KeyValuePair[]
+  ) => {
+    const encodedStatePath = composeStatePathFromQuery(
+      {
+        url: urlArg || url,
+        query: queryArg || query,
+        queryVariables: queryVariablesArg || queryVariables,
+        headers: headersArg || requestHeaders,
+      },
+      editorVariablesArg || keyValuePairsVar
+    );
+    return encodedStatePath;
   };
 
   const validateURLTextField = (text: string) => {
@@ -196,11 +228,24 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     if (inputIsValid) {
       setUrl(urlTextFieldValue);
     }
+    const statePath = composeStatePath(
+      urlTextFieldValue // passing url arg cause url state is not updated in current render yet
+    );
+    if (statePath) {
+      updateUrlInBrowser(statePath);
+    }
   };
 
   const handleURLTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUrlTextFieldValue(event.target.value);
     validateURLTextField(event.target.value);
+  };
+
+  const handleRequestEditorBlur = () => {
+    const statePath = composeStatePath();
+    if (statePath) {
+      updateUrlInBrowser(statePath);
+    }
   };
 
   // useEffect(() => {
@@ -214,44 +259,39 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     setIsFetching(true);
     setResponse(defaultFormUIState.response);
 
-    const path = composePathFromQuery({
-      url: url,
-      query: transformVariables(query, keyValuePairsVar),
-      queryVariables: transformVariables(queryVariables, keyValuePairsVar),
-      headers: requestHeaders,
-    });
-    const browserPath = `graphiql/${path}`;
-    shallowChangeUrlInBrowser(browserPath);
-    saveUrlToLS(browserPath);
-
-    try {
-      //const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
-      const response = await fetch(`/api/GRAPHQL/${path}`, { method: 'POST' });
+    const statePath = composeStatePath();
+    if (statePath) {
+      const browserUrl = updateUrlInBrowser(statePath);
+      saveUrlToLS(browserUrl);
 
       try {
-        const data = await response.json();
-        setResponse({ status: response.status, data: data });
-      } catch (e) {
-        console.error(`Can't parse JSON returned by our server with error=${e}`);
-        setResponse({
-          status: response.status,
-          errorMessage: 'Server returned not valid JSON',
-          data: { result: 'Server returned not valid JSON' },
-        });
-      }
+        //const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
+        const response = await fetch(`/api/GRAPHQL/${statePath}`, { method: 'POST' });
 
-      setIsFetching(false);
-    } catch (e) {
-      //network and CORS errors (on a way to our server)
-      let message;
-      if (e instanceof Error) {
-        message = e.message;
-      } else {
-        message = String(e);
+        try {
+          const data = await response.json();
+          setResponse({ status: response.status, data: data });
+        } catch (e) {
+          console.error(`Can't parse JSON returned by our server with error=${e}`);
+          setResponse({
+            status: response.status,
+            errorMessage: 'Server returned not valid JSON',
+            data: { result: 'Server returned not valid JSON' },
+          });
+        }
+        setIsFetching(false);
+      } catch (e) {
+        //network and CORS errors (on a way to our server)
+        let message;
+        if (e instanceof Error) {
+          message = e.message;
+        } else {
+          message = String(e);
+        }
+        console.error(`error on our server ${message}`);
+        setResponse({ networkError: new Error('Please check your network and CORS settings') });
+        setIsFetching(false);
       }
-      console.error(`error on our server ${message}`);
-      setResponse({ networkError: new Error('Please check your network and CORS settings') });
-      setIsFetching(false);
     }
   };
 
@@ -377,6 +417,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
                 <RDTGraphiQLRequestEditor
                   onQueryEdit={onQueryEdit}
                   onQueryVariablesEdit={onQueryVariablesEdit}
+                  onBlur={handleRequestEditorBlur}
                 ></RDTGraphiQLRequestEditor>
               </Box>
 
