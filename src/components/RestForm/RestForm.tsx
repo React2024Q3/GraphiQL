@@ -120,16 +120,22 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
         transformVariables(body, keyValuePairsVar),
         keyValuePairsHeader
       );
-
       saveUrlToLS(apiUrl);
-
       const res = await fetch('/api/' + apiUrl);
 
-      const data = await res.json();
       setStatusCode(res.status.toString());
       setStatusText(res.statusText);
 
-      setResponse(data.data);
+      const contentType = res.headers.get('content-type');
+
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        data = { error: await res.text() };
+      }
+
+      setResponse(data);
       setHeaders(JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2));
     } catch (error) {
       console.error('Request error:', error);
