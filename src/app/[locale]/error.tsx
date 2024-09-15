@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react';
 
+import styles from '@/shared/styles/sharedStyles.module.css';
+import { Box, Button, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 export default function Error({
@@ -17,9 +19,11 @@ export default function Error({
   const t = useTranslations('errors');
 
   return (
-    <div>
-      <h2>{t('error-page-msg')}</h2>
-      <button onClick={() => reset()}>t('buttons.error-page')</button>
-    </div>
+    <Box className={styles.error__container}>
+      <Typography variant='h4'>{t('errors.error-page-msg')}</Typography>
+      <Button variant='contained' onClick={() => reset()}>
+        {t('buttons.error-page')}
+      </Button>
+    </Box>
   );
 }
