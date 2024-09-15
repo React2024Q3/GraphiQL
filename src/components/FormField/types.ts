@@ -1,4 +1,3 @@
-// import { SignInFormData, SignUpFormData } from '@/types&interfaces/types';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 
 export type FormFieldProps<T extends FieldValues> = {

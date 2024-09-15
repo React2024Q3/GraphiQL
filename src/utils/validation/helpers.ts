@@ -23,11 +23,6 @@ const confirmPasswordSchema = yup
   .required('errors.confirm-password-required')
   .oneOf([yup.ref('password')], 'errors.password-match');
 
-// matches:
-// vercel.com
-// www.vercel.com
-// uptime-monitor-fe.vercel.app
-// https://uptime-monitor-fe.vercel.app/
 const urlRe =
   /^((ftp|http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]+(\/[a-zA-Z0-9_-]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?\/?$/gm;
 

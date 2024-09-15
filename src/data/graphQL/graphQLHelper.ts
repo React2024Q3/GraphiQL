@@ -14,20 +14,16 @@ export interface GraphQLQuery {
   url: string;
   query: string;
   queryVariables: string;
-  //custom type for KeyForm component, otherwise would be just string/json:
   headers?: KeyValuePair[];
 }
 
 export interface GraphQLApiResponse {
-  // network and CORS error:
   networkError?: Error;
   status?: number;
-  // JSON parse error:
   errorMessage?: string;
   data?: JSONValue;
 }
 
-// to avoid refetching and remounting
 export function shallowChangeUrlInBrowser(newUrl: string) {
   window.history.replaceState(null, '', newUrl);
 }
@@ -57,8 +53,6 @@ export function composeStatePathFromQuery(
 }
 
 export function parseQueryUrlFromHistoryPath(path: string) {
-  // path.split('/')[0]:  base64(url)
-  // ...
   const urlPart = path.split('/')[0];
   const url = atob(decodeURIComponent(urlPart));
   return url;
@@ -68,9 +62,6 @@ export function parseQueryFromPath(
   path: string[],
   searchParams?: URLSearchParams
 ): GraphQLQuery | null {
-  // path[0]: base64(url)
-  // path[1]: base64(JSON(query: query, variables: queryVariables))
-  // searchParams: ?header=value1&header=value2
   try {
     if (path.length >= 2) {
       const url = atob(decodeURIComponent(path[0]));
@@ -105,7 +96,6 @@ export function convertSearchParamsStringToKeyValuePairs(
   });
 }
 
-// variables in our mock files are already JSON (in order to avoid escaping ""), so to avoid double JSON,stringify() on it :
 export function composeGraphQLRequestPostBody(query: string, variables: string) {
   return JSON.stringify({ query, variables: JSON.parse(variables) });
 }

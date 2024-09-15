@@ -69,14 +69,10 @@ const defaultFormUIState: GraphQLFormUIState = {
 export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const [url, setUrl] = useState(defaultFormUIState.url);
 
-  // const fetcher = useRef<Fetcher | null>(null);
-
   const [query, setQuery] = useState(defaultFormUIState.query);
   const [queryVariables, setQueryVariables] = useState(defaultFormUIState.queryVariables);
   const [requestHeaders, setRequestHeaders] = useState(defaultFormUIState.requestHeaders);
 
-  // manually fetching GraphQL request through API Handler on server,
-  // not using createGraphiQLFetcher from @graphiQL fro requests (only for schema)
   const [isFetching, setIsFetching] = useState(false);
   const [response, setResponse] = useState<GraphQLApiResponse>(defaultFormUIState.response);
   const [customSchema, setCustomSchema] = useState<GraphQLSchema | null>(null);
@@ -98,10 +94,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const isFirstRender = useRef(true);
   const t = useTranslations('graphiql');
 
-  // GraphQL Editor won't render/work unless URL (and hence schema) is set;
-  // createGraphiQLFetcher checks window.fetch existence, assuming fetch is not available on server
-  // our ssr happens on node18+ with fetch available, so we assure createGraphiQLFetcher it exists and
-  // don't event need 'isomorphic-fetch' or 'node-fetch' for that.
   const memoFetcher: Fetcher = useMemo(() => {
     if (typeof window === 'undefined') {
       return createGraphiQLFetcher({
@@ -115,8 +107,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     }
   }, [url]);
 
-  // the way we update URL in browser (via history.pushState) shouldn't trigger re-render of the component
-  // and path or searchParams change. Adding isFirstRender ref to be sure we don't re-render on every url change
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -151,7 +141,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     return state;
   };
 
-  // skipping editor variabales aka KeyValuePairsVar, as they are stored per editor instance, not per particular query
   const applyFormUIState = (state: GraphQLFormUIState) => {
     setUrl(state.url);
     setQuery(state.query);
@@ -218,12 +207,11 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   const validateURLTextField = (text: string) => {
     try {
       urlSchema.validateSync(text);
-      // clear error if valid
       setUrlTextFieldError('');
       return true;
     } catch (error) {
       if (error instanceof ValidationError) {
-        setUrlTextFieldError(t(error.message)); // Set error message if validation fails
+        setUrlTextFieldError(t(error.message));
       } else {
         setUrlTextFieldError(t('urlNotValid'));
       }
@@ -236,9 +224,7 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
     if (inputIsValid) {
       setUrl(urlTextFieldValue);
     }
-    const statePath = composeStatePath(
-      urlTextFieldValue // passing url arg cause url state is not updated in current render yet
-    );
+    const statePath = composeStatePath(urlTextFieldValue);
     if (statePath) {
       updateUrlInBrowser(statePath);
     }
@@ -267,7 +253,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
       saveUrlToLS(browserUrl);
 
       try {
-        //const response = await fetch(`/api/GRAPHQL/${encodedUrl}/${encodedBody}`, { method: 'POST' });
         const response = await fetch(`/api/GRAPHQL/${statePath}`, { method: 'POST' });
 
         try {
@@ -283,7 +268,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         }
         setIsFetching(false);
       } catch (e) {
-        //network and CORS errors (on a way to our server)
         let message;
         if (e instanceof Error) {
           message = e.message;
@@ -298,8 +282,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   };
 
   const handleExampleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //setSelectedExampleQueryName(e.target.value);
-
     let selectedExampleQuery: GraphQLQuery | null;
     switch (e.target.value) {
       case exampleQueries[0]: {
@@ -360,14 +342,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
         query={query}
         variables={queryVariables}
         response={JSON.stringify(response?.data, null, 2)}
-        // setting headers in Provider messes up default Introspection query for some APIs due to cors.
-        // headers={JSON.stringify(requestHeaders)}
-
-        // if we loaded custom Schema (via server action from custom SDL url) then we set it to Provider.
-        // Otherwise, if we don't have URL yet - then we should skip introspection query (which will
-        // return an error otherwise) by setting schema to `null` explicitly.
-        // if the url is provided - then we set `schema: undefined` and graphiql will make
-        // introspection query automatically and load the schema. we should aim to provide schema manually via our server action in future
         schema={customSchema ? customSchema : url === defaultFormUIState.url ? null : undefined}
       >
         <form onSubmit={handleSubmit}>
