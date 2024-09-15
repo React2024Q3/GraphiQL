@@ -35,10 +35,7 @@ export async function PATCH(
   return handleRequest(req, params);
 }
 
-export async function handleRequest(
-  req: NextRequest,
-  params: { method: string; encodedUrl: string[] }
-) {
+async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string[] }) {
   const { method, encodedUrl } = params;
 
   const url = atob(decodeURIComponent(encodedUrl[0]));
