@@ -39,11 +39,6 @@ describe('Header', () => {
     (useMediaQuery as Mock).mockReturnValue(false);
   });
 
-  it.todo('renders logo and title', () => {
-    renderHeaderWithProviders();
-    expect(screen.getByRole('button', { name: 'REST/GraphiQL Client' })).toBeInTheDocument();
-  });
-
   it('renders GuestNav when user is not authenticated', () => {
     renderHeaderWithProviders();
     expect(screen.getByText('sign-in')).toBeInTheDocument();
