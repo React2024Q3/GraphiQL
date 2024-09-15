@@ -1,0 +1,19 @@
+.iconContainer {
+  display: inline-block;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.iconContainer:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+.error__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+}

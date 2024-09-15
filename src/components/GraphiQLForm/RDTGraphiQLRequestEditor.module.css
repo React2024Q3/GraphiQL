@@ -1,0 +1,19 @@
+.query-editor {
+  flex-grow: 3;
+}
+
+.variables-editor {
+  flex-grow: 1;
+}
+
+.request-headers-editor {
+  height: 300px;
+}
+
+.query-and-vars-box {
+  display: flex;
+  height: 300px;
+  width: 100%;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}

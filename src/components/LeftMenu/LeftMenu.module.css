@@ -1,0 +1,12 @@
+.drawer__container {
+  min-width: 250px;
+}
+
+.drawer__title {
+  padding: 1rem;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--mui-palette-grey-900);
+}

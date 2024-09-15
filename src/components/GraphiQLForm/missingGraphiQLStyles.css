@@ -1,0 +1,12 @@
+.graphiql-container .graphiql-response {
+  height: 250px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.graphiql-container .graphiql-response .result-window {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}

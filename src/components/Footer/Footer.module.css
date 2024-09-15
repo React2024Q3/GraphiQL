@@ -1,0 +1,21 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: var(--mui-palette-grey-800);
+}
+
+.link {
+  color: var(--mui-palette-primary-contrastText);
+  transition: color 0.25s ease;
+}
+
+.link:hover {
+  color: var(--mui-palette-secondary-main);
+}
+
+.year {
+  color: var(--mui-palette-secondary-300);
+}

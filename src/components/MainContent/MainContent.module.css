@@ -1,0 +1,52 @@
+.main__page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome__container,
+.container {
+  padding: 3rem 1rem;
+}
+
+.title {
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+}
+
+.text {
+  text-align: justify;
+}
+
+.welcome,
+.project,
+.developers,
+.course {
+  width: 100%;
+}
+
+.welcome {
+  background-color: var(--mui-palette-grey-200);
+}
+
+.project,
+.course {
+  background-color: var(--mui-palette-primary-contrastText);
+}
+
+.developers {
+  background-color: var(--mui-palette-primary-light);
+}
+
+.developers__cards {
+  display: flex;
+  justify-content: center;
+  gap: 1.7rem;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.main__image {
+  width: '100%';
+  height: 'auto';
+}

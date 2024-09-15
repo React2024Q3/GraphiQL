@@ -1,0 +1,23 @@
+.formContainer {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tabWrap {
+  width: 400%;
+  display: flex;
+  transition: all 0.4s linear;
+}
+
+.tabWrapWindow {
+  width: 100%;
+  overflow: hidden;
+}
+
+.response-editor {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}

@@ -1,0 +1,32 @@
+.auth__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth__form {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 0.5rem;
+}
+
+.auth__title {
+  margin: 2rem 0;
+}
+
+.auth__button {
+  margin-top: 1rem;
+  padding: 0.7rem;
+}
+
+.auth__message {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.auth__textfield {
+  margin-top: 0.625rem;
+  margin-bottom: 0.25rem;
+}
