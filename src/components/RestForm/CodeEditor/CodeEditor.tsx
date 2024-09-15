@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { ErrorNotification } from '@/components/ErrorNotification';
 import { json } from '@codemirror/lang-json';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import CodeMirror from '@uiw/react-codemirror';
 
 interface CodeEditorProps {
@@ -37,6 +38,7 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
         extensions={isJsonMode ? [json()] : []}
         onChange={handleChange}
         onBlur={handleBlur}
+        theme={vscodeDark}
       />
     </>
   );
