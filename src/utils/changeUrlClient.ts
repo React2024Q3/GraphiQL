@@ -11,7 +11,7 @@ export default function changeUrlClient(
 
   const encodedUrl = encodeURIComponent(btoa(url));
   const encodedBody =
-    body && method !== Methods.GET && method !== Methods.DELETE
+    body && method !== Methods.GET && method !== Methods.DELETE && method !== Methods.OPTIONS && method !== Methods.HEAD
       ? encodeURIComponent(btoa(body))
       : '';
 

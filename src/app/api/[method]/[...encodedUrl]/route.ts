@@ -35,6 +35,20 @@ export async function PATCH(
   return handleRequest(req, params);
 }
 
+export async function OPTIONS(
+  req: NextRequest,
+  { params }: { params: { method: string; encodedUrl: string[] } }
+) {
+  return handleRequest(req, params);
+}
+
+export async function HEAD(
+  req: NextRequest,
+  { params }: { params: { method: string; encodedUrl: string[] } }
+) {
+  return handleRequest(req, params);
+}
+
 async function handleRequest(req: NextRequest, params: { method: string; encodedUrl: string[] }) {
   const { method, encodedUrl } = params;
 
