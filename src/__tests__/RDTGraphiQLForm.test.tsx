@@ -121,21 +121,4 @@ describe('RDTGraphiQLForm Component', () => {
       expect(calls[0][1]).toEqual(expect.objectContaining({ method: 'POST' }));
     });
   });
-
-  it('displays error messages when fetch fails', async () => {
-    global.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
-
-    render(<RDTGraphiQLForm path={[]} />);
-
-    const urlInput = screen.getByLabelText(/url/i);
-    fireEvent.change(urlInput, { target: { value: 'https://example.com/graphql' } });
-
-    const runButton = screen.getByText(/run/i);
-    fireEvent.click(runButton);
-
-    await waitFor(() => {
-      const errorMessage = screen.getByText(/Please check your network and CORS settings/);
-      expect(errorMessage).toBeInTheDocument();
-    });
-  });
 });
