@@ -63,7 +63,7 @@ export const Developers: FC = () => {
                   </Link>
                   <Link href={linkedIn}>
                     <Box className={iconStyles.iconContainer}>
-                      <Image src='/linkedIn-icon.svg' alt='linkedIn-logo' width={20} height={20} />
+                      <Image src='/linkedin-icon.svg' alt='linkedIn-logo' width={20} height={20} />
                     </Box>
                   </Link>
                 </CardActions>
