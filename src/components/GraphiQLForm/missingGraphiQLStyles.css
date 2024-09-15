@@ -1,6 +1,4 @@
-/* The response view */
 .graphiql-container .graphiql-response {
-  /* --editor-background: transparent;*/
   height: 250px;
   display: flex;
   width: 100%;

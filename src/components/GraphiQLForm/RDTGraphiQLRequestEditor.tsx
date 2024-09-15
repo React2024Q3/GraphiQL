@@ -14,7 +14,6 @@ export function RDTGraphiQLRequestEditor(props: {
 
   return (
     <>
-      {/* <div className='graphiql-container'> */}
       <div className={styles['query-and-vars-box']} onBlur={props.onBlur}>
         <div className={styles['query-editor']}>
           <QueryEditor onEdit={props.onQueryEdit}></QueryEditor>
