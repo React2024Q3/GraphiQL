@@ -33,30 +33,28 @@ const noOpFetcher: Fetcher = () => {
   return {};
 };
 
-const renderWithGraphiQLProvider = (ui: React.ReactElement) => {
-  return render(<GraphiQLProvider fetcher={noOpFetcher}>{ui}</GraphiQLProvider>);
+const renderWithGraphiQLProvider = () => {
+  return render(
+    <GraphiQLProvider fetcher={noOpFetcher}>
+      <RDTGraphiQLDocExplorer baseURL='https://test.com' onCustomSchemaFetch={() => {}} />
+    </GraphiQLProvider>
+  );
 };
 
 describe('RDTGraphiQLDocExplorer', () => {
   it('renders without crashing', () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLDocExplorer baseURL='https://test.com' onCustomSchemaFetch={() => {}} />
-    );
+    renderWithGraphiQLProvider();
   });
 
   it('displays the correct SDL Url', async () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLDocExplorer baseURL='https://test.com' onCustomSchemaFetch={() => {}} />
-    );
+    renderWithGraphiQLProvider();
 
     const input = screen.getAllByRole('textbox')[0];
     expect(input).toHaveAttribute('value', 'https://test.com?sdl');
   });
 
   it('renders Spinner and Loading components when fetchSDLButton is clicked', async () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLDocExplorer baseURL='https://test.com' onCustomSchemaFetch={() => {}} />
-    );
+    renderWithGraphiQLProvider();
 
     const fetchSDLButton = screen.getByRole('button', { name: /fetchSDLButton/i });
     await fireEvent.click(fetchSDLButton);

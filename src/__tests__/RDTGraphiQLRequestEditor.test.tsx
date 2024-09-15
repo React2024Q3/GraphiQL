@@ -24,8 +24,20 @@ const noOpFetcher: Fetcher = () => {
   return {};
 };
 
-const renderWithGraphiQLProvider = (ui: React.ReactElement) => {
-  return render(<GraphiQLProvider fetcher={noOpFetcher}>{ui}</GraphiQLProvider>);
+const mockOnQueryEdit = vi.fn();
+const mockOnQueryVariablesEdit = vi.fn();
+const mockOnBlur = vi.fn();
+
+const renderWithGraphiQLProvider = () => {
+  return render(
+    <GraphiQLProvider fetcher={noOpFetcher}>
+      <RDTGraphiQLRequestEditor
+        onQueryEdit={mockOnQueryEdit}
+        onQueryVariablesEdit={mockOnQueryVariablesEdit}
+        onBlur={mockOnBlur}
+      />
+    </GraphiQLProvider>
+  );
 };
 
 vi.mock('next-intl', async (importOriginal) => {
@@ -41,61 +53,33 @@ vi.mock('@/components/Loader', () => ({
 }));
 
 describe('RDTGraphiQLRequestEditor', () => {
-  const mockOnQueryEdit = vi.fn();
-  const mockOnQueryVariablesEdit = vi.fn();
-  const mockOnBlur = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders the editor', () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLRequestEditor
-        onQueryEdit={mockOnQueryEdit}
-        onQueryVariablesEdit={mockOnQueryVariablesEdit}
-        onBlur={mockOnBlur}
-      />
-    );
+    renderWithGraphiQLProvider();
 
     expect(screen.getByTestId('query-editor-mock')).toBeInTheDocument();
     expect(screen.getByTestId('variable-editor-mock')).toBeInTheDocument();
   });
 
   it('calls onChange when text is entered', async () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLRequestEditor
-        onQueryEdit={mockOnQueryEdit}
-        onQueryVariablesEdit={mockOnQueryVariablesEdit}
-        onBlur={mockOnBlur}
-      />
-    );
+    renderWithGraphiQLProvider();
     const editor = screen.getAllByRole('textbox')[0];
     fireEvent.change(editor, { target: { value: 'query { test }' } });
     await waitFor(() => expect(mockOnQueryEdit).toHaveBeenCalledWith('query { test }'));
   });
 
   it('calls prettify when prettify button is clicked', async () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLRequestEditor
-        onQueryEdit={mockOnQueryEdit}
-        onQueryVariablesEdit={mockOnQueryVariablesEdit}
-        onBlur={mockOnBlur}
-      />
-    );
+    renderWithGraphiQLProvider();
 
     const prettifyButton = screen.getByRole('button', { name: 'prettifyButton' });
     fireEvent.click(prettifyButton);
   });
 
   it('calls onBlur when editor loses focus', async () => {
-    renderWithGraphiQLProvider(
-      <RDTGraphiQLRequestEditor
-        onQueryEdit={mockOnQueryEdit}
-        onQueryVariablesEdit={mockOnQueryVariablesEdit}
-        onBlur={mockOnBlur}
-      />
-    );
+    renderWithGraphiQLProvider();
     const editor = screen.getAllByRole('textbox')[0];
     fireEvent.blur(editor);
     await waitFor(() => expect(mockOnBlur).toHaveBeenCalled());
