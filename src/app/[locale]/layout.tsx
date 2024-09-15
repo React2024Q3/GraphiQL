@@ -1,7 +1,9 @@
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
+import { Toaster } from '@/components/Toaster';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
+import { ErrorProvider } from '@/contexts/ErrorContext/ErrorContext';
 import { locales } from '@/navigation';
 import { responsiveFontSizesTheme } from '@/theme';
 import { ThemeProvider } from '@mui/material';
@@ -39,11 +41,14 @@ export default function RootLayout({
         <ThemeProvider theme={responsiveFontSizesTheme}>
           <body className={inter.className}>
             <ErrorBoundary>
-              <AuthProvider>
-                <Header />
-                <main className='main'>{children}</main>
-                <Footer />
-              </AuthProvider>
+              <ErrorProvider>
+                <AuthProvider>
+                  <Header />
+                  <main className='main'>{children}</main>
+                  <Footer />
+                </AuthProvider>
+                <Toaster />
+              </ErrorProvider>
             </ErrorBoundary>
           </body>
         </ThemeProvider>

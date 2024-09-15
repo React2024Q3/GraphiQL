@@ -13,6 +13,7 @@ import {
 import queryRM from '@/data/graphQL/queryRM.json';
 import queryTODO from '@/data/graphQL/queryTODO.json';
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
+import { useHandleError } from '@/shared/hooks/useHandleError';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import useVariablesLS from '@/shared/hooks/useVariablesLS';
 import { KeyValuePair } from '@/types&interfaces/types';
@@ -26,7 +27,6 @@ import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { ValidationError } from 'yup';
 
-import { ErrorNotification } from '../ErrorNotification';
 import KeyValueForm from '../KeyValueForm';
 import { Loader } from '../Loader';
 import RDTGraphiQLDocExplorer from './RDTGraphiQLDocExplorer';
@@ -93,6 +93,8 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
 
   const isFirstRender = useRef(true);
   const t = useTranslations('graphiql');
+  useHandleError(response?.networkError);
+  useHandleError(authError);
 
   const memoFetcher: Fetcher = useMemo(() => {
     if (typeof window === 'undefined') {
@@ -335,8 +337,6 @@ export default function RDTGraphiQLForm({ path }: { path: string[] }) {
   }
   return (
     <Container className={styles.formContainer}>
-      <ErrorNotification error={response?.networkError} />
-      <ErrorNotification error={authError} />
       <GraphiQLProvider
         fetcher={memoFetcher}
         query={query}

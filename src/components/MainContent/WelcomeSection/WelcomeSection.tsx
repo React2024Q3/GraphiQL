@@ -4,11 +4,11 @@ import { FC, useEffect, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { fetchUserName } from '@/firebase/utils';
+import { useHandleError } from '@/shared/hooks/useHandleError';
 import { Box, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useTranslations } from 'next-intl';
 
-import { ErrorNotification } from '../../ErrorNotification';
 import ListLinks from '../../ListLinks';
 import styles from '../MainContent.module.css';
 import { getWelcomeString } from './helpers';
@@ -18,6 +18,7 @@ export const WelcomeSection: FC = () => {
   const [name, setName] = useState('');
   const [fetchUserNameError, setFetchUserNameError] = useState<Error | null>(null);
   const t = useTranslations('Home');
+  useHandleError(fetchUserNameError);
 
   useEffect(() => {
     try {
@@ -84,7 +85,6 @@ export const WelcomeSection: FC = () => {
             />
           </Grid>
         </Grid>
-        <ErrorNotification error={fetchUserNameError} />
       </Container>
     </Box>
   );

@@ -1,11 +1,11 @@
 'use client';
 
-import { ErrorNotification } from '@/components/ErrorNotification';
 import { HistoryRequestsList } from '@/components/HistoryRequestsList';
 import { CommonLinks } from '@/components/ListLinks/CommonLinks';
 import linksStyles from '@/components/ListLinks/ListLinks.module.css';
 import { Loader } from '@/components/Loader';
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
+import { useHandleError } from '@/shared/hooks/useHandleError';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
 import { Container, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -16,6 +16,7 @@ export default function History() {
   const { loading, error } = useAuthRedirect();
   const [listUrl] = useHistoryLS();
   const t = useTranslations('history');
+  useHandleError(error);
 
   if (loading) {
     return <Loader />;
@@ -37,7 +38,6 @@ export default function History() {
       ) : (
         <HistoryRequestsList list={listUrl} />
       )}
-      <ErrorNotification error={error} />
     </Container>
   );
 }

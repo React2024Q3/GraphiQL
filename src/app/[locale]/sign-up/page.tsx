@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { ErrorNotification } from '@/components/ErrorNotification';
 import { FormField } from '@/components/FormField';
 import { Loader } from '@/components/Loader';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { registerWithEmailAndPassword } from '@/firebase/utils';
 import { Link, useRouter } from '@/navigation';
+import { useHandleError } from '@/shared/hooks/useHandleError';
 import styles from '@/shared/styles/auth.module.css';
 import { SignUpFormData } from '@/types&interfaces/types';
 import { handleAuthError } from '@/utils/authHelpers';
@@ -22,6 +22,7 @@ function SignUp() {
   const { user, loading, error } = useAuth();
   const [firebaseError, setFirebaseError] = useState('');
   const t = useTranslations();
+  useHandleError(error);
 
   useEffect(() => {
     if (user) {
@@ -61,7 +62,6 @@ function SignUp() {
       <Typography className={styles.auth__title} variant='h4'>
         {t('buttons.sign-up')}
       </Typography>
-      <ErrorNotification error={error} />
       <form className={styles.auth__form} onSubmit={handleSubmit(onSubmit)}>
         <FormField<SignUpFormData>
           name='name'

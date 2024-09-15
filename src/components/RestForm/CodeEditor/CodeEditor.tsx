@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { ErrorNotification } from '@/components/ErrorNotification';
+import { useHandleError } from '@/shared/hooks/useHandleError';
 import { json } from '@codemirror/lang-json';
 import CodeMirror from '@uiw/react-codemirror';
 
@@ -12,6 +12,7 @@ interface CodeEditorProps {
 
 const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => {
   const [error, setError] = useState<Error | null>(null);
+  useHandleError(error);
 
   const handleBlur = () => {
     if (isJsonMode) {
@@ -29,7 +30,6 @@ const CodeEditor = ({ value, onChange, isJsonMode = true }: CodeEditorProps) => 
 
   return (
     <>
-      {error && <ErrorNotification error={error} />}
       <CodeMirror
         value={value}
         minHeight='250px'
