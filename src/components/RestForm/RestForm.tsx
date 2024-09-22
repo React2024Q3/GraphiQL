@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 
 import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import useHistoryLS from '@/shared/hooks/useHistoryLS';
@@ -155,6 +155,28 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
     setIsJsonMode(!isJsonMode);
   };
 
+  const onBlurBody = (str: string) => {
+    if (!str) return;
+    changeUrlClient(
+      method,
+      transformVariables(str, keyValuePairsVar),
+      transformVariables(url, keyValuePairsVar),
+      keyValuePairsHeader
+    );
+    setBody(str);
+  };
+
+  const onChangeURL = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e || !e.target) return;
+    changeUrlClient(
+      method,
+      transformVariables(e.target.value, keyValuePairsVar),
+      transformVariables(body, keyValuePairsVar),
+      keyValuePairsHeader
+    );
+    setUrl(e.target.value);
+  };
+
   return (
     <Container className={styles.formContainer}>
       <ErrorsNotificationsRestClient parseError={parseError} error={error} response={response} />
@@ -176,15 +198,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
               label='URL'
               type='text'
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              onBlur={() =>
-                changeUrlClient(
-                  method,
-                  transformVariables(url, keyValuePairsVar),
-                  transformVariables(body, keyValuePairsVar),
-                  keyValuePairsHeader
-                )
-              }
+              onChange={onChangeURL}
               required
             />
           </FormControl>
@@ -199,7 +213,7 @@ function RestForm({ initMethod, path }: { initMethod: MethodType; path: string[]
             <Button variant='contained' onClick={toggleMode}>
               {isJsonMode ? t('buttons.to-text') : t('buttons.to-json')}
             </Button>
-            <CodeEditor value={body} onChange={setBody} isJsonMode={isJsonMode} />
+            <CodeEditor value={body} onChange={onBlurBody} isJsonMode={isJsonMode} />
           </div>
         )}
 
