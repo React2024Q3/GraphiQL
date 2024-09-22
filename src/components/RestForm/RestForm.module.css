@@ -31,6 +31,12 @@
 .selectItem:nth-of-type(5) {
   color: blueviolet;
 }
+.selectItem:nth-of-type(6) {
+  color: aqua;
+}
+.selectItem:nth-of-type(7) {
+  color: lime;
+}
 
 .urlInput {
   flex-grow: 1;
