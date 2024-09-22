@@ -63,10 +63,7 @@
     "headers": "Headers",
     "variables": "Variables",
     "key": "Key",
-    "value": "Value",
-    "fill-key": "Please fill in the key",
-    "fill-value": "Please fill in the value",
-    "fill-both": "Fill both key and value fields"
+    "value": "Value"
   },
   "graphiql": {
     "prettifyButton": "Prettify query\n (Shift-Ctrl-P)",
@@ -106,6 +103,9 @@
     "password-strength": "Password must contain at least one letter, one number, and one special character",
     "confirm-password-required": "Confirm Password is required",
     "password-match": "Passwords must match",
-    "decode": "URL encoding error"
+    "decode": "URL encoding error",
+    "fill-in-key": "Please fill in the key",
+    "fill-in-value": "Please fill in the value",
+    "fill-key-value": "Fill both key and value fields"
   }
 }
